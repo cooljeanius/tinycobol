@@ -1,0 +1,155 @@
+#
+#
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SRC00 = index01.cob
+SRC01 = test12a.cob
+SRC02 = test12b.cob
+SRC03 = test12c.cob
+SRC04 = test12d.cob
+SRC05 = test12e.cob
+SRC06 = test12f.cob
+SRC07 = test12g.cob
+SRC08 = test12h.cob
+SRC09 = test12i.cob
+SRC10 = test12j.cob
+SRC11 = test12k.cob
+SRC12 = test12l.cob
+SRC13 = test12m.cob
+SRC14 = test12n.cob
+ 
+OBJ00 = $(SRC00:.cob=.o)
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.cob=.o)
+OBJ03 = $(SRC03:.cob=.o)
+OBJ04 = $(SRC04:.cob=.o)
+OBJ05 = $(SRC05:.cob=.o)
+OBJ06 = $(SRC06:.cob=.o)
+OBJ07 = $(SRC07:.cob=.o)
+OBJ08 = $(SRC08:.cob=.o)
+OBJ09 = $(SRC09:.cob=.o)
+OBJ10 = $(SRC10:.cob=.o)
+OBJ11 = $(SRC11:.cob=.o)
+OBJ12 = $(SRC12:.cob=.o)
+OBJ13 = $(SRC13:.cob=.o)
+OBJ14 = $(SRC14:.cob=.o)
+OBJS =  $(OBJ01) $(OBJ02) $(OBJ03) $(OBJ04) $(OBJ05) \
+        $(OBJ06) $(OBJ07) $(OBJ08) $(OBJ09) $(OBJ10) \
+        $(OBJ11) $(OBJ12) $(OBJ13) $(OBJ14) $(OBJ00) 
+
+PROG00 = index01
+PROG01 = test12a
+PROG02 = test12b
+PROG03 = test12c
+PROG04 = test12d
+PROG05 = test12e
+PROG06 = test12f
+PROG07 = test12g
+PROG08 = test12h
+PROG09 = test12i
+PROG10 = test12j
+PROG11 = test12k
+PROG12 = test12l
+PROG13 = test12m
+PROG14 = test12n
+PROGS =  $(PROG01) $(PROG02) $(PROG03) $(PROG04) $(PROG05) \
+         $(PROG06) $(PROG07) $(PROG08) $(PROG09) $(PROG10) \
+         $(PROG11) $(PROG12) $(PROG13) $(PROG14) $(PROG00)
+
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#
+
+all: ${PROGS}
+
+${PROG00}: ${OBJ00}
+	$(CCX) -g -o $@ ${OBJ00} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG01}: ${OBJ01}
+	$(CCX) -g -o $@ ${OBJ01} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG02}: ${OBJ02}
+	$(CCX) -g -o $@ ${OBJ02} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG03}: ${OBJ03}
+	$(CCX) -g -o $@ ${OBJ03} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG04}: ${OBJ04}
+	$(CCX) -g -o $@ ${OBJ04} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG05}: ${OBJ05}
+	$(CCX) -g -o $@ ${OBJ05} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG06}: ${OBJ06}
+	$(CCX) -g -o $@ ${OBJ06} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG07}: ${OBJ07}
+	$(CCX) -g -o $@ ${OBJ07} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG08}: ${OBJ08}
+	$(CCX) -g -o $@ ${OBJ08} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG09}: ${OBJ09}
+	$(CCX) -g -o $@ ${OBJ09} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG10}: ${OBJ10}
+	$(CCX) -g -o $@ ${OBJ10} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG11}: ${OBJ11}
+	$(CCX) -g -o $@ ${OBJ11} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG12}: ${OBJ12}
+	$(CCX) -g -o $@ ${OBJ12} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG13}: ${OBJ13}
+	$(CCX) -g -o $@ ${OBJ13} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG14}: ${OBJ14}
+	$(CCX) -g -o $@ ${OBJ14} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+clean: cleanfiles
+	@${RM} $(PROGS) $(OBJS) *.lis *.listing.txt *.s *.i *.exe core
+
+cleanfiles filesclean:
+	@${RM} *.dat *.idx

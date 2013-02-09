@@ -1,0 +1,190 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. COND01.
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+* INPUT-OUTPUT SECTION.
+* FILE-CONTROL.
+ DATA DIVISION.
+ FILE SECTION.
+ WORKING-STORAGE SECTION.
+
+ 01  WS-IDX	        PIC 9(3).
+ 01  WS-IDX1	        PIC 9(3).
+ 01  WS-IDX2	        PIC 9(3).
+ 01  IDX	        PIC 9(3).
+ 01  IDX2	        PIC 9(3) COMP.
+ 01  WS-AGE-GROUP	PIC 9(2).
+     88 WS-MINOR      VALUE 1 THRU 18.
+     88 WS-YADULT     VALUE 19, 20, 21, 22.
+     88 WS-ADULT      VALUE 21 THRU 99.
+
+ 01  WS-DEPT-GROUP1     PIC X.
+     88 WS-ACCOUNTING1  VALUE 'A', 'B', 'C'.
+     88 WS-OTHER1	VALUE 'D' THRU 'Z'.
+
+ 01  WS-DEPT-GROUP	PIC 9.
+     88 WS-ACCOUNTING   VALUE 2, 3.
+     88 WS-OTHER        VALUE 4 THRU 9.
+
+ 01  WS-STATUS	        PIC X(1).
+     88 WS-DIVORCED     VALUE 'D'.
+     88 WS-MARRIED      VALUE 'M'.
+     88 WS-SINGLE       VALUE 'S'.
+
+ 01  WS-FULL-NAME	PIC X(20).
+
+ 01  WS-NUMBER      pic X(10).
+ 
+ 01  WS-IF-TRACE        PIC 9.
+PROCEDURE DIVISION.
+
+A-000.
+ 
+     DISPLAY "BEGIN: IF/ELSE TESTS".
+
+     MOVE 1   TO IDX.
+     MOVE 99  TO WS-IDX.
+     MOVE 1   TO WS-IDX1.
+     MOVE 2   TO WS-IDX2.
+     MOVE 'M' TO WS-STATUS.
+     MOVE 21  TO WS-AGE-GROUP.
+     MOVE 'DAVID ESSEX' TO WS-FULL-NAME.
+     MOVE "1234" TO WS-NUMBER.
+
+     MOVE 2 TO WS-DEPT-GROUP.
+     MOVE 'A' TO WS-DEPT-GROUP1.
+
+     PERFORM A-100.
+     PERFORM A-200.
+     PERFORM A-300.
+     PERFORM A-400.
+     PERFORM A-500.
+     PERFORM A-600.
+     PERFORM A-650.
+     PERFORM A-700.
+     PERFORM A-750.
+     PERFORM A-800.
+     PERFORM A-900.
+     PERFORM A-1000.
+     PERFORM A-1100.
+     PERFORM A-1200.
+
+     STOP RUN.
+
+A-100.
+     IF ( WS-IDX1 EQUAL 1 ) AND ( WS-IDX2 EQUAL 2 )
+     THEN
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE
+     END-IF.
+     DISPLAY "IF01:(" WS-IF-TRACE "):(1):(And)".
+
+A-200.
+     IF WS-IDX1 EQUAL 3
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE
+     END-IF.
+     DISPLAY "IF02:(" WS-IF-TRACE "):(2):(Simple)".
+
+A-300.
+     IF WS-IDX EQUAL 99
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF03:(" WS-IF-TRACE "):(1):(Simple 2 pos)".
+      
+A-400.
+     IF WS-IDX NOT EQUAL 99
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE
+     END-IF.
+     DISPLAY "IF04:(" WS-IF-TRACE "):(2):(Simple ne)".
+      
+A-500.
+     IF WS-MARRIED
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF05:(" WS-IF-TRACE "):(1):(Simple condition)".
+
+A-600.
+     IF WS-ADULT
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF06:(" WS-IF-TRACE "):(1):(Simple condition)".
+
+A-650.
+     IF WS-YADULT
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF07:(" WS-IF-TRACE "):(1):(Simple condition)".
+
+A-700.
+     IF WS-FULL-NAME NUMERIC
+        MOVE 1 TO WS-IF-TRACE
+        
+     IF WS-FULL-NAME ALPHABETIC
+        MOVE 2 TO WS-IF-TRACE
+     ELSE
+        MOVE 3 TO WS-IF-TRACE.
+     DISPLAY "IF08:(" WS-IF-TRACE "):(1):(Simple class alpha)".
+
+A-750.
+     IF WS-NUMBER NUMERIC
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF09:(" WS-IF-TRACE "):(1):(Simple class num)".
+
+A-800.
+     IF WS-IDX POSITIVE
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF10:(" WS-IF-TRACE "):(1):(Simple class signed)".
+
+A-900.
+     MOVE WS-IDX1 TO WS-IDX2.
+     ADD 50 TO WS-IDX2. 
+     IF WS-IDX = WS-IDX1 + 50
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF11:(" WS-IF-TRACE "):(2):(Arith expression)".
+
+A-1000.
+     IF WS-ACCOUNTING
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF12:(" WS-IF-TRACE "):(1):(Simple)".
+
+A-1100.
+     IF WS-ACCOUNTING1
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE.
+     DISPLAY "IF13:(" WS-IF-TRACE "):(1):(Simple)".
+
+A-1200.
+     IF WS-IDX > WS-IDX1 OR > IDX
+     THEN
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE
+     END-IF
+     DISPLAY "IF14:(" WS-IF-TRACE "):(1):(Combined OR)".
+A-1300.
+     MOVE ZEROS TO WS-NUMBER
+     IF WS-NUMBER IS ZEROS
+     THEN
+        MOVE 1 TO WS-IF-TRACE
+     ELSE
+        MOVE 2 TO WS-IF-TRACE
+     END-IF
+     DISPLAY "IF15:(" WS-IF-TRACE "):(1):(all zeros)".

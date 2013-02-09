@@ -1,0 +1,68 @@
+<HTML>
+  <head>
+    <title>TinyCOBOL manual - htcobrun (1)</title>
+  </head>
+<BODY bgcolor="#ffffff" text="#000000" LINK="#006699" VLINK="#cccccc">
+
+<H2>HTCOBRUN</H2><PRE>
+      <B>htcobrun </B>- Load and run COBOL programs defined in modules (shared libraries or DLLs).
+
+
+</PRE>
+
+<H2>SYNOPSIS</H2><PRE>
+      htcobrun [options] program-name [command-line-parms]
+</PRE>
+
+<H2>DESCRIPTION</H2><PRE>
+      Load and run programs defined in modules.
+      A module is a shared library (DLL) which can contain one or more 
+      programs (function in C).
+
+      The current version of only supports called program which do NOT have 
+      any paramaters. Meaning a <B>PROCEDURE DIVISION</B> without a <B>USING</B> paramaters 
+      clause in <B>COBOL</B>.
+
+      Any command line paramaters <B>(arg1...argN)</B> passed to the called program can be 
+      retrieved using the <B>ACCEPT</B> verb in <B>COBOL</B>.
+
+
+
+</PRE>
+
+<H2>OPTIONS</H2><PRE>
+
+      <B>-h</B> Display help and exit.
+
+
+      <B>-V</B> Display version information and exit.
+
+
+</PRE>
+
+
+<H2>ENVIRONMENT</H2><PRE>
+      <B>LD_LIBRARY_PATH</B> and <B>TCOB_LD_LIBRARY_PATH</B>
+
+      Define the module (shared libraries, DLL) search paths.
+      The default search path is the current working directory.
+
+
+</PRE>
+
+
+<H2>SEE ALSO</H2><PRE>
+       htcobol(1), GCC(1), as(1), ld(1), make(1)
+
+
+
+</PRE>
+
+Last modified : August 22, 2010
+<HR>
+<ADDRESS>
+<a href="http://tiny-cobol.sf.net">TinyCOBOL</a>
+</ADDRESS>
+
+</BODY>
+</HTML>

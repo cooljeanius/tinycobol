@@ -1,0 +1,55 @@
+#
+# Makefile.in for the TinyCOBOL compiler runtime library (MinGW)
+#
+
+prefix=@prefix@
+exec_prefix=${prefix}
+
+MV=@MV@
+RM=@RM@
+MKDIR=@MKDIR@
+
+#
+CCX=@CC@
+ASM=@AS@
+INCLUDES=@INCLUDES@
+CCXFLAGS=${INCLUDES}  -Wall 
+
+MAKEDEPEND=@MAKEDEPEND@
+
+RANLIB=@RANLIB@
+AR=@AR@
+
+lib_name1=misc
+
+STATIC_LIB1=lib${lib_name1}.a
+
+SRC01  = gnugetopt.c  gnugetopt1.c
+
+OBJS01 = $(SRC01:.c=.o)
+
+OBJS = $(OBJS01)
+
+#
+# Rules for compiling .c .s sources
+#
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+all: static-libs
+
+static-libs: ${STATIC_LIB1}
+
+# Rules for building the static library
+#
+${STATIC_LIB1}: ${OBJS01}
+	${AR} cr ${STATIC_LIB1} ${OBJS01}
+	${RANLIB} ${STATIC_LIB1}
+
+clean:
+	@${RM} ${OBJS} ${STATIC_LIB1} core *.bak *.o
+
+install: static-libs
+
+uninstall:

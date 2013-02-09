@@ -1,0 +1,169 @@
+.\"
+.\"  Created by Ferran Pegueroles using help2man and modified by hand.
+.\"  Modified and updated by David Essex.
+.\" 
+.TH HTCOBOL 1 "August 22, 2010"
+.UC 6
+.SH NAME
+htcobol \- COBOL compiler
+.SH SYNOPSIS
+.B htcobol 
+[
+.I options
+] 
+.I input\-file\-name
+.SH "DESCRIPTION"
+A compiler for the 
+\fBCO\fRmmon
+\fBB\fRusiness 
+\fBO\fRriented 
+\fBL\fRanguage, 
+\fBCOBOL\fR.
+.PP
+The COBOL compiler  
+.I htcobol
+reads from a COBOL source file
+and depending on the option, will pre\-process, compile, assemble and link 
+to generate an executable, object, or shared (DLL) library.
+.PP
+The compiler generates 32\-bit GNU assembler for the x86 (i386) platforms.
+With the aid of the \fBGCC\fR 
+tool set, this intermediate code can then be assembled and linked to create binary objects.  
+.PP
+Binary objects can be created either directly by the compiler (htcobol), 
+or by using the GNU assembler code as input to the GCC tool chain.
+.PP
+The compiler conforms to a substantial portion of the COBOL-85 standards, 
+and some of the COBOL-2002 standard.
+.PP
+The compiler recognizes several command line options as described below.
+.PP
+You can get a help message by invoking htcobol with the
+.B \-h
+option.  
+.PP
+.SH "INITIALIZATION FILES"
+Many compiler options can be set using the 
+resource file and/or command line options.
+.PP
+The precedence of any compiler option is as follows:
+.TP
+1.
+Command line options, if available.
+.TP
+2.
+Environment variables, if available. 
+.TP
+3.
+The compile options file (htcobolrc), if available.
+.TP
+4.
+Compiler default options.
+.SH "OPTIONS"
+.B Compiler specific options:
+.TP
+\fB\-h, --help\fR 
+Display help.
+.TP 
+\fB\-B\fR <mode>
+Specify binding mode (static or dynamic)
+.TP 
+\fB\-c\fR
+Compile to a statically linked object module
+.TP 
+\fB\-E\fR
+Preprocessor only; do not compile, assemble or link
+.TP 
+\fB\-g\fR
+Generate compiler debugging output
+.TP 
+\fB\-l\fR <name> 
+Add library name to link step
+.TP 
+\fB\-L\fR <dir> 
+Add directory to library search path
+.TP 
+\fB\-m\fR 
+Build a shared library (DLL) or module
+.TP 
+\fB\-n\fR
+Don't actually run any commands; just print them
+.TP 
+\fB\-o\fR <file> 
+Specify output file name
+.TP 
+\fB\-S\fR
+Preprocess, compile (generate assembler code) only; do not assemble or link
+.TP 
+\fB\-t\fR
+Don't remove intermediate files (pre-processed COBOL file, assembly file, etc.)
+.TP 
+\fB\-v\fR
+Generate verbose compiler output
+.TP 
+\fB\-V, --version\fR
+Display compiler version information and exit
+.TP 
+\fB\-Wl,<options> \fR 
+Pass comma-separated <options> on to the linker
+.TP 
+\fB\-x\fR
+Build an executable program (Default)
+.TP 
+\fB\-z\fR
+Generate very verbose compiler output
+.PP 
+.B COBOL specific options:
+.TP 
+\fB\-C\fR
+Make all COBOL calls dynamic
+.TP 
+\fB\-d\fR
+Generate display SECTION/PARAGRAPH trace code
+.TP 
+\fB\-D\fR
+Include source debugging lines
+.TP 
+\fB\-e\fR <name>
+Specify entry point name (first program to execute)
+.TP 
+\fB\-F, --fixed\fR
+Input source is in standard fixed column format
+.TP 
+\fB\-I\fR <path> 
+Define include (copybooks) search path(s) (default \-I./)
+The path may be either a single directory, or a list of 
+directories separated by a `:' (`;' on the Win32 platform).
+.TP 
+\fB\-M\fR
+Generate entry point and use PROGRAM-ID of first program with STOP RUN (Default: first PROGRAM-ID)
+.TP 
+\fB\-P\fR
+Generate output listing file
+.TP 
+\fB\-T\fR <num>
+Expand tabs to number of space(s) (default T=8)
+.TP 
+\fB\-X, --free\fR
+Input source is in X/Open free format (default format)
+.PP 
+.SH "FILES"
+.TP
+.I htcobolrc\fR - Compile options file.
+.TP
+.I htrtconf\fR - Run-time options file.
+.SH ENVIRONMENT
+.TP
+.B TCOB_OPTIONS_PATH
+Options file directory path.
+.TP
+.B TCOB_RTCONFIG_PATH
+Run-time options file directory path.
+.TP
+.B TCOB_LD_LIBRARY_PATH\fR and \fB LD_LIBRARY_PATH
+Define the shared libraries (DLLs) search paths.
+.TP
+.B  TEMP
+Temporary files directory path.
+.SH "SEE ALSO"
+htcobrun(1), GCC(1), as(1), ld(1), make(1).

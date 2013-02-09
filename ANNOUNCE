@@ -1,0 +1,345 @@
+TinyCOBOL is a COBOL compiler being actively developed by members of the 
+free software community.
+
+The long term goal is to produce a COBOL compiler which is 'COBOL 85 standard'
+compliant, or at least as close as reasonably possible.
+
+TinyCOBOL supports the x86-32 (IA32) architecture and the following platforms.
+- Linux using the GNU compiler tool chain.
+- FreeBSD using the GNU compiler tool chain.
+- Win32 using the MinGW (Mingw32) GNU compiler tool chain.  
+- Win32 using the Cygwin GNU compiler tool chain and Cygwin POSIX emulation layer.
+
+The TC compiler generates GAS compatible assembler code for the x86-32 (IA32) platform.
+The final compilation and linkage is done indirectly by GCC.
+
+The project is approaching the first beta release with many statements 
+already implemented.
+
+-----------------------------------------------------------------------------
+0.66:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+-----------------------------------------------------------------------------
+0.65:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+Beginning with version 0.65, TC will use the VB-ISAM [1] library, version 2,
+for all indexed file IO.
+
+1) TinyCOBOL - VB-ISAM version 2
+http://tiny-cobol.sourceforge.net/download.html
+http://sourceforge.net/projects/tiny-cobol/files/
+
+-----------------------------------------------------------------------------
+0.64:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+The file IO code generation and run-time was re-written.
+Support for variable length and relative files.
+Indexed files format has changed and now consists of two files. 
+A BDB multi-index file and a data file.
+
+-----------------------------------------------------------------------------
+0.63:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+-----------------------------------------------------------------------------
+0.62:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+The pre-processor has been integrated back into the main compiler.
+Improvements to error detection, reporting and parser recovery.
+Support for dynamic loading of DLL's for the Win32 platform.
+
+
+-----------------------------------------------------------------------------
+0.61:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+
+-----------------------------------------------------------------------------
+0.60:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+Improvements have been made in the following areas: locking for
+relative files, better support of print files (write after and
+before advancing) and better compatibility with 85 Standard for
+some indexed file I/O operations.
+
+
+-----------------------------------------------------------------------------
+0.59:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler and run-time.
+
+Support for internationalization (en, pr_BR, it, fr) has been added.
+
+Improvements have been made in the following areas: multi-line
+comment entries in the identification division, run-time error
+reporting, and plenty of new intrinsics.
+
+Finally, there is now only one library, shared by default.
+
+
+-----------------------------------------------------------------------------
+0.58:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler, run-time, the regression 
+and NIST test suites.
+
+Support for in-line comments, DEBUGGING lines, declaratives (preliminary),
+intrinsic functions (preliminary), INSPECT CONVERTING, concatenation 
+(preliminary), have been added to the compiler.
+
+The compiler front end and resource options have been enhanced 
+to define the default compiler action (create executable or library).
+The compiler can also create an static/shared libraries, from COBOL sources,
+directly from the command line.
+
+And finally, embedded SQL can be used with TC, by using a vendor supplied 
+SQL pre-processor and libraries.
+
+
+-----------------------------------------------------------------------------
+0.57:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler, run-time, the regression 
+and NIST test suites.
+Support for the ADD/SUBTRACT CORRESPONDING, RENAMES, statements
+have been added to the compiler.
+
+The compiler front end and resource options have been enhanced to 
+enable TC to create an executable directly using the command line.
+The compiler will now auto detect the TC auxiliary libraries required,
+and include them in the link step.
+
+
+-----------------------------------------------------------------------------
+0.56:
+This release contains mainly bugs fixes, and some enhancements.  
+It includes updates to the main compiler, run-time, the regression 
+test suite.
+
+Support for the CHAIN, GOBACK statements, BLANK WHEN ZERO, 
+INITIAL (preliminary), SPECIAL-NAMES (preliminary) clauses, 
+COMPUTATIONAL-X type, have been added to the compiler.
+
+The compiler front end has been enhanced to enable TC to create 
+an executable directly using the command line.
+
+The command line options have been changed to more closely reflect 
+the GCC options.
+
+Preliminary support for the Win32 (native, no emulation layer required)
+platform using the MinGW (Mingw32) tool chain. 
+
+A set of utilities have been added to enable TC testing 
+for COBOL standard compatibility using the NIST test suite.
+
+General notes:
+Bison is the default parser, Berkeley's YACC (byacc) version 1.9.3
+is now an option.
+The configure script will now handle multiple versions library DB and
+C compilers depending on the options selected.
+
+Important note:
+Effective with version 0.56, the command line options have been changed
+to more closely reflect the GCC options.
+
+The default action when no appropriate command line option is given,
+defaults to 'x', create an executable (pre-process, compile, assemble and link). 
+
+Previous version defaulted to 'S', generate assembler code (pre-process, compile).
+
+
+-----------------------------------------------------------------------------
+0.55:
+This release contains mainly bugs fixes, and enhancements.  
+It includes updates to the main compiler, run-time,
+the regression test suite.
+The grammar was modified to enable compilation with Bison.
+The MOVE run-time routines have been updated and improved.
+Screen-IO has been updated to handle screen status and function keys.
+Support for [SIGN IS] {LEADING/TRAILING} [SEPARATE] clauses,
+have been added to the compiler run-time.
+Preliminary work as started on the NIST test programs.
+
+Important note:
+Effective with version 0.55, to compile the TinyCOBOL compiler
+will require Berkeley's YACC (byacc) version 1.9.3 or Bison.
+Version 1.9.3 of YACC (byacc), only available on the snapshots web 
+page, has been modified to handle huge grammars such as COBOL.
+Using previous versions of Berkeley's YACC on the TinyCOBOL grammar,
+will result in an abort on a table overflow error.
+
+
+-----------------------------------------------------------------------------
+0.54:
+This release contains mainly bugs fixes, and enhancements.  
+It includes updates to the preprocessor, main compiler, RTS,
+the regression test suite, EVALUATE, GOTO, READ, WRITE, RETURN,
+DELETE, START, REWRITE statements.
+Support for multiple WHEN clauses in SEARCH statement,
+[SIGN IS] {LEADING/TRAILING} [SEPARATE] clauses,
+FLOAT-LONG (COMP-2) FLOAT-SHORT (COMP-1) floating point types,
+INSPECT...CONVERTING clause, have been added to the compiler.
+
+
+-----------------------------------------------------------------------------
+0.53:
+This release contains mainly bugs fixes, and enhancements.  
+It includes updates to the preprocessor, math verbs, 
+the regression test suite, gdb debug stabs, 
+STRING/UNSTRING statements, ACCEPT from COMMAND-LINE and 
+ENVIRONMENT-VARIABLE statements. 
+Support for the dynamic CALL statement, 
+ACCEPT  DAY, DAY-OF-WEEK, ON EXCEPTION and ERASE clauses, 
+ADD and SUBTRACT (CORRESPONDING option) statements, 
+EXTERNAL clause in the SELECT statement, BINARY-CHAR, 
+BINARY-SHORT, BINARY-LONG, BINARY-DOUBLE and 
+COMP-1/COMP-2 (preliminary) floating point types, 
+support for the Debian package format 
+have been added to the compiler.
+
+
+-----------------------------------------------------------------------------
+0.52:
+This release contains bugs fixes, and enhancements, 
+including updates to the preprocessor, math verbs,
+MOVE (CORRESPONDING option) statement, COMPUTE (exponent operator) statement,
+enhancements to the regression test suite.
+Support for the BLANK WHEN ZERO clause, SYNC clause, qualification,
+OCCURS...DEPENDING ON... clause (variable-sized tables),
+RECORD VARYING ... DEPENDING ON ... (variable-sized records) clause,
+multiple record defines for FD entries, sequence of source programs,
+have been added to the compiler.
+
+
+-----------------------------------------------------------------------------
+0.51:
+This release contains bugs fixes, and enhancements, 
+including updates to the math verbs, the STRING statement,
+file IO READ/WRITE statements, DISPLAY/ACCEPT statements,
+SET statement, abbreviated conditional expressions.
+Reference modification, pointer types, EXTERNAL semantics (preliminary)
+have been added to the compiler.
+The new pre-processor will now execute by default.
+The Win32 (preliminary) platform, using the Cygwin emulation layer,
+is now supported.
+
+
+-----------------------------------------------------------------------------
+0.50:
+This release contains bugs fixes, and code enhancements, 
+including updates to the math verbs, the EVALUATE statement,
+file OPEN/CLOSE statements, file LINE SEQUENTIAL IO.
+The CALL BY CONTENT, JUSTIFIED RIGHT, and REPORT SECTION (preliminary) 
+statements has been added to the COBOL grammar.
+The DISPLAY/ACCEPT LINE/POSITION statements have been added, as an 
+extension to the standard COBOL grammar.
+Sample programs with CGI, SQL, and GUI interfaces have been added 
+to the source distribution. 
+
+
+-----------------------------------------------------------------------------
+0.4:
+This release contains bugs fixes, and code enhancements, 
+including updates to the GO TO statement, the screen I/O 
+statements, SORT statements. A preprocessor has been added
+to handle fixed and free syntax, and all COPY statements. 
+Support for external file name assignment in SELECT and 
+FD statements has been added as an extension to the standard 
+COBOL 85 grammar.
+
+
+-----------------------------------------------------------------------------
+0.3:
+This release contains bugs fixes, and major modifications.  
+It includes an update to the IF/ELSE statements to include 
+abbreviated conditional expressions. The addition of static variables, 
+the EVALUATE statements, variable length (1, 2, 4, 8) binary fields, 
+the screen I/O statements. The CALL BY ... RETURNING variable has been 
+added, as an extension to the standard COBOL 85 grammar.
+
+
+-----------------------------------------------------------------------------
+0.2:
+This release contains bugs fixes, and code enhancements, 
+including updates to the IF/ELSE relational, class, name, 
+sign conditionals statements. The CALL BY VALUE has been 
+added, as an extension to the standard COBOL grammar.
+
+
+-----------------------------------------------------------------------------
+0.1.5.5:
+This minor release contains some bugs fixes, and some
+code enhancements, including updates to the PERFORM
+statements. With this release all PERFORM statements
+are functional and conform to the COBOL 85 standard.
+
+
+-----------------------------------------------------------------------------
+0.1.5.3:
+In this release, along with some bug fixes, the
+INITIALIZE, CURRENCY, PERFORM WITH TEST BEFORE/AFTER
+option statements have been added to the COBOL
+grammar.
+
+
+-----------------------------------------------------------------------------
+0.1.5.0:
+This release contains some additions to the COBOL 85
+grammar and some bug fixes.
+
+
+-----------------------------------------------------------------------------
+0.1.0.1:
+bug fix release.
+
+
+-----------------------------------------------------------------------------
+20000507:
+An implemented SEARCH statement for tables, and more
+bug fixes.
+
+
+-----------------------------------------------------------------------------
+20000302:
+Better configuration/installing, a new ability to read
+environment variables using the ACCEPT verb, use of
+library DB version 2.xx+, implementation of START ...
+GREATER THAN or Relative files, an enhanced DISPLAY
+verb to enable to direct output to stdout/stderr, and
+many bug fixes.
+
+
+-----------------------------------------------------------------------------
+991210:
+Ability to use GDB for debugging, with COBOL source
+lines listing, breakpoints, and variable
+display/modifying, 32-bit binary storage and
+operations on variables with "USAGE IS COMP", and
+table access support using the SET statement.
+
+
+-----------------------------------------------------------------------------
+991103:
+The following features are implemented: ACCEPT from
+time/date, DISPLAY, and file input/output (READ,
+WRITE, REWRITE, START) for indexed, relative, line and
+line sequential files. The functions for STRING,
+UNSTRING, INSPECT, SET and ALTERNATE KEYS are
+currently in development.
+
+
+-----------------------------------------------------------------------------
+991028:
+Initial release.

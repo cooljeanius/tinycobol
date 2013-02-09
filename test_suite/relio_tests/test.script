@@ -1,0 +1,44 @@
+relio01:S:Relative file sequential mode write::
+relio02:S:Relative file dynamic mode write::
+relio03:S:Relative file sequential read::
+relio04:S:Relative file random read::
+relio05:S:Relative file dynamic reads::
+relio06:S:Relative file start and read::
+relio08:S:Relative file sequential rewrite::
+relio09:S:Relative file random rewrite::
+relio10:S:Relative file dynamic rewrite::
+relio11:S:Relative file start read rewrite::
+relio13:S:Relative file sequential delete::
+relio21:S:Relative variable (format 1) sequential mode write::
+relio22:S:Relative variable (format 1) dynamic mode write::
+relio23:S:Relative variable (format 1) sequential read::
+relio24:S:Relative variable (format 1) random read::
+relio25:S:Relative variable (format 1) dynamic reads::
+relio26:S:Relative variable (format 1) start and read::
+relio28:S:Relative variable (format 1) sequential rewrite::
+relio29:S:Relative variable (format 1) random rewrite::
+relio30:S:Relative variable (format 1) dynamic rewrite::
+relio31:S:Relative variable (format 1) start read rewrite::
+relio33:S:Relative variable (format 1) sequential delete::
+relio41:S:Relative variable (format 2) sequential mode write::
+relio42:S:Relative variable (format 2) dynamic mode write::
+relio43:S:Relative variable (format 2) sequential read::
+relio44:S:Relative variable (format 2) random read::
+relio45:S:Relative variable (format 2) dynamic reads::
+relio46:S:Relative variable (format 2) start and read::
+relio48:S:Relative variable (format 2) sequential rewrite::
+relio49:S:Relative variable (format 2) random rewrite::
+relio50:S:Relative variable (format 2) dynamic rewrite::
+relio51:S:Relative variable (format 2) start read rewrite::
+relio53:S:Relative variable (format 2) sequential delete::
+relio61:S:Relative variable (format 3) sequential mode write::
+relio62:S:Relative variable (format 3) dynamic mode write::
+relio63:S:Relative variable (format 3) sequential read::
+relio64:S:Relative variable (format 3) random read::
+relio65:S:Relative variable (format 3) dynamic reads::
+relio66:S:Relative variable (format 3) start and read::
+relio68:S:Relative variable (format 3) sequential rewrite::
+relio69:S:Relative variable (format 3) random rewrite::
+relio70:S:Relative variable (format 3) dynamic rewrite::
+relio71:S:Relative variable (format 3) start read rewrite::
+relio73:S:Relative variable (format 3) sequential delete::

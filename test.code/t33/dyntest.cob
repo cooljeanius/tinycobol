@@ -1,0 +1,109 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID.    dyntest.  
+*
+ ENVIRONMENT DIVISION.
+ DATA DIVISION.
+*
+ WORKING-STORAGE SECTION.
+ 01 VAR5     PIC X(10) VALUE 'New York'.
+ 01 VARS-1-7.
+   05 FILLER PIC X(10) VALUE 'Berlin'.
+   05 FILLER PIC X(10) VALUE 'London'.
+   05 FILLER PIC X(10) VALUE 'Paris'.
+   05 FILLER PIC X(10) VALUE 'New York'.
+   05 FILLER PIC X(10) VALUE 'Recife'.
+   05 FILLER PIC X(10) VALUE 'Tokyo'.
+   05 FILLER PIC X(10) VALUE 'Moscow'.
+ 01 VARS REDEFINES VARS-1-7.
+*   05 FILLER OCCURS 7 TIMES. 
+   05 VAR-1-7 OCCURS 7 TIMES. 
+      10 VAR PIC X(10).
+ 01 SUBR-NAME.
+   05 SUBR-PREFIX PIC X(4)  VALUE "subr".
+*   05 SUBR-PREFIX PIC X(4).
+   05 SUBR-NUMBER PIC 9(2)  VALUE zeros.
+*   05 SUBR-NUMBER PIC 9(2).
+   05 FILLER      PIC X(14) VALUE spaces.
+*   05 FILLER      PIC X(14).
+
+ PROCEDURE DIVISION.
+
+* call several times to see if it was registered 
+* (not a benchmark, but it may be interesting to have one)
+  MOVE "subr01" TO SUBR-NAME. 
+  MOVE 1 TO SUBR-NUMBER.
+  PERFORM 7 TIMES
+    DISPLAY "dyntest 0A" SUBR-NUMBER ": CALL=" SUBR-NAME "; VAR(5)=" VAR(5) ";"
+    CALL SUBR-NAME USING VAR(5)
+*    CALL SUBR-NAME USING VAR5
+*    ADD 1 TO SUBR-NUMBER
+  END-PERFORM.
+
+  MOVE 1 TO SUBR-NUMBER.
+  ADD 1 TO SUBR-NUMBER
+  DISPLAY "dyntest 2A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(2)
+   ON EXCEPTION PERFORM C-100
+   NOT ON EXCEPTION PERFORM D-100.
+
+  ADD 1 TO SUBR-NUMBER
+  DISPLAY "dyntest 3A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(3).
+
+  DISPLAY "dyntest 4A: CALL='subr03';".
+  CALL 'subr03' USING VAR(3).
+
+* the following subr does not exists and should give us an error
+  ADD 1 TO SUBR-NUMBER
+  DISPLAY "dyntest 5A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(4).
+
+  ADD 1 TO SUBR-NUMBER.
+  DISPLAY "dyntest 6A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(5)
+   ON OVERFLOW PERFORM E-100.
+
+  ADD 1 TO SUBR-NUMBER.
+  DISPLAY "dyntest 7A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(6)
+   ON EXCEPTION PERFORM C-100.
+
+  ADD 1 TO SUBR-NUMBER.
+  DISPLAY "dyntest 8A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(7).
+
+  STOP RUN.
+
+ C-100.
+
+  DISPLAY "EXCEPTION condition has occured in calling program SUBR-NAME=" SUBR-NAME.
+
+ D-100.
+
+  DISPLAY "EXCEPTION condition has NOT occured in calling program SUBR-NAME=" SUBR-NAME.
+
+ E-100.
+
+  DISPLAY "OVERFLOW condition has occured in calling program SUBR-NAME=" SUBR-NAME.
+
+ END PROGRAM dyntest.
+
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID.    subr03. 
+*
+ ENVIRONMENT DIVISION.
+ DATA DIVISION.
+*
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 VAR           PIC X(10).
+
+ PROCEDURE DIVISION USING VAR.
+ DISPLAY "IN subr03, received: " VAR ";".
+ DISPLAY "This subroutine (subr03) is inside the main module."
+
+ EXIT PROGRAM.
+ END PROGRAM subr03.
+
+

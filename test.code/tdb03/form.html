@@ -1,0 +1,45 @@
+<!-- Form template for cobol cgi processing with dynamic contents -->
+<html>
+<head>
+  <title>CGI form processing in TinyCobol</title>
+  <meta name="GENERATOR" content="amaya V4.1">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body>
+<center>
+<h1>CGI form processing in TinyCobol</h1>
+</center>
+
+<form method="post" action="tdb03">
+<table>
+	<tr><td>Name:</td> 
+	<td><input type="text" size="20" name="name" value="##name##"></td>
+  	</tr>
+	<tr><td>Address:</td>
+	<td><input type="text" size="50" name="address" value="##address##"></td>
+  	</tr>
+	<tr><td>Phone:</td> 
+	<td><input type="text" size="15" name="phone" value="##phone##"></td>
+	</tr> 
+</table>
+<input type="submit" name="cmd" value="test">
+<input type="submit" name="cmd" value="insert">
+<input type="submit" name="cmd" value="select">
+<input type="submit" name="cmd" value="listdb">
+<input type="submit" name="cmd" value="clear">
+
+</form>
+<pre>
+	Values recovered by CGI processing: 
+
+	Name: [[##name##]]
+
+	Address: [[##address##]]
+
+	Phone: [[##phone##]]
+
+	cmd = "##cmd##"
+
+</body>
+</html>

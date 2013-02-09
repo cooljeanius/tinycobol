@@ -1,0 +1,46 @@
+#
+# Makefile.in for the TinyCOBOL compiler
+#
+SHELL=/bin/sh
+
+@SET_MAKE@
+RM=rm -f
+MKDIR=mkdir -p
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d -m 755 
+INSTALL_PROGRAM=$(INSTALL) -s -m 755
+
+#INSTCOPY=@copybook_path@
+#INSTCOPY=@tcob_default@/copybooks
+INSTCOPY=${pkgdatadir}/copybooks
+
+CPYBKS01=screen.cpy
+CPYBKS02=SQLCA.cpy
+
+all:
+
+clean:
+
+install: install-dir
+#	${INSTALL_DATA} $(CPYBKS01) $(INSTCOPY)/$(CPYBKS01)
+#	${INSTALL_DATA} $(CPYBKS01) $(DESTDIR)$(INSTCOPY)/$(CPYBKS01)
+#	${INSTALL_DATA} $(CPYBKS02) $(DESTDIR)$(INSTCOPY)/$(CPYBKS02)
+
+install-dir: 
+#	$(MKDIR) $(INSTCOPY)
+	${INSTALL_DIR} $(DESTDIR)$(INSTCOPY)
+
+uninstall:
+#	${RM} $(INSTCOPY)/$(CPYBKS01)
+	${RM} $(DESTDIR)$(INSTCOPY)/$(CPYBKS01)
+	${RM} $(DESTDIR)$(INSTCOPY)/$(CPYBKS02)

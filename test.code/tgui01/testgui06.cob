@@ -1,0 +1,19 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID.     testgui06.
+*
+ ENVIRONMENT DIVISION.
+ DATA DIVISION.
+*
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+
+ 01 X           PIC X(80).
+
+ PROCEDURE DIVISION USING X.
+
+    display "COBOL: Tcl program sent us: [" X "]"
+
+    EXIT PROGRAM.
+
+

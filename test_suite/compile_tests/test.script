@@ -1,0 +1,81 @@
+ctest01:F:C001:Compile of empty file (cob)
+ctest01a:F:CI01:Missing IDENTIFICATION DIVISION
+ctest01b:F:CI02:Missing ENVIRONMENT DIVISION
+#ctest01c:F:CI03:Missing DATA DIVISION
+ctest01c:T:CI03:Missing DATA DIVISION
+ctest01d:F:CI04:Missing PROCEDURE DIVISION
+ctest01e:T:CI05:Reserved words in comments
+ctest02:F:C002:Compile of empty file (cbl)
+#
+ctestws01:T:WS01:Large PICX test
+ctestws02:T:WS02:Larger PICX test
+ctestws03:F:WS03:Too Large PIC9 test
+ctestws04:T:WS04:Large PIC9 test
+ctestws05:T:WS05:Usage is COMP
+ctestws06:T:WS06:Usage is SIGNED FLOAT (SHORT/LONG/COMP-1/COMP-2)
+ctestws07:T:WS07:Usage is COMP-3
+ctestws08:T:WS08:Usage is PACKED-DECIMAL
+ctestws09:T:WS09:Usage is DISPLAY
+ctestws10:T:WS10:Usage is SIGNED DISPLAY
+ctestws11:T:WS11:Usage is SIGNED COMP
+ctestws12:T:WS12:Usage is SIGNED COMP-3
+#
+ctested01:T:CI06:Recognize CONFIGURATION SECTION
+ctested02:T:CI07:Recognize SOURCE COMPUTER
+ctested03:T:CI08:Recognize DEBUGGING MODE
+ctested04:T:CI09:Recognize OBJECT COMPUTER
+ctested05:T:CI10:Recognize CURRENCY SIGN
+ctested06:T:CI10:Recognize DECIMAL-POINT
+# ctested07:T:CI10:Recognize CLASS
+ctestfc01:T:CF01:Simple File Control
+ctestfc02:T:CF01:Sequential Line Mode
+ctest03:T:C003:Minimum Cobol structure - no logic
+ctest04:T:C004:Identification Division Test 1
+ctest05:T:C004:Permit multi-line remarks
+ctest06:T:C005:Compile for figurative constants
+#
+#  SELECT file
+#
+ctestsl01:T:SL01:Recognize simple SELECT (SEQUENTIAL)
+#ctestsl02:T:SL02:Recognize full SELECT (SEQUENTIAL)
+ctestsl03:T:SL03:Recognize simple SELECT (RELATIVE)
+#ctestsl04:T:SL04:Recognize full SELECT (RELATIVE)
+ctestsl05:T:SL05:Recognize simple SELECT (RANDOM)
+#ctestsl06:T:SL06:Recognize full SELECT (RANDOM)
+ctestsl07:T:SL07:Recognize simple SELECT (INDEXED)
+#ctestsl08:T:SL08:Recognize full SELECT (INDEXED)
+#
+# PROCEDURE DIVISION VERBS
+#
+ctestp-accept1:T:CPA1:Recognize ACCEPT FROM DATE verb format
+ctestp-accept2:T:CPA2:Recognize ACCEPT FROM TIME verb format
+ctestp-add1:T:CPA7:Recognize ADD verb format 1 (TO)
+ctestp-add2:T:CPA8:Recognize ADD verb format 2 (TO GIVING)
+ctestp-add3:T:CPA9:Recognize ADD verb format 3 (CORRESPONDING)
+ctestp-close1:T:CPC1:Recognize CLOSE WITH LOCK verb format
+ctestp-compute1:T:CPC2:Recognize COMPUTE verb
+ctestp-continue1:T:CPC3:Recognize CONTINUE verb
+ctestp-delete1:T:CPD2:Recognize DELETE verb full format
+ctestp-divide1:T:CPD2:Recognize DIVIDE verb format 1 (INTO)
+ctestp-divide2:T:CPD3:Recognize DIVIDE verb format 2 (INTO GIVING)
+ctestp-divide3:T:CPD4:Recognize DIVIDE verb format 3 (BY GIVING)
+ctestp-divide4:T:CPD5:Recognize DIVIDE verb format 4 (INTO REMAINDER)
+ctestp-divide5:T:CPD6:Recognize DIVIDE verb format 5 (BY REMAINDER)
+ctestp-goto1:T:CPG1:Recognize GO TO DEPENDING ON verb format
+ctestp-initialize1:T:CPI1:Recognize INITIALIZE verb full format
+ctestp-multiply1:T:CPM1:Recognize MULTIPLY verb format 1 (BY)
+ctestp-multiply2:T:CPM2:Recognize MULTIPLY verb format 2 (BY GIVING)
+ctestp-open1:T:CPO1:Recognize OPEN verb full format
+ctestp-read1:T:CPR1:Recognize READ verb format 1 (SEQUENTIAL)
+ctestp-read2:T:CPR2:Recognize READ verb format 2 (RELATIVE)
+ctestp-read3:T:CPR3:Recognize READ verb format 3 (RANDOM)
+ctestp-read4:T:CPR4:Recognize READ verb format 3 (DYNAMIC)
+ctestp-subtract1:T:CPS1:Recognize SUBTRACT verb format 1 (FROM)
+ctestp-subtract2:T:CPS2:Recognize SUBTRACT verb format 2 (FROM GIVING)
+ctestp-subtract3:T:CPS3:Recognize SUBTRACT verb format 3 (CORRESPONDING)
+ctestp-search1:T:CPS4:Recognize SEARCH verb format 1 (VARYING)
+ctestp-search2:T:CPS5:Recognize SEARCH verb format 2 (ALL)
+ctestp-set1:T:CPS6:Recognize SET verb all formats
+ctestp-start1:T:CPS7:Recognize START verb full format
+ctestp-string1:T:CPS8:Recognize STRING verb full format
+ctestp-unstring1:T:CPU1:Recognize UNSTRING verb full format

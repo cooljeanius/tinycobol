@@ -1,0 +1,158 @@
+#
+# Makefile.in for the TinyCOBOL runtime library
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+#tcob_docdir=@tcob_docdir@
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+lib_dir=${exec_prefix}/lib
+
+INSTRC=@tcob_default@
+#RCFILE=@rtoptfile_default@
+RCFILE=htrtconf
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d -m 755 
+INSTALL_PROGRAM=$(INSTALL) -s -m 755
+
+RANLIB=@RANLIB@
+AR=@AR@
+
+RM    = rm -f
+MKDIR = mkdir -p
+LNK   = ln -sf
+
+#
+# Debug flags are set in htconfig.h
+# -DPICTURE_TESTING -DDEBUG_RTS
+#
+CCX=@CC@
+ASM=@AS@
+INCLUDES=@INCLUDES@
+LIBS=@tcob_ld_args_defaults@
+LDFLAGS=@LDFLAGS@
+CCXFLAGS=${INCLUDES} @CCXFLAGS@ -Wall 
+CCXFLAGS1=${INCLUDES} @CCXFLAGS@ -Wall -fPIC -DPIC
+ACXFLAGS=@ACXFLAGS@
+
+#
+# Default install directory is set in htconfig.h
+#
+#lib_dir=@exec_prefix@/lib
+
+lib_version=@tcob_version@
+
+lib_name1=htcobol
+
+STATIC_LIB1=lib${lib_name1}.a
+SHARED_LIB1=lib${lib_name1}.so.${lib_version}
+
+SRC01 = general.c \
+	pictures.c basicio.c strings.c screenio.c \
+	cobmove.c cobmove_f_.c cobmove_x_.c cobmove_e_.c \
+	cobmove_9_.c cobmove_b_.c cobmove_c_.c \
+	rterrors.c scr_curses.c \
+	fileio.c sortio.c fileisam.c filerel.c \
+	mcmath.c intrinsic.c \
+	dyncall.c config.c
+#	fixnumeric.c imath.c
+
+OBJS01 = $(SRC01:.c=.o) 
+
+OBJD01 = $(SRC01:.c=.lo) 
+
+#
+# Rules for compiling .c .s sources
+#
+.SUFFIX: .c .o .lo
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+%.lo: %.c
+	$(CCX) $(CCXFLAGS1) -c $< -o $@
+
+#
+# Notes on building and using the shared htcobol library.
+# - The linker will try to use the shared libraries by default. 
+#   If not available it will try to use the static libraries.
+# - When linking with a shared htcobol library, all other libraries must be 
+#   named, whether they are used in the cobol program or not. 
+#   (i.e. -lncurses -ldb)
+# - To run a cobol program built with a shared htcobol library, and the
+#   htcobol library is not installed in one of the standard locations, use 
+#   the $LD_LIBRARY_PATH environmental variable to add this path.
+#   (i.e. export LD_LIBRARY_PATH=this path:$LD_LIBRARY_PATH )
+# - For testing purposes, it is recommended that only a static htcobol library 
+#   be used, since gdb will not work properly with shared libraries.
+#
+
+all: @tcob_libs_opt@
+
+static-libs: ${STATIC_LIB1}
+
+shared-libs: ${SHARED_LIB1} 
+
+# Rules for building the static library
+#
+${STATIC_LIB1}: ${OBJS01}
+	${AR} cr ${STATIC_LIB1} ${OBJS01}
+	${RANLIB} ${STATIC_LIB1}
+
+# Rules for building the shared library
+#
+${SHARED_LIB1}: ${OBJD01}
+	${CCX} -shared -Wl,-soname,lib${lib_name1}.so -o ${SHARED_LIB1} $(OBJD01) ${LDFLAGS} ${LIBS} 
+#	${CCX} -shared -Wl,-soname,lib${lib_name1}.so.0 -o ${SHARED_LIB1} $(OBJD01) ${LDFLAGS} ${LIBS} 
+#	${LNK} $(SHARED_LIB1) lib$(lib_name1).so.0
+#	${LNK} $(SHARED_LIB1) lib$(lib_name1).so
+
+cleanall allclean: clean
+clean:
+	@${RM} ${OBJS01} ${OBJD01} ${STATIC_LIB1} \
+	lib$(lib_name1).so* \
+	core *.bak *.o *.lo
+
+install: install-rts-config @tcob_libs_install_opt@
+
+install-rts-config: 
+#	$(MKDIR)  $(INSTRC)
+#	${INSTALL_DATA} $(RCFILE) $(INSTRC)/$(RCFILE)
+	${INSTALL_DATA} $(RCFILE) $(DESTDIR)$(pkgdatadir)/$(RCFILE)
+
+install-static-libs: ${STATIC_LIB1}
+#	${INSTALL_DATA} ${STATIC_LIB1} ${lib_dir}/${STATIC_LIB1}
+	${INSTALL_DATA} ${STATIC_LIB1} $(DESTDIR)${lib_dir}/${STATIC_LIB1}
+
+install-shared-libs: ${SHARED_LIB1} 
+#	${INSTALL_DATA} ${SHARED_LIB1} ${lib_dir}/${SHARED_LIB1}
+	${INSTALL_PROGRAM} ${SHARED_LIB1} $(DESTDIR)${lib_dir}/${SHARED_LIB1}
+#	${LNK} ${lib_dir}/$(SHARED_LIB1) ${lib_dir}/lib$(lib_name1).so
+#	${LNK} ${lib_dir}/$(SHARED_LIB1) ${lib_dir}/lib$(lib_name1).so.0
+#	(cd ${lib_dir}; ${LNK} $(SHARED_LIB1) lib$(lib_name1).so;)
+#	(cd ${lib_dir}; ${LNK} $(SHARED_LIB1) lib$(lib_name1).so.0;)
+	(cd $(DESTDIR)${lib_dir}; ${LNK} $(SHARED_LIB1) lib$(lib_name1).so;)
+	(cd $(DESTDIR)${lib_dir}; ${LNK} $(SHARED_LIB1) lib$(lib_name1).so.0;)
+
+uninstall: uninstall-rts-config @tcob_libs_uninstall_opt@
+
+uninstall-rts-config:
+#	$(RM) $(INSTRC)/$(RCFILE)
+	$(RM) $(DESTDIR)$(pkgdatadir)/$(RCFILE)
+
+uninstall-static-libs:
+#	$(RM) ${lib_dir}/${STATIC_LIB1}
+	$(RM) $(DESTDIR)${lib_dir}/${STATIC_LIB1}
+
+uninstall-shared-libs:
+#	$(RM) ${lib_dir}/${SHARED_LIB1}
+#	$(RM) ${lib_dir}/lib$(lib_name1).so
+#	$(RM) ${lib_dir}/lib$(lib_name1).so.0
+	$(RM) $(DESTDIR)${lib_dir}/${SHARED_LIB1}
+	$(RM) $(DESTDIR)${lib_dir}/lib$(lib_name1).so
+	$(RM) $(DESTDIR)${lib_dir}/lib$(lib_name1).so.0

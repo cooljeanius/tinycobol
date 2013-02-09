@@ -1,0 +1,143 @@
+#
+# TinyCOBOL compiler
+# Makefile for the compiler directory
+#
+
+SHELL=/bin/sh
+
+@SET_MAKE@
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+#tcob_docdir=@tcob_docdir@
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d -m 755 
+INSTALL_PROGRAM=$(INSTALL) -s -m 755
+
+RM= rm -f
+MKDIR=mkdir -p
+
+YACC=@YACC@
+LEX=@LEX@
+CCX=@CC@
+
+EXEEXT=@exeext@
+
+INSTRC=@tcob_default@
+#RCFILE=@optfile_default@
+RCFILE=htcobolrc
+
+#
+# Debuging features are set in htconfig.h
+# -DDEBUG_COMPILER -DDEBUG_SCANNER
+#
+INCLUDES=@INCLUDES@
+CCXFLAGS=${INCLUDES} @CCXFLAGS@ -Wall 
+#CCXFLAGS=${INCLUDES} @CCXFLAGS@ -Wall -pedantic -Wno-long-long
+#CCXFLAGS1=${INCLUDES} @CCXFLAGS@
+CCXFLAGS1=${INCLUDES}
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+
+#
+# Rules for compiling .c .y .l sources
+#
+.SUFFIXES: .c .o .y .l
+#.SUFFIX: .c .o .y .l
+%.o: %.c
+#.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+#
+%.c: %.y
+#.y.c:
+	$(YACC) -dv -b htcobol $<  
+#
+%.c: %.l
+#.l.c:
+	$(LEX) -o$@ $< 
+#
+
+SRCS = htcobol.tab.c scan.c pp_parser.tab.c pp_scanner.c \
+htcobol.c htcobgen.c htcobemt.c htglobals.c reswords.c
+
+OBJS = htcobol.tab.o scan.o pp_parser.tab.o pp_scanner.o \
+htcobol.o htcobgen.o htcobemt.o htglobals.o reswords.o
+
+PROG=htcobol
+
+
+all: $(PROG)
+
+${PROG}: ${OBJS}
+	$(CCX) -o $@ ${OBJS} $(LDFLAGS) $(LIBS) 
+#	strip $@
+
+
+scanner parser: htcobol.tab.c scan.c pp_parser.tab.c pp_scanner.c
+
+scan.c: scan.l
+	$(LEX) -o$@ $< 
+
+htcobol.tab.c: htcobol.y scan.c
+	$(YACC) -dv -b htcobol $<  
+
+#htcobgen.o: htcoboly.h htcobol.c
+
+htcobol.o: htcoboly.h
+	$(CCX) $(CCXFLAGS) -c htcobol.c
+
+scan.o: scan.c
+	$(CCX) $(CCXFLAGS1) -c scan.c
+
+htcobol.tab.o: htcobol.tab.c
+	$(CCX) $(CCXFLAGS1) -c htcobol.tab.c
+
+#
+pp_scanner.c: pp_scanner.l
+	$(LEX) -o$@ -Ppp_yy $< 
+
+pp_parser.tab.c: pp_parser.y pp_scanner.c
+	$(YACC) -dv -b pp_parser -p pp_yy $<  
+
+pp_parser.tab.o: pp_parser.tab.c
+	$(CCX) $(CCXFLAGS1) -c pp_parser.tab.c
+
+pp_scanner.o: pp_scanner.c
+	$(CCX) $(CCXFLAGS1) -c pp_scanner.c
+
+clean: 
+	@$(RM) $(PROG) $(OBJS)  htcobol.output pp_parser.output 
+
+cleanall allclean: clean
+	@$(RM) scan.c htcobol.tab.c htcobol.tab.h \
+	pp_parser.tab.c pp_parser.tab.h pp_scanner.c
+
+install: install-rc-config install-prog
+
+install-prog: $(PROG)
+#	strip $(PROG)
+	${INSTALL_PROGRAM} $(PROG) $(DESTDIR)$(bindir)/$(PROG)
+
+#install-rc-config: install-dir
+install-rc-config:
+	${INSTALL_DATA} $(RCFILE) $(DESTDIR)$(pkgdatadir)/$(RCFILE)
+
+install-dir: 
+#	$(MKDIR) $(INSTRC)
+	${INSTALL_DIR} $(DESTDIR)$(pkgdatadir)
+
+uninstall: uninstall-rc-config uninstall-prog
+
+uninstall-rc-config:
+#	$(RM) $(INSTRC)/$(RCFILE)
+	$(RM) $(DESTDIR)$(pkgdatadir)/$(RCFILE)
+
+uninstall-prog:
+	$(RM) $(DESTDIR)$(bindir)/$(PROG)

@@ -1,0 +1,135 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID.    dyntest.  
+*
+ ENVIRONMENT DIVISION.
+ DATA DIVISION.
+*
+ WORKING-STORAGE SECTION.
+ 01 VARS-1-7.
+   05 FILLER PIC X(10) VALUE 'Berlin'.
+   05 FILLER PIC X(10) VALUE 'London'.
+   05 FILLER PIC X(10) VALUE 'Paris'.
+   05 FILLER PIC X(10) VALUE 'New York'.
+   05 FILLER PIC X(10) VALUE 'Recife'.
+   05 FILLER PIC X(10) VALUE 'Tokyo'.
+   05 FILLER PIC X(10) VALUE 'Moscow'.
+ 01 VARS REDEFINES VARS-1-7.
+*   05 FILLER OCCURS 7 TIMES. 
+   05 VAR-1-7 OCCURS 7 TIMES. 
+      10 VAR PIC X(10).
+
+ 01 DUMMY-VAR PIC X(25) VALUE ALL ' '.
+
+ 01 VAR1.
+  05 VAR1A PIC X(10).
+  05 VAR1B PIC X(01) VALUE x'00'.
+
+ 01 SUBR-NAME VALUE ALL ' '.
+*   05 SUBR-PREFIX PIC X(4)  VALUE "subr".
+   05 SUBR-PREFIX PIC X(4).
+*   05 SUBR-NUMBER PIC 9(2)  VALUE zeros.
+   05 SUBR-NUMBER PIC 9(2).
+*   05 FILLER      PIC X(14) VALUE spaces.
+   05 FILLER      PIC X(14).
+
+ PROCEDURE DIVISION.
+
+* This code does not work
+* MOVE "dyntest.exe" TO SUBR-NAME. 
+* DISPLAY "dyntest 00A: CALL-LOADLIB=" SUBR-NAME ";".
+* CALL-LOADLIB SUBR-NAME.
+
+* Load DLL so that sub-programs can be found
+*  MOVE "subrot3.dll" TO SUBR-NAME. 
+*  DISPLAY "dyntest 0A: CALL-LOADLIB=" SUBR-NAME ";".
+*  CALL-LOADLIB SUBR-NAME.
+
+* This code will load a DLL called 'subrot2.dll'
+  MOVE "subrot2" TO SUBR-NAME.
+  DISPLAY "dyntest 1A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(4).
+
+* call several times to see if it was registered 
+* (not a benchmark, but it may be interesting to have one)
+  MOVE "subr01" TO SUBR-NAME. 
+*  MOVE 1 TO SUBR-NUMBER.
+  PERFORM 7 TIMES
+    DISPLAY "dyntest 2A" SUBR-NUMBER ": CALL=" SUBR-NAME "; VAR(5)=" VAR(5) ";"
+    CALL SUBR-NAME USING VAR(5)
+*    ADD 1 TO SUBR-NUMBER
+  END-PERFORM.
+
+  MOVE 'subrotw' TO SUBR-NAME.
+  MOVE VAR(6) TO VAR1A.
+  DISPLAY "dyntest 3A: CALL WINAPI=" SUBR-NAME "; VAR1A=" VAR1A ";".
+  CALL WINAPI SUBR-NAME USING VAR1A.
+
+  MOVE "subr02" TO SUBR-NAME. 
+*  MOVE 1 TO SUBR-NUMBER.
+*  ADD 1 TO SUBR-NUMBER
+  DISPLAY "dyntest 4A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(2)
+   ON EXCEPTION PERFORM C-100
+   NOT ON EXCEPTION PERFORM D-100.
+
+  ADD 1 TO SUBR-NUMBER
+  DISPLAY "dyntest 5A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(3).
+
+  DISPLAY "dyntest 6A: CALL='subr03';".
+  CALL 'subr03' USING VAR(3).
+
+* the following subr does not exists and should give us an error
+  ADD 1 TO SUBR-NUMBER
+  DISPLAY "dyntest 7A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(4).
+
+  ADD 1 TO SUBR-NUMBER.
+  DISPLAY "dyntest 8A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(5)
+   ON OVERFLOW PERFORM E-100.
+
+  ADD 1 TO SUBR-NUMBER.
+  DISPLAY "dyntest 9A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(6)
+   ON EXCEPTION PERFORM C-100.
+
+  ADD 1 TO SUBR-NUMBER.
+  DISPLAY "dyntest 10A: CALL=" SUBR-NAME ";".
+  CALL SUBR-NAME USING VAR(7).
+
+  STOP RUN.
+
+ C-100.
+
+  DISPLAY "EXCEPTION condition has occured in calling program SUBR-NAME=" SUBR-NAME.
+
+ D-100.
+
+  DISPLAY "EXCEPTION condition has NOT occured in calling program SUBR-NAME=" SUBR-NAME.
+
+ E-100.
+
+  DISPLAY "OVERFLOW condition has occured in calling program SUBR-NAME=" SUBR-NAME.
+
+ END PROGRAM dyntest.
+
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID.    subr03. 
+*
+ ENVIRONMENT DIVISION.
+ DATA DIVISION.
+*
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 VAR           PIC X(10).
+
+ PROCEDURE DIVISION USING VAR.
+ DISPLAY "IN subr03, received: " VAR ";".
+ DISPLAY "This subroutine (subr03) is inside the main module."
+
+ EXIT PROGRAM.
+ END PROGRAM subr03.
+
+

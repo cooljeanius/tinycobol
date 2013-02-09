@@ -1,0 +1,66 @@
+#
+#
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+#g_includes=@g_includes@ -I/usr/lib/gtk-2.0/include -I/usr/include/gtk-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pango-1.0 -I/usr/X11R6/include -I/usr/include/atk-1.0
+#g_libraries=@g_libraries@ -L/usr/X11R6/lib -lgtk-x11-2.0 -lgdk-x11-2.0 -lpango-1.0 -latk-1.0  -rdynamic -lgmodule -lglib-2.0 -ldl -lXext -lX11 -lm
+g_includes=@g_includes@ `pkg-config --cflags gtk+-2.0`
+g_libraries=@g_libraries@ `pkg-config --libs gtk+-2.0`
+
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+
+RM=rm -f
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SRC01 = gprog01.c
+SRC02 = subp01.cob
+
+OBJ01 = $(SRC01:.c=.o)
+OBJ02 = $(SRC02:.cob=.o)
+
+OBJS01 = $(OBJ01) 
+OBJS02 = $(OBJ02) 
+OBJS = $(OBJ01) $(OBJ02)
+
+PROG01 = tgui01a
+PROGS = $(PROG01)
+
+#include ${prefix}/config/C.rules.in
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling .c sources
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+
+
+all: ${PROGS}
+
+${PROG01}: ${OBJS} 
+	$(CCX) -o $@ ${OBJS} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+clean: cleanfiles
+	@${RM} $(PROGS) ${OBJS} *.lis *.s *.i *.exe core
+
+cleanfiles filesclean:
+	@${RM} *.dat *.idx *.bdb f1.txt f2.txt

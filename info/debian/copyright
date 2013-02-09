@@ -1,0 +1,22 @@
+This package was debianized by Herbert Parentes Fortes Neto on
+Sat,  12 Nov 2005 16:05:37 -0200.
+
+It was downloaded from http://prdownloads.sf.net/tiny-cobol/tinycobol-0.64.tar.bz2
+These files are part of the TinyCOBOL compiler.
+    
+Copyright (C) 2001-2008   Rildo Pragana, Alan Cox, Andrew Cameron, 
+                          David Essex, Glen Colbert, Jim Noeth.
+Copyright (C) 2000        Rildo Pragana, Alan Cox, Andrew Cameron, 
+                          David Essex, Glen Colbert, Jim Noeth.
+Copyright (C) 1999        Rildo Pragana, Alan Cox, Andrew Cameron, David Essex.
+Copyright (C) 1991, 1993  Rildo Pragana.
+
+
+The TinyCOBOL compiler is licensed under the GNU General Public License.
+On Debian systems, the complete text of the GNU General Public
+License can be found in /usr/share/common-licenses/GPL file
+
+The TinyCOBOL compiler run time library is licensed under the GNU Library 
+General Public License.
+On Debian systems, the complete text of the GNU Library General Public
+License can be found in /usr/share/common-licenses/LGPL file

@@ -1,0 +1,57 @@
+.\"
+.\"  Created by David Essex using txt2man and modified manually.
+.\" 
+.TH HTCOBRUN 1  "August 22, 2010"
+.UC 6
+.SH NAME
+htcobrun \- Load and run COBOL programs defined in a module (shared libraries or DLLs).
+
+.SH SYNOPSIS
+.B htcobrun 
+[ 
+.I options 
+] program\-name 
+[
+.I command-line-parms
+]
+
+.SH DESCRIPTION
+Load and run programs defined in modules.
+A module is a shared library (DLL) which can contain one or more 
+programs (function in C).
+.PP
+The current version of only supports called programs which do NOT have 
+any parameters. Meaning a PROCEDURE DIVISION without a USING parameters clause in
+.B
+COBOL.
+.PP
+Any command line parameters (arg1\.\.\.argN) passed to the called program can be 
+retrieved using the ACCEPT verb in COBOL.
+.PP
+The called program name is independent of the module (library) name. 
+Duplicate program names can exist. In such cases which program name is loaded
+is dependent on the search path.
+
+.SH OPTIONS
+.TP
+.B
+-h
+Display help and exit.
+.TP
+.B
+-V
+Display version information and exit.
+
+.SH ENVIRONMENT
+.B
+LD_LIBRARY_PATH
+and
+.B
+TCOB_LD_LIBRARY_PATH
+.TP
+Define the module (shared libraries, DLL) search paths.
+.TP
+The default search path is the current working directory.
+
+.SH SEE ALSO
+htcobol(1), GCC(1), as(1), ld(1), make(1)

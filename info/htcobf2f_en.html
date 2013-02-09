@@ -1,0 +1,65 @@
+<HTML>
+  <head>
+    <title>TinyCOBOL manual - htcobf2f (1)</title>
+  </head>
+<BODY bgcolor="#ffffff" text="#000000" LINK="#006699" VLINK="#cccccc">
+
+<!-- Manpage converted by man2html 3.0.1 -->
+<H2>HTCOBF2F</H2><PRE>
+       Utility program to convert COBOL sources between formats.
+
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>htcobf2f</B> [ <I>options=hVmxf</I> ] [ -i <I>input</I> <I>filename</I> ] [ -o <I>output</I> <I>filename</I> ]
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A utility to convert from/to fixed COBOL source to/from free-form COBOL formats.
+
+       The default input stream is standard input.
+
+       The default output stream is standard output.
+
+       Note this version will not automatically convert tabs to white space. 
+       The <B>expand</B> (1) tabs conversion utility is better suited to perform this task.
+
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>-h</B>        Display help.
+
+       <B>-V</B>        Print version.
+
+       <B>-x</B>        Convert source to free format (Default)
+
+       <B>-f</B>        Convert source to standard fixed column format
+
+       <B>-m</B> &lt;num&gt;  Fixed format line multiplier. 
+                 When converting to fixed format, number line with an increment of &lt;num&gt;.
+
+       <B>-i</B> &lt;file&gt; Input COBOL source file to convert. 
+                 Default is standard input.
+
+       <B>-o</B> &lt;file&gt; Output COBOL source file. 
+                 Default is standard output.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>htcobol(1)</B>,  <B>expand(1)</B>
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

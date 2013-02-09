@@ -1,0 +1,78 @@
+#
+# 
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+
+lib_name2=subrot2
+lib_name3=subrot3
+
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RANLIB=@RANLIB@
+AR=ar
+
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SHARED_LIB2=${lib_name2}.dll
+SHARED_LIB3=${lib_name3}.dll
+
+SRC01 = dyntest1.cob 
+SRC02 = subrot1.cob
+SRC03 = subrotc.c
+
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.cob=.o)
+OBJ03 = $(SRC03:.c=.o)
+OBJS = $(OBJ01) $(OBJ02) $(OBJ03)
+
+PROG01 = dyntest$(EXEEXT)
+PROGS = $(PROG01)
+
+#include ${prefix}/config/C.rules.in
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling .c sources
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#
+
+
+all: ${SHARED_LIB2} ${SHARED_LIB3} ${PROGS}
+
+${PROG01}: ${OBJ01}
+	$(CCX) -o $@ ${OBJ01} $(LDFLAGS) $(LIBS) 
+#	strip $@
+
+${SHARED_LIB2}: ${OBJ02}
+	${CCX} -shared -Wl,--out-implib,${lib_name2}.dll.a,--output-def,${lib_name2}.def -o ${SHARED_LIB2} $(OBJ02) ${LIBS}
+
+${SHARED_LIB3}: ${OBJ03}
+	${CCX} -shared -Wl,--out-implib,${lib_name3}.dll.a,--output-def,${lib_name3}.def -o ${SHARED_LIB3} $(OBJ03) ${LIBS}
+
+clean:
+	@${RM} $(PROGS) ${OBJS} *.def *.i *.s *.lis *.listing.txt *.exe  \
+	${SHARED_LIB2} ${SHARED_LIB2}.a ${SHARED_LIB3} ${SHARED_LIB3}.a

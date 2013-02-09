@@ -1,0 +1,98 @@
+#
+#
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+
+lib_name1=testz1
+lib_name2=testz2
+lib_major=0
+lib_minor=0
+
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+RANLIB=@RANLIB@
+AR=ar
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS1= -L. -ltestz1 @LIBS@
+LIBS2= -L. -ltestz2 @LIBS@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+STATIC_LIB=lib${lib_name1}.a
+SHARED_LIB=lib${lib_name2}.so
+
+SRC01 = test25.cob 
+SRC02 = test25a.cob
+SRC03 = test25b.c
+#SRC04 = test25c.c
+
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.cob=.o)
+OBJ03 = $(SRC03:.c=.o)
+#OBJ04 = $(SRC04:.c=.o)
+OBJS01 = $(OBJ02) $(OBJ03)
+OBJS  = $(OBJ01) $(OBJ02) $(OBJ03) $(OBJ04)
+
+PROG01 = test25z1$(EXEEXT)
+PROG02 = test25z2$(EXEEXT)
+PROGS = $(PROG01) $(PROG02)
+
+#include ${prefix}/config/C.rules.in
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling .c sources
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+
+
+all: ${STATIC_LIB} ${SHARED_LIB} ${PROGS}
+#all: ${SHARED_LIB} ${PROGS}
+
+shared: ${SHARED_LIB} ${PROGS}
+
+static: ${STATIC_LIB} ${PROGS}
+
+
+${PROG01}: ${OBJ01}
+	$(CCX) -o $@ ${OBJ01} $(LDFLAGS) $(LIBS1)
+#	strip $@
+
+${PROG02}: ${OBJ01}
+	$(CCX) -o $@ ${OBJ01} $(LDFLAGS) $(LIBS2)
+#	strip $@
+
+${STATIC_LIB}: ${OBJS01}
+	${AR} cr ${STATIC_LIB} ${OBJS01}
+	${RANLIB} ${STATIC_LIB}
+
+${SHARED_LIB}: ${OBJS01}
+	gcc -shared -Wl,-soname,${SHARED_LIB}.${lib_major}.${lib_minor} -o ${SHARED_LIB}.${lib_major}.${lib_minor} $(OBJS01)
+	ln -s ${SHARED_LIB}.${lib_major}.${lib_minor} ${SHARED_LIB}
+	ln -s ${SHARED_LIB}.${lib_major}.${lib_minor} ${SHARED_LIB}.${lib_major}
+
+clean:
+	@${RM} $(PROGS) ${OBJS} *.s *.i *.lis *.listing.txt *.exe core \
+	${STATIC_LIB} ${SHARED_LIB} ${SHARED_LIB}.${lib_major} ${SHARED_LIB}.${lib_major}.${lib_minor}
+

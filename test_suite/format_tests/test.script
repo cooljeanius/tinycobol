@@ -1,0 +1,19 @@
+#
+#
+#
+test01:S:Validate Alph to Alphanumeric moves
+test01a:S:Validate Alpha to Formatted Alphanumeric (space) moves
+test01b:S:Validate Alpha to Formatted Alphanumeric (slash) moves
+test01c:S:Validate COMP (binary integer) and INDEX moves
+test02a:S:Validate Alphanumeric to Alpha/numeric edited moves
+test02b:S:Validate Alphanumeric to Numeric edited moves
+test03a:S:Validate Numeric Integer moves
+test03b:S:Validate Numeric Integer to Edited moves
+test03c:S:Floating Insertion Edited Move tests
+test03d:S:Non-default currency sign Edited moves
+test04:S:Fixed numeric insertion tests
+test05a:S:Figurative Constants move tests
+test05b:S:Initialize statement
+test06a:S:Reference Modifiers
+test07a:S:Qualified move and arithmetic tests
+test08a:S:Unstring tests

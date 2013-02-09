@@ -1,0 +1,56 @@
+idxio01:S:Create indexed file using sequential write::
+idxio02:S:Indexed file sequential read::
+idxio03:S:Indexed file random read using primary key::
+idxio04:S:Indexed file dynamic reads using primary key::
+idxio05:S:Indexed file dynamic reads using secondary key::
+idxio06:S:Indexed file start and read using primary key::
+idxio07:S:Indexed file start and read using secondary key::
+idxio08:S:Indexed sequential rewrite::
+idxio09:S:Indexed random rewrite::
+idxio10:S:Indexed dynamic rewrite::
+idxio11:S:Indexed start read rewrite using primary key::
+idxio12:S:Indexed start read rewrite using secondary key::
+idxio13:S:Indexed sequential delete using primary key::
+idxio14:S:Indexed random delete using secondary key::
+idxio21:S:Variable length (format 1) sequential write::
+idxio22:S:Variable length (format 1) sequential read::
+idxio23:S:Variable length (format 1) primary key random read::
+idxio24:S:Variable length (format 1) primary key dynamic read::
+idxio25:S:Variable length (format 1) secondary key dynamic read::
+idxio26:S:Variable length (format 1) start and read using primary key::
+idxio27:S:Variable length (format 1) start and read using secondary key::
+idxio28:S:Variable length (format 1) sequential rewrite::
+idxio29:S:Variable length (format 1) random rewrite::
+idxio30:S:Variable length (format 1) dynamic rewrite::
+idxio31:S:Variable length (format 1) start read rewrite using primary key::
+idxio32:S:Variable length (format 1) start read rewrite using secondary key::
+idxio33:S:Variable length (format 1) sequential delete using primary key::
+idxio34:S:Variable length (format 1) random delete using secondary key::
+idxio41:S:Variable length (format 2) sequential write::
+idxio42:S:Variable length (format 2) sequential read::
+idxio43:S:Variable length (format 2) primary key random read::
+idxio44:S:Variable length (format 2) primary key dynamic read::
+idxio45:S:Variable length (format 2) secondary key dynamic read::
+idxio46:S:Variable length (format 2) start and read using primary key::
+idxio47:S:Variable length (format 2) start and read using secondary key::
+idxio48:S:Variable length (format 2) sequential rewrite::
+idxio49:S:Variable length (format 2) random rewrite::
+idxio50:S:Variable length (format 2) dynamic rewrite::
+idxio51:S:Variable length (format 2) start read rewrite using primary key::
+idxio52:S:Variable length (format 2) start read rewrite using secondary key::
+idxio53:S:Variable length (format 2) sequential delete using primary key::
+idxio54:S:Variable length (format 2) random delete using secondary key::
+idxio61:S:Variable length (format 3) sequential write::
+idxio62:S:Variable length (format 3) sequential read::
+idxio63:S:Variable length (format 3) primary key random read::
+idxio64:S:Variable length (format 3) primary key dynamic read::
+idxio65:S:Variable length (format 3) secondary key dynamic read::
+idxio66:S:Variable length (format 3) start and read using primary key::
+idxio67:S:Variable length (format 3) start and read using secondary key::
+idxio68:S:Variable length (format 3) sequential rewrite::
+idxio69:S:Variable length (format 3) random rewrite::
+idxio70:S:Variable length (format 3) dynamic rewrite::
+idxio71:S:Variable length (format 3) start read rewrite using primary key::
+idxio72:S:Variable length (format 3) start read rewrite using secondary key::
+idxio73:S:Variable length (format 3) sequential delete using primary key::
+idxio74:S:Variable length (format 3) random delete using secondary key::

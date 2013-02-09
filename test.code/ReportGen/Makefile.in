@@ -1,0 +1,67 @@
+#
+# 
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@ @g_includes@/tcl @g_includes@/tk
+LIBS=@LIBS@ -ltcl -ltk -lX11
+#LIBS=${g_libraries} -L../../lib -lhtcobol -ldb -lncurses -ltcl8.0 -ltk8.0 -lm -ldl -lX11
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SRC01 = report.cob 
+SRC02 = tclwrapper.c
+
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.c=.o)
+OBJS  = $(OBJ01) $(OBJ02)
+
+PROG01 = report$(EXEEXT)
+PROGS = $(PROG01) 
+
+#include ${prefix}/config/C.rules.in
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling .c sources
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+
+
+all: ${PROGS}
+
+${PROG01}: ${OBJS}
+	$(CCX) -g -o $@ ${OBJS} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+genps:
+	./report
+	#tex repoutput.tex
+	#dvips -t A4size -o repoutput.ps repoutput.dvi
+	gv repoutput.ps
+	
+clean:
+	@${RM} $(PROGS) ${OBJS} *.lis *.listing.txt *.s *.i *.exe core repoutput.* barf*.eps
+

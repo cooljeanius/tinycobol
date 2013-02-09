@@ -1,0 +1,13 @@
+#
+# Rules for compiling COBOL sources
+.SUFFIX: .cob .cbl .o
+
+%.o: %.cob
+	$(COB) -c  $(COBFLAGS) $<
+#	$(COB) $(COBFLAGS) $<
+
+
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#	$(COB) $(COBFLAGS) $<
+#

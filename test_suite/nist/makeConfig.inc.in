@@ -1,0 +1,5 @@
+# makeConfig.inc
+
+INCLUDES=-I. ${g_includes} 
+COPYBOOKS=-I. -Icopybooks -I../copybooks.
+LIBS=${g_libraries} -lhtcobol @tcob_ld_args_defaults@

@@ -1,0 +1,29 @@
+Module :  IX
+ Filename    Tot   OK  Fai  Del  Man
+ IX101A.PRT    2    2    0    0    0 OK
+ IX104A.PRT   13   13    0    0    0 OK
+ IX105A.PRT    9    9    0    0    0 OK
+ IX106A.PRT   10   10    0    0    0 OK
+ IX107A.PRT   14   14    0    0    0 OK
+ IX108A.PRT   32   32    0    0    0 OK
+ IX109A.PRT   13   12    1    0    0   
+ IX112A.PRT    7    6    1    0    0   
+ IX113A.PRT    4    4    0    0    0 OK
+ IX121A.PRT    3    3    0    0    0 OK
+ IX201A.PRT    2    2    0    0    0 OK
+ IX204A.PRT   13   13    0    0    0 OK
+ IX205A.PRT   12   11    1    0    0   
+ IX206A.PRT   10    9    1    0    0   
+ IX207A.PRT    8    8    0    0    0 OK
+ IX208A.PRT   29   19   10    0    0   
+ IX210A.PRT   39   27   12    0    0   
+ IX211A.PRT   17   13    4    0    0   
+ IX212A.PRT   24   21    3    0    0   
+ IX213A.PRT   21   15    6    0    0   
+ IX214A.PRT   39   27   12    0    0   
+ IX215A.PRT   33    7   23    3    0   
+ IX216A.PRT   15    9    5    1    0   
+ IX217A.PRT    6    1    5    0    0   
+ IX218A.PRT    6    3    3    0    0   
+ Total:      381  290   87    4    0   25   11 OK
+    Percentages: pgms ok: 44 %  Tests ok: 76.1155 %

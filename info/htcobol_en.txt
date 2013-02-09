@@ -1,0 +1,144 @@
+HTCOBOL
+
+NAME
+htcobol - COBOL compiler.
+
+SYNOPSIS
+htcobol [ options ] input-file-name
+
+DESCRIPTION
+A compiler for the COmmon Business Oriented Language, COBOL.  
+
+The COBOL compiler 'htcobol' reads from a COBOL source file, 
+and depending on the option, will pre-process, compile, assemble and link 
+to generate an executable, object, or shared (DLL) library.
+
+The compiler generates 32-bit GNU assembler for the x86 (i386) platforms.   
+With the aid of the GCC tool set, this intermediate code can then be 
+used to create binary objects.
+
+Binary objects can be created either directly by the compiler (htcobol), 
+or by using the GNU assembler code as input to the GCC tool chain.
+
+The compiler conforms to a substantial portion of the COBOL-85 standards, 
+and some of the COBOL-2002 standard.
+
+The compiler recognizes several command line options as described below.
+
+You can get a help message by invoking htcobol with the '-h' option.
+
+
+INITIALIZATION FILES
+Many compiler options can be set using the resource file
+or command line options.
+
+The precedence of any compiler option is as follows:
+1. Command line options, if available.
+2. Environment variables, if available.
+3. The compile options file (htcobolrc), if available.
+4. Compiler default options.
+
+
+OPTIONS
+Compiler specific options:
+
+-h, --help     
+       Display help.
+
+-B <mode>    
+       Specify binding mode (static or dynamic).
+
+-c     Preprocess, compile and assemble, but do not link.
+
+-E     Preprocessor only; do not compile, assemble or link.
+
+-g     Generate compiler debugging output.
+
+-l <name>     
+       Add library name to link step.
+
+-L <path>
+       Add directory to library search path.
+
+-m     Build a shared library (DLL) or module.
+
+-n     Don't actually run any commands; just print them.
+
+-o <file>
+       Specify output file name.
+
+-S     Preprocess, compile (generate assembler code) only;
+       Do not assemble or link.
+
+-t     Don't remove intermediate files (pre-processed COBOL file, assembly file, etc.).
+
+-v     Generate verbose compiler output.
+
+-V, --version     
+       Display compiler version information and exit.
+
+-Wl,<options>
+       Pass comma-separated options on to the linker.
+
+-x     Build an executable program (Default).
+
+-z     Generate very verbose compiler output.
+
+COBOL specific options:
+
+-C     Make all COBOL calls dynamic.
+
+-d     Generate display SECTION/PARAGRAPH trace code.
+
+-D     Include source debugging lines.
+
+-e <name>     
+       Specify entry point name (first program to execute)
+
+-F, --fixed     
+       Input source is in standard fixed column format.
+
+-I <path>
+       Add path to the include (copybooks) search paths
+       The path may be either a single directory, or a list of 
+       directories separated by a ':' (';' on the Win32 platform).
+       The default search path is current working directory (-I.).
+
+-M     Generate entry point 'main' and use PROGRAM-ID of 
+       first program with STOP RUN (Default: first PROGRAM-ID).
+
+-P     Generate output listing file.
+
+-T <num>
+       Expand tabs to number of space(s) (default T=8).
+
+-X, --free     
+       Input source is in free format (default format).
+
+
+FILES
+htcobolrc - Compile options file.
+htrtconf  - Run-time options file.
+
+ENVIRONMENT
+
+TCOB_OPTIONS_PATH 
+Compile-time options file directory path.
+
+TCOB_RTCONFIG_PATH
+Run-time options file directory path.
+
+TCOB_LD_LIBRARY_PATH and LD_LIBRARY_PATH
+Define the shared libraries (DLLs) search paths.
+
+PATH
+Win32 (MinGW) dynamically loaded DLL search path.
+
+
+SEE ALSO
+htcobrun(1), GCC(1), as(1), ld(1), make(1)
+
+LAST MODIFIED
+August 22, 2010
+
+TinyCOBOL : http://tiny-cobol.sf.net

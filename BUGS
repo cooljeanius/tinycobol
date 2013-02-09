@@ -1,0 +1,91 @@
+BUGS:
+
+Note: This list is NOT up of date.
+
+----------------------------------------------------------------------------
+
+From - Thu Mar 15 05:02:26 2001
+From: Mark Purtill <purtill@alum.mit.edu>
+Subject: [Tiny-cobol-users] Bug: Qualified array core dump
+Date: Wed, 14 Mar 2001 11:17:57 -0800 (PST)
+
+
+I'm running tinycobol-0.50 (from the RPM) on a RedHat 5.1
+system.  
+The following program, when compiled, causes htcobol to
+crash.
+
+WORKING-STORAGE SECTION.						  
+									  
+01 BUG1.								  
+    05 BUG2.								  
+       10 COMMON  PIC 999  VALUE  6.			  
+    05 BUG3       OCCURS 28 TIMES.			  
+       10 COMMON  PIC 999.				  
+   05 BUG4        PIC 999.				  
+   05 BUG5        PIC 999.				  
+									  
+ PROCEDURE DIVISION.							  
+									  
+* This line works:							  
+      MOVE COMMON OF BUG2 TO BUG5.					  
+* This line dumps core, after giving this message:			  
+* *!ERROR!* 256 : line     24, symbol ): "" is not child of "" ***	  
+      MOVE COMMON OF BUG3(BUG5) TO BUG5.				  
+
+
+----------------------------------------------------------------------------
+
+error: 
+
+In htcobgen.c yyparse(), seams to be writing a lot(230) of blanks lines
+for no apparent reason.
+
+Beginning compile process ...
+.... <-
+Lines compiled:  231
+
+cause: unknown.
+
+location: unknown.
+
+	printf("Beginning compile process ...\n");
+->	yyparse();
+	printf("Lines compiled: %4d\n",lineno);
+
+
+----------------------------------------------------------------------------
+
+error: 
+
+ 01     TABEL-C.
+    05    TAB-C1 OCCURS 10 TIMES INDEXED BY C1.
+       10    TAB-C2 OCCURS 20 TIMES INDEXED BY C2.
+         15    TAB-C3 OCCURS 300 TIMES INDEXED BY C3.
+           25  TAB-C4                  PIC 9(05).
+           25  TAB-C5                  PIC 9(05).
+
+* SET C1 TO 1.
+ MOVE 1 TO C1.
+
+cause:
+Implicit variables defined by INDEXED BY clause must be set by the
+'SET var [ TO | UP BY | DOWN BY ] integer' clause. It should not be
+set using MOVE, ADD, SUB verbs, thus should be flagged as an error.
+
+location: unknown.
+
+----------------------------------------------------------------------------
+
+error:
+
+ 01	W01-COMPUTE	PIC 9(8).
+	05 W05-HOUR	PIC 9(2).
+	05 W05-MIN	PIC 9(2).
+	05 W05-SEC	PIC 9(2).
+
+cause:
+Caused by using level 01 variable with PIC clause. Should be syntax error.
+
+location: unknown.
+

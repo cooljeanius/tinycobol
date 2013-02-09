@@ -1,0 +1,11 @@
+ 05     vendor-name-dsp      pic X(20). 
+ 05     value-dsp            pic ZZZ,ZZ9.
+ 05     number-dsp           pic X(13).
+ 05     type-dsp             pic X.
+ 05     vendor-region-dsp    pic X(17).
+ 05     vendor-city-dsp      pic X(20).
+ 05     comments-dsp         pic X(60).
+ 05     vendor-total-dsp     pic Z,ZZZ,ZZ9.
+ 05     city-total-dsp       pic Z,ZZZ,ZZ9.
+ 05     region-total-dsp     pic Z,ZZZ,ZZ9.
+ 05     grand-total-dsp     pic Z,ZZZ,ZZ9.

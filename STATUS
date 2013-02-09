@@ -1,0 +1,120 @@
+The TinyCOBOL Project STATUS:
+
+TinyCOBOL supports the x86-32 (IA32) architecture and the following platforms.
+
+- Linux using the GNU compiler tool chain.
+- FreeBSD using the GNU compiler tool chain.
+- Win32 using the MinGW (Mingw32) GNU compiler tool chain.  
+- Win32 using the Cygwin GNU compiler tool chain and Cygwin POSIX emulation layer.
+
+Currently the compiler will generate GNU assembler code. With the aid 
+of GNU assembler and linker, a executable binary can be created to run
+on the above mentioned x86-32 (IA32) platforms.
+
+The compiler will work with COBOL sources which are in standard fixed 
+column or X/Open free form formats. A conversion utility to convert fixed
+to free form COBOL source code is included in all sources.
+
+The term COBOL 85 standard, as used by TinyCOBOL, refers to the combination
+of the following.
+- ISO 1985.........: Programming Languages - COBOL.
+- ISO 1989-1.......: Programming Languages - Intrinsic Function Module - COBOL.
+- ANSI X3.23-1985..: Programming Languages - COBOL.
+- ANSI X3.23a-1989.: Programming Languages - Intrinsic Function Module - COBOL.
+- X/Open XPG3......: COBOL programming languages extensions.
+
+Note that the 'COBOL 85 standard' is obsolete and has been replaced by the 
+'COBOL 2002 standard'.
+
+The current released snapshot has support for the following features and/or 
+COBOL syntax.
+
+- ACCEPT, DISPLAY (including stdin, stderr, stdout).
+- ACCEPT, DISPLAY.
+  Line I/O (stdin, stderr, stdout).
+  Screen I/O (non COBOL 85 standard extension).
+  at LINE ... POSITION ... (non COBOL 85 standard extension).
+- CALL (including dynamic load).
+  BY REFERENCE. 
+  BY VALUE. 
+  BY CONTENT.
+  RETURNING variable (non COBOL 85 standard extension).
+- CHAIN (non COBOL 85 standard extension).
+- CURRENCY SIGN, DECIMAL-POINT. 
+- Debugging facility using GDB (not fully functional).
+- Embedded SQL using vendor supplied SQL pre-processor.
+- External variables.
+- EVALUATE. 
+- File I/O.
+  Includes OPEN, CLOSE, DELETE, READ, WRITE, REWRITE, START
+  READ .. WITH LOCK  (not functional)
+  READ .. WITH IGNORE LOCK  (not functional)
+  Variable record length file IO.
+  Locking for relative files.
+- Floating point types (USAGE IS [ FLOAT-LONG | COMP-2 | FLOAT-SHORT | COMP-1 ]).
+- GO TO, GO TO ... DEPENDING ON.
+- GOBACK (non COBOL 85 standard extension).
+- IF/ELSE conditional statements (all options are implemented).
+- INITIALIZE. 
+- INSPECT (not all options are implemented).
+- Integrated COBOL pre-processor.
+  Supports free and fixed syntax formats.
+  Supports all COPY statements including the REPLACING clause.
+  The REPLACE statements are not implemented.
+- Intrinsic Functions.
+- Linux extensions (return code, command line, environmental variables).
+- Math verbs (including [NOT] ON SIZE ERROR options).
+  ADD (including CORRESPONDING option). 
+  COMPUTE (+ - * / ** operators implemented). 
+  DIVIDE.
+  MULTIPLY. 
+  SUBTRACT (including CORRESPONDING option). 
+- MOVE(including CORRESPONDING option). 
+- Multi dimensional arrays and tables.
+  Variable size arrays and tables (preliminary).
+- NEXT SENTENCE, CONTINUE (does not conform to COBOL 85 standard).
+- PERFORM (all options implemented).
+- POINTER types (USAGE IS POINTER). 
+- Reference Modification.
+- Scope terminators for COBOL 85 (END-IF .... END-PERFORM).
+- Sequence of source programs.
+- SCREEN SECTION (COBOL 2002 draft standard).
+- SET.
+- STRING (Not all options are implemented).
+- SORT, RELEASE, RETURN. 
+  USING and GIVING clauses only work on sequential files. 
+  The sort work file is kept in memory and not written to disk.
+- SEARCH.
+- SEARCH ALL.
+- SELECT ... ASSIGN (not all options are implemented).
+  Supports non-standard external file name assignment in SELECT and FD statements.
+- Static variables.
+- TRACE, READY/RESET (preliminary).
+- UNSTRING.
+- UNLOCK (not functional).
+- Variable length (1, 2, 4, 8) support for BINARY, COMP, COMP-5 fields.
+- Variable record length file IO.
+- Variable size arrays.
+
+The following features and/or COBOL syntax are currently under development.
+
+- CORRESPONDING options in the MOVE, ADD, SUBTRACT statements (preliminary).
+- DEBUG lines.
+- EXTERNAL semantics (preliminary).
+- Inline comments (2002 draft standard).
+- Intrinsic Functions (preliminary).
+- PROCEDURE DIVISION DECLARATIVES (preliminary).
+- The REPORT SECTION (preliminary).
+- Variable size arrays.
+
+The following features and/or COBOL syntax are not currently supported:
+
+- Any portion of the COMMUNICATION SECTION.
+- Non native IA32 types (big-endian).
+- Support for 33 digit precision for temporary variables in RTS.
+- Nested sequence of source programs.
+
+The following features and/or COBOL syntax are not likely to ever be 
+supported.
+- The ALTER statement.
+

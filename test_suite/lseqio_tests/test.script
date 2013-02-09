@@ -1,0 +1,9 @@
+seqls01:S:Line Sequential Write::
+seqls02:S:Line Sequential Read::
+seqls08:S:Optional Line Sequential::
+seqls11:S:Variable length (format 1) Line Sequential write::
+seqls13:S:Variable length (format 1) Line Sequential read::
+seqls15:S:Variable length (format 2) Line Sequential write::
+seqls17:S:Variable length (format 2) Line Sequential read::
+seqls19:S:Variable length (format 3) Line Sequential write::
+seqls21:S:Variable length (format 3) Line Sequential read::

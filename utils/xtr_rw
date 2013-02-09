@@ -1,0 +1,52 @@
+#!/usr/bin/awk -f
+BEGIN {
+  IFS=",";
+  skipping = 1;
+}
+{
+   if (($2 == "0," && $3 == "0,") || ($1 == "{\"\",0,0,0}")) {
+      skipping = 1;
+   }
+   if (skipping == 0) {
+      token_len = match($1, ",");
+      if (substr($1, 1, 2) == "{\"") {
+         tok_start = 3;
+         token_len = token_len - 3;
+      }
+      else
+         tok_start = 1;
+      token = substr($1, tok_start, token_len - 1);
+      value_len = match($2, ",");
+      value = substr($2, 1, value_len - 1);
+      if (substr($1, 1, 2) == "/*" ||
+          value == "USAGENUM" ||
+          value == "CONDITIONAL" ||
+          value == "PORTNUM") {
+      }
+      else {
+         printf "%s %s\n", value, token
+      }
+   }
+   if ($0 == "struct reserved_symbol reserved_symbols[] = {")
+      skipping = 0;
+}
+END {
+   # And ends up with providing some pseudo-terminal
+   print "LISTSEP ,"
+   print "LPAR )"
+   print "PERIOD_TOK ."
+   print "POW_OP **"
+   print "STRING string"
+   print "VARIABLE variable"
+   print "SUBSCVAR subscripted-variable"
+   print "VARCOND condition-variable"
+   print "CONDITIONAL condition-name"
+   print "CLITERAL alphanumeric-literal"
+   print "NLITERAL numeric-literal"
+   print "CHAR picture-char"
+   print "MULTIPLIER numeric-literal"
+   print "LABELSTR paragraph-name"
+   print "USAGENUM usage-type"
+   print "PORTNUM portnum"
+   print "IDSTRING idstring"
+}

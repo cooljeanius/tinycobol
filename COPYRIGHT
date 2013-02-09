@@ -1,0 +1,13 @@
+These files are part of the TinyCOBOL compiler.
+
+Copyright (C) 2001-2008  Rildo Pragana, Alan Cox, Andrew Cameron, 
+                         David Essex, Glen Colbert, Jim Noeth.
+Copyright (C) 1999       Rildo Pragana, Alan Cox, Andrew Cameron, David Essex.
+Copyright (C) 1991, 1993 Rildo Pragana.
+
+
+The TinyCOBOL compiler is licensed under the GNU General Public License.
+See COPYING for details.
+
+The TinyCOBOL compiler run time library is licensed under the GNU Library 
+General Public License. See COPYING.LIB for details.

@@ -1,0 +1,12 @@
+#
+# Makefile for SQ NIST Module
+#
+# NOTE: - FIXME
+# Some tests require the files do not exist.
+# For some reason the file names are set to existing files,
+# and thus create report errors.
+#
+include ../Makefile_head.h
+MODULE=SQ
+include ../${MODULE}.idx
+include ../Makefile_trail.h

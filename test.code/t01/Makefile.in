@@ -1,0 +1,78 @@
+#
+#
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SRC01 = test01a.cob
+SRC02 = test01b.cob
+SRC03 = test01c.cob
+SRC04 = test01d.cob
+SRC05 = test01e.cob
+ 
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.cob=.o)
+OBJ03 = $(SRC03:.cob=.o)
+OBJ04 = $(SRC04:.cob=.o)
+OBJ05 = $(SRC05:.cob=.o)
+OBJS =  $(OBJ01) $(OBJ02) $(OBJ03) $(OBJ04) $(OBJ05)
+
+PROG01 = test01a
+PROG02 = test01b
+PROG03 = test01c
+PROG04 = test01d
+PROG05 = test01e
+PROGS =  $(PROG01) $(PROG02) $(PROG03) $(PROG04) $(PROG05)
+
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#
+
+all: ${PROGS}
+
+${PROG01}: ${OBJ01}
+	$(CCX) -g -o $@ ${OBJ01} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG02}: ${OBJ02}
+	$(CCX) -g -o $@ ${OBJ02} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG03}: ${OBJ03}
+	$(CCX) -g -o $@ ${OBJ03} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG04}: ${OBJ04}
+	$(CCX) -g -o $@ ${OBJ04} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG05}: ${OBJ05}
+	$(CCX) -g -o $@ ${OBJ05} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+clean:
+	@${RM} $(PROGS) $(OBJS) *.lis *.listing.txt *.s *.i *.exe core

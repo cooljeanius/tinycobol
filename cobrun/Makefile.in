@@ -1,0 +1,83 @@
+#
+# Makefile for htcobrun
+#
+
+SHELL=/bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+#tcob_docdir=@tcob_docdir@
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d -m 755 
+INSTALL_PROGRAM=$(INSTALL) -s -m 755
+
+INSTRC=@tcob_default@
+
+subdirs=test.code
+
+tc_library=../lib/libhtcobol.a
+
+RM=rm -f
+LNK=ln -sf
+
+EXEEXT=@exeext@
+
+CCX=@CC@
+
+INCLUDES=-I../lib -I../
+LIBS=@tcob_ld_args_defaults@
+LIBS1=@tcob_ld_args_defaults@
+LIBS2=-L../lib -lhtcobol @tcob_ld_args_defaults@
+LDFLAGS=@LDFLAGS@
+CCXFLAGS=${INCLUDES} -Wall
+
+SRC01 = htcobrun.c
+
+OBJ01 = $(SRC01:.c=.o)
+OBJS = $(OBJ01)
+
+PROG00 = htcobrun
+PROG01 = @tcob_cobrun_name1_opt@
+PROG02 = @tcob_cobrun_name2_opt@
+PROGS = $(PROG00) $(PROG01) $(PROG02)
+
+#include ${prefix}/config/C.rules.in
+#
+# Rules for compiling .c sources
+#
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+all: @tcob_cobrun_build_opt@
+
+build-static: ${PROG01}
+
+build-shared: ${PROG02}
+ 
+# Static library version
+${PROG01}: ${OBJ01} ${tc_library}
+	${CCX} ${OBJ01} -Wl,-export-dynamic -o ${PROG01} \
+	${INCLUDES} -Wl,-whole-archive ${tc_library} \
+	-Wl,-no-whole-archive $(LDFLAGS) $(LIBS1)
+
+# Shared library version
+${PROG02}: ${OBJ01}
+	$(CCX) -o $@ ${OBJ01} $(LDFLAGS1) $(LDFLAGS) $(LIBS2) 
+
+cleanall allclean: clean
+clean:
+	@${RM} ${PROGS} ${OBJS} core
+
+install: $(PROG00)
+	${INSTALL_PROGRAM} $(PROG00) $(DESTDIR)$(bindir)/$(PROG00)
+
+uninstall: 
+	${RM} $(DESTDIR)$(bindir)/$(PROG00)

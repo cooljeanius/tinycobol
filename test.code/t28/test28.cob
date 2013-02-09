@@ -1,0 +1,20 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. test28.
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.             
+* INPUT-OUTPUT SECTION.
+* FILE-CONTROL.
+ DATA DIVISION.
+ FILE SECTION.
+ WORKING-STORAGE SECTION.
+ 77   STR1    pic X(40) value "first address change ABCDEFGHIJKLMNOPQRS".
+ 77   STR2    pic X(40) value "second address change 123456789012345678".
+ 77   TMP     pic X(40) value "A regular string".
+ 77  WS-PTR1 USAGE POINTER.
+ 77  WS-PTR2 USAGE POINTER.
+
+ PROCEDURE DIVISION.
+  set WS-PTR1 to address of STR1.
+  set WS-PTR2 to address of STR2.
+  call "test28a" using WS-PTR1 WS-PTR2 TMP.
+  stop run.

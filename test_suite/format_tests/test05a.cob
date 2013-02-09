@@ -1,0 +1,115 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. TEST5_FORMATS.
+ AUTHOR.  GLEN COLBERT.
+*REMARKS. Move figurative constants
+ ENVIRONMENT DIVISION.
+* INPUT-OUTPUT SECTION.
+* FILE-CONTROL.
+ DATA DIVISION.
+ FILE SECTION.
+
+ WORKING-STORAGE SECTION.
+ 01  WS-NUMERIC-FIELDS.
+     05 WS-DISPLAY-NUM-0             PIC 9999.
+
+ 01  WS-ALPHANUMERIC-FIELDS.
+     05 WS-PICX-4                    PIC XXXX.
+     05 WS-PICCOMP REDEFINES WS-PICX-4
+                                     PIC 9(4) COMP.
+     05 WS-PICX-7                    PIC X(7).
+ 01  WS-DISPLAY-1                    PIC 9(8).
+ 01  WS-DUMP                         PIC X(8).
+ 01  WS-DUMP-COUNT                   PIC 9(04).
+ 01  PROGRAM-STATUS                  PIC 9(8) COMP VALUE 0.
+
+ PROCEDURE DIVISION.
+ 0000-PROGRAM-ENTRY-POINT.
+     DISPLAY "TEST05 Figurative Constants program entry."
+
+     PERFORM A000-ALPHANUMERIC-TESTS THRU A000-EXIT.
+
+     STOP RUN.
+
+ A000-ALPHANUMERIC-TESTS.
+
+ FC00-MOVE-SPACES. 
+* Make sure that there is non-expected data in fields.
+     MOVE "1234"                   TO WS-PICX-4.
+     MOVE "1234567"                TO WS-PICX-7.
+
+     MOVE SPACES                   TO WS-PICX-4.
+     DISPLAY "FC01:(" WS-PICX-4 "):(    ):"
+             "FIGURATIVE SPACES TO XXXX".
+
+     MOVE ALL "A"                  TO WS-PICX-4.
+     DISPLAY "FC02:(" WS-PICX-4 "):(AAAA):"
+             "FIGURATIVE ALL A TO XXXX".
+
+     MOVE ALL "AB"                 TO WS-PICX-4.
+     DISPLAY "FC03:(" WS-PICX-4 "):(ABAB):"
+             "FIGURATIVE ALL AB TO XXXX".
+
+     MOVE ALL "AB"                 TO WS-PICX-7.
+     DISPLAY "FC04:(" WS-PICX-7 "):(ABABABA):"
+             "FIGURATIVE ALL AB TO X(7)".
+
+     MOVE ALL ZEROES               TO WS-PICX-7.
+     DISPLAY "FC05:(" WS-PICX-7 "):(0000000):"
+             "FIGURATIVE ALL ZEROES TO X(7)".
+
+     MOVE 4 to WS-DUMP-COUNT.
+
+     MOVE LOW-VALUES               TO WS-PICX-4.
+     CALL "_DUMP_" USING
+         WS-ALPHANUMERIC-FIELDS 
+         WS-DUMP-COUNT
+         WS-DUMP
+         RETURNING PROGRAM-STATUS
+         .
+     DISPLAY "FC06:(" WS-DUMP "):(00000000):"
+             "FIGURATIVE LOW-VALUES TO XXXX".
+
+     MOVE HIGH-VALUES              TO WS-PICX-4.
+     CALL "_DUMP_" USING
+         WS-ALPHANUMERIC-FIELDS 
+         WS-DUMP-COUNT
+         WS-DUMP
+         RETURNING PROGRAM-STATUS
+         .
+     DISPLAY "FC07:(" WS-DUMP "):(FFFFFFFF):"
+             "FIGURATIVE HIGH-VALUES TO XXXX".
+
+     MOVE ZERO TO WS-DISPLAY-1.
+     DISPLAY "FC08:(" WS-DISPLAY-1 "):(00000000):"
+             "MOVE FIGURATIVE ZERO TO 9(8)".
+
+     MOVE HIGH-VALUES TO WS-DISPLAY-1.
+     DISPLAY "FC09:(" WS-DISPLAY-1 "):(99999999):"
+             "MOVE FIGURATIVE HIGH-VALUES TO 9(8)".
+
+     MOVE LOW-VALUES TO WS-DISPLAY-1.
+     DISPLAY "FC10:(" WS-DISPLAY-1 "):(00000000):"
+             "MOVE FIGURATIVE LOW-VALUES TO 9(8)".
+
+     MOVE ALL LOW-VALUES           TO WS-PICX-4.
+     CALL "_DUMP_" USING
+         WS-ALPHANUMERIC-FIELDS 
+         WS-DUMP-COUNT
+         WS-DUMP
+         RETURNING PROGRAM-STATUS
+         .
+     DISPLAY "FC11:(" WS-DUMP "):(00000000):"
+             "FIGURATIVE ALL LOW-VALUES TO XXXX".
+
+     MOVE ALL HIGH-VALUES          TO WS-PICX-4.
+     CALL "_DUMP_" USING
+         WS-ALPHANUMERIC-FIELDS 
+         WS-DUMP-COUNT
+         WS-DUMP
+         RETURNING PROGRAM-STATUS
+         .
+     DISPLAY "FC12:(" WS-DUMP "):(FFFFFFFF):"
+             "FIGURATIVE ALL HIGH-VALUES TO XXXX".
+
+ A000-EXIT.
+     EXIT.

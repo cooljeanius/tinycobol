@@ -1,0 +1,6 @@
+perf01:S:Simple single performs::
+perf02:S:Perform X times::
+perf03:S:Perform until test::
+perf04:S:Perform S9(4) TIMES test::
+perf05:S:GO TO Within PERFORM::
+perf06:S:Qualified GO TO and PERFORM::

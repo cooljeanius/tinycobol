@@ -1,0 +1,38 @@
+Source: tinycobol
+Section: devel
+Priority: extra
+Build-Depends: debhelper, dpatch, libncurses5-dev, flex-old, bison-1.35, libdb2 (>= 2:2.7.7.0-7), libdb2-dev
+Maintainer: Herbert Parentes Fortes Neto
+Standards-Version: 3.6.1.1
+
+Package: tinycobol
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends}, libhtcobol-dev, libncurses5-dev, flex-old, bison-1.35, libdb2 (>= 2:2.7.7.0-7), libdb2-dev
+#Suggests: tinycobol-testfiles
+Description: TinyCOBOL (COBOL compiler) 
+ TinyCOBOL is a COBOL (COmmon Business Oriented Language) ANSI-85 
+ compiler for the x86 (IA32) architecture.
+ Depending on the options given, the compiler will read a COBOL 
+ source file (fixed or free-form) and preprocess, compile, assemble 
+ and link to generate an executable, object, shared or static library.
+ The compiler generate 32-bit GNU assembler as an intermediate code, 
+ and uses the GCC tool chain (assembler and linker) to create 
+ binaries.
+ Development Status: 2 - Pre-Alpha
+
+
+Package: libhtcobol-dev
+Section: libs
+Architecture: any
+Depends: tinycobol  
+Description: libs for tinycobol compiler 
+ Shared libs libhtcobol* for tinycobol.
+
+#Package: tinycobol-testfiles
+#Section: doc
+#Architecture: all
+#Description: Tests for tinycobol compiler 
+# Tests to check the tinycobol installation.
+
+

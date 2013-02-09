@@ -1,0 +1,50 @@
+#
+mc_os_platform='@os_platform@'
+#
+mc_prefix=@prefix@
+mc_drive_prefix=@drive_prefix@
+mc_exec_prefix=@prefix@/bin
+#
+mc_prefix_COB=@drive_prefix@@prefix@/share/@COB@
+mc_prefix_config=${mc_prefix_COB}/config
+#
+mc_g_includes='-I@drive_prefix@@prefix@/includes -I@drive_prefix@@prefix_local@/includes'
+mc_g_libraries='-L@drive_prefix@@prefix@/lib -L@drive_prefix@@prefix_local@/lib'
+#
+mc_tcob_ld_args_htcobol='@tcob_ld_args_htcobol@'
+mc_tcob_ld_args_db='@tcob_ld_args_db@'
+mc_tcob_ld_args_isam='@tcob_ld_args_isam@'
+mc_tcob_ld_args_curses='@tcob_ld_args_curses@'
+mc_tcob_ld_args_readline='@tcob_ld_args_readline@'
+mc_tcob_ld_args_m='@tcob_ld_args_m@'
+mc_tcob_ld_args_dl='@tcob_ld_args_dl@'
+mc_tcob_ld_args_libs='@tcob_ld_args_htcobol@ @tcob_ld_args_db@ @tcob_ld_args_isam@ @tcob_ld_args_curses@ @tcob_ld_args_readline@ @tcob_ld_args_m@ @tcob_ld_args_dl@'
+#
+mc_CCX=@CC@
+#mc_COB=@COB@
+mc_COB=htcobol
+mc_ASM=@AS@
+mc_RANLIB=@RANLIB@
+mc_AR=@AR@
+#
+#mc_INCLUDES=@INCLUDES@
+#mc_INCLUDES=@prefix@/includes
+mc_INCLUDES='${g_includes}'
+#
+#mc_cobcpy_default='@copybook_path@'
+mc_copybook_path='-I@copybook_path@'
+#
+#mc_ASMFLAGS=@ASMFLAGS@
+mc_ASMFLAGS=-D
+mc_LDFLAGS=@LDFLAGS@
+#mc_COBFLAGS=@COBFLAGS@
+mc_COBFLAGS='-P ${COPYBOOKS}'
+mc_CCXFLAGS="$mc_INCLUDES @CCXFLAGS@"
+#
+#mc_LIBS=@LIBS@
+#mc_LIBS=-L@prefix@/lib
+#mc_LIBS='${g_libraries} @mc_tcob_ld_args_libs@'
+mc_LIBS='${g_libraries}'
+mc_exeext='@exeext@'
+#
+

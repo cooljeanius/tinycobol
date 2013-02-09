@@ -1,0 +1,45 @@
+By using this statement, no linker directive needed.
+
+.globl main
+	.type	main,@function 
+main:
+
+----------- OR
+
+.global	_TEST02
+	.type	_TEST02,@function 
+_TEST02:
+
+I prefer main.
+
+============================================================
+
+What is this for ? I think this not needed.
+
+	.fill	16, 1, '?'
+
+============================================================
+
+I think this not needed. GCC -S does not generate it.
+
+	.extern	_stop_run:far
+
+============================================================
+
+If I use mcoblib.h in both the compiler(htcoblib.h) and lib directories,
+this creates a problem.
+
+gcc  -I/usr/include -I../lib -c -g -DDEBUG_COMPILER htcobol.c
+y.tab.c:138: warning: `RECORD' redefined
+../lib/mcoblib.h:77: warning: this is the location of the previous definition
+
+In htcobol.c(y.tab.c) it is defined as a token.
+%token RECORD,OMITTED,STANDARD,RECORDS,BLOCK
+
+In lib/mcoblib.h it is defined as a char *.
+#define RECORD ((char *)(v->record)) 
+
+I do not know what to make of this. However, Rildo Pragana did 
+mention removing a indexed file package, because it was not under GPL. 
+
+

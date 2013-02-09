@@ -1,0 +1,490 @@
+Tiny Cobol Compiler Overview
+----------------------------
+
+
+
+Introduction
+------------
+
+The COBOL compiler was intended to be constructed with proven tools like 
+lex/flex and byacc (standard yacc from Berkeley) with a C code generator.  
+They are applied in that order for the files:
+scan.l (scanner), htcobol.y (parser), htcobgen.c (code generator, listings
+generator and symbol table management functions).
+The output is assembler with AT&T syntax, standard for the Linux environment.
+We plan to do first a ANSI-1974 compliant version, with extensions for
+embedding SQL access and an access to tcl/tk libraries for writing visual
+(GUI) applications, but later we expect to evolve to a full '85 version.
+
+
+
+
+
+
+Scanner (tokenizer)
+------------------
+
+You will find a large table, reserved_symbols[], that defines all tokens
+recognized by the scanner as reserved symbols.  
+When adding a new token at the parser, the same token must be added here.  
+The first entry is the token string, as it will be read by the scanner. 
+It shall be in uppercase, because the lookup() function convert everything 
+before looking at the table (but don't write back at the token buffer). 
+If something is not found as a reserved word, the case matters (upper/lower). 
+The second entry is the same token definition you entered in the parser 
+(htcobol.y). The third entry (minor) is a minor token  number and may be 
+removed in a future release. It was needed in our limited version 
+of lex for the Ms-DOS(TM) environment, so we shared tokens with different 
+minor codes. Now they are history and gradually will be removed.
+
+The scanner is controlled by the parser, to make it context-dependent, so
+become easier to know what to looking for.  
+
+	(>>>> Note: for instance, there was found a hard to fix reduce/reduce 
+	conflict because of "NOT ON OVERFLOW", that confused the parser because 
+	the token NOT was usually found in conditions, for instance in the IF
+	statement. That conflict was removed by a dirty trick, defining a new 
+	state and changing NOT to another "kind of NOT", we have called it 
+	NOTEXCEP. It's another token, dependent on the context, but is the very 
+	same string: 'N','O','T'. In the user point of view it is 
+	indistinguishable from the other.)
+
+At the very beginning of the scanner
+code, there is a large switch statement:
+
+  switch (curr_division) {
+      case CDIV_IDENT:
+		  scdebug("-> IDENT_ST\n");
+		  BEGIN IDENT_ST;
+		  break;
+      ...
+  }
+  curr_division = 0;  /* to avoid new state switching */
+
+So each state only look for the tokens it is expected to find.  For instance,
+at the COMMENT_ST state, everything that matches the regular expression 
+
+{letters}(({alphanum}|-)*{alphanum}+)?
+
+will be matched and no token is returned to the parser (when it calls yylex()),
+except if one reserved token DIVISNUM (any COBOL division identifier) is found.
+This way, it  consumes any input from the source program until a new division 
+is found.  It is entered in the IDENTIFICATION DIVISION, when the parser 
+(htcobol.y) executes the following:
+
+	identification_division:
+		PROGRAM_ID "." IDSTRING EOS {
+			curr_division = CDIV_COMMENT;
+			pgm_header($3); }
+	 ;
+						
+As we see, first the program-id is parsed and stored.  As it's the only thing
+that's really matters here, we discard anything else after the program-id,
+until we find the next division token: ENVIRONMENT. 
+
+Several recognizers may be grouped with the same starting states in the
+scanner, surrounding them with something like:
+
+	<COMMENT_ST>{
+	...  (several lex declarations)
+	}
+
+Instead of COMMENT_ST, we can put several states for which the same
+declarations apply, like in <INITIAL,ENVIR_ST,DATA_ST,REDEF_ST>, or even 
+<*> to enter a global (all states) declaration. This last case must be done
+with extreme care, because it affects already tested states. Probably you don't
+want to do it.  Another special starting state we use is <<EOF>>. Please
+consult flex manual or any good lex/flex book to read more about it. In our
+case, it signals the end of a "copy" (include file) operation.
+
+One of the goals of making this scanner with several main states, was because
+we can distinguish between variables and labels (paragraphs and sections), so
+we can avoid several tokens look-ahead in the parser.  (There is a discussion
+at the mailing list of GNU-Cobol2C compiler project about this topic)
+Our compiler stores all variables during the DATA_ST state (corresponding to
+data division) and already knows what is a variable during INITIAL state
+(procedure division, default state), so it returns 2 distinct tokens for a
+variable or a paragraph or section identifier (VARIABLE and LABELSTR,
+respectively).  
+This is needed because, for instance, a  
+
+	PERFORM IDENT-1 OF IDENT-2 IDENT-3 TIMES
+
+and an statement like
+
+	PERFORM IDENT-1 OF IDENT-2 TIMES <statements> END-PERFORM
+
+where in the first case, IDENT-1 is a paragraph name and in the second, IDENT-1
+is a variable (field) name. This example need to lookahead 3 tokens 
+(if IDENT-1 and IDENT-2 is not qualified), and in general as much as 
+50 lookahead!  The other possible solution is to do our
+parsing with a better tool than yacc (btyacc is a backtracking yacc, see at
+tiny-cobol's home page links section). With our simple solution, IDENT-1 is
+know to be a VARIABLE or a LABELSTR (if no variable was found), so the
+lookahead is not needed, and we can stay with regular yacc, besides the parser
+generated is much faster than with btyacc (if lookahead is needed).
+
+
+
+
+
+Symbol table organization
+------------------------
+
+The symbol table use a hash to choose one of HASHLEN entries and store æach
+symbol in this thread, according a hash() function applied on the symbol name
+characters.  For each value of "litflag" we can have:
+
+litflag  |  actual structure | it is meant for
+---------+-------------------+---------------------------------------------
+  0      |  struct sym       | general symbols (files, fields, ws, linkage) 
+  1      |  struct lit       | literals
+  2,',', |  struct vref      | variable references to compute array indices
+  '+','-'|    "      "       |    "         "           "       "     "
+  4      |  struct refmod    | refmod's which encapsulate litflag = 0 or 2  
+---------+-------------------+---------------------------------------------
+
+All those structures must have "litflag" as the first field so we can make a
+pointer conversion when accessing the actual storage.  In addition, the
+structures "lit" and "sym" must share the following representation:
+
+struct XXX {
+   char litflag;     
+   struct XXX *next;  
+   char *name;        
+   char type;
+   int  decimals;
+   unsigned location; 
+   unsigned descriptor; 
+   ...                   /* the rest of the particular structure */
+};
+
+where XXX = lit or sym.
+
+How the subscripting works?  Let's see the representation of a subscripted
+variable reference.
+Suppose the following COBOL statement: MOVE 5 TO VAR ( I + 1, J - 2 )
+
+where I,J are numeric variables (anyone, not just "indexed by").
+In the parser we need a "struct sym" to reference it in a call to
+
+	gen_move( struct sym *sy_src, struct sym *sy_dst )
+
+where sy_src is the source of the moved field (can be a literal too, of
+course), and sy_dst is the destination variable.  The definition of this
+function is very simple indeed:
+
+gen_move( struct sym *sy_src, struct sym *sy_dst ) {
+	gen_loadvar( sy_dst );
+	gen_loadvar( sy_src );
+	asm_call("move");
+}  
+that will generate a "push" in the stack for the representation of the 2
+references and call the runtime library function "move".  The hard work is done
+by the function gen_loadvar.  It inspects first the litflag of the received
+argument to see if it is really a symbol (struct sym), or a literal (struct
+lit) or yet a subscripted/indexed variable reference (struct ref) and decides
+what to do depending on it's value.
+The result will be the generation of code to push two values (unless the
+reference is a NULL) at the runtime stack: 
+(1) the "struct fld_desc" of the field; (2) a pointer (char *) to the field
+storage. (please look also the section on code generation below) 
+
+Returning to the subscripting/indexing stuff, when the gen_loadvar find
+(really at gen_loadloc) a litflag=2, meaning a "struct vref" is aliased,
+it calls gen_subscripted to generate the code for computing the offset for
+accessing the array element following the list of variable references in vref.
+In the example given above, VAR ( I + 1, J - 2 ) will be represented as a list
+with the following values: 
+
+(Notes: the headers are the fields of "struct vref"
+        the addresses are fictitious)
+
+address	| litflag | next  | sym->name
+--------+---------+-------+-----------
+80001   |  '\x2'  | 80012 | VAR
+80012   |  '+'    | 80035 | I
+80035   |  ','    | 80047 | 1
+80047   |  '-'    | 80059 | J
+80059   |  ','    | NULL  | 2
+
+Another related function is value_to_eax, that generates code for loading the
+register %eax with the value of a subscript variable (I or J above). This
+function will be extended to include variables with the "usage is comp" clause
+(for working with real indices, not only subscripts).
+
+
+--- more to be added later ---
+
+
+
+
+The parser
+----------
+
+--- to be written  (any takers?) ---
+
+
+
+
+
+
+Code generation
+---------------
+
+Our output is assembly language, using the cdecl calling convention.  In
+COBOL, we cannot handle null-terminated strings like we do in C, because a
+character may contain any binary value (including the null char), and the
+fields in COBOL are fixed length.  Most of the library functions require a
+description of the field that's not supposed to be altered in any way.  Each
+COBOL variable is represented by two pointers:
+
+* a fld_desc (field descriptor) pointer
+
+* a storage pointer (the real buffer contents)
+
+Here is a description of each entry (please note that VarStructure.Info.txt
+contains a more up to date description of this structure):
+
+struct fld_desc {
+   unsigned short len;
+   char type;
+   unsigned char decimals;
+   unsigned int all:1;
+   unsigned int just_r:1;
+   unsigned int reserved:6;
+   char *pic;
+};
+
+Field Types:
+
+'8': DISPLAY        : 88 field 
+'9': DISPLAY        : numeric display 
+'A': ALPHA          : alpha 
+'B': BININT         : binary (computational, computational-5) 
+'C': PACKED         : packed-decimal (computational-3) 
+'D': ACCEPT_DISPLAY : screen data display (screen section only)
+'E': EDITED         : edited 
+'F':                : file entity
+'G': GROUP          : group 
+'I':                : ??? Index variable ???
+'J':                : global variable
+'K':                : external variable
+'L': ???
+'O': ???
+'P':                : paragraph
+'Q':                : report item
+'R': ???
+'S':                : section
+'T': ???
+'U': FLOAT          : float (computational-1/2 - 4/8 bytes)
+'V':                : ??? decimal point in picture clause ???
+'W':                : report descriptor
+'X': ALPHANUMERIC   : alphanumeric 
+'Z':                : ??? suppress zero in picture clause ???
+
+This is a static structure (seen by the library code), and should not be
+changed in any way by library code. Its components are the description of our
+variable pointed to by the second argument.
+
+"len" is the length of the field in bytes.
+"type" is the field type (see the 'Field Types' table above).
+"decimals" is, for numeric fields, how many decimals positions there are after
+  the "V" assumed decimal point, if positive.  Otherwise, how many "P"s to the
+  left there are for negative values.  In other words, the scaling of the
+  numeric variable.
+"all" is a flag that indicates if the 'ALL' flags was defined (for literals).
+  If this is the case, the variable should be continued as required by a move
+  operation (wrap-around at the end).
+"just_r" is a flag that indicates if the field has been declared JUST RIGHT.
+
+Why not simply put the pointer to the variable's buffer in its descriptor?
+This wouldn't work, because variables may be passed to sub-programs (calling
+another COBOL program) and its storage is defined as a stack frame, so it's
+very volatile when externally linked.
+
+Compressed fields and signs are stored like IBM does in its compilers, with
+the sign at the rightmost half-byte, and all digits bcd-coded.
+
+Files are different things, because they need different information. Please
+look at the "struct file_desc" (htcoblib.h) to see its components.
+
+-- to be better described later --
+
+
+
+
+Memory allocation
+-----------------
+
+There are several xxxx_offset integer variables that track the positions of
+code in several data segments, and also at the stack. The table below show the
+usage of them:
+
+offset track var   |  storage kind or segment
+-------------------+-----------------------------------
+stack_offset       |  automatic, or local data.
+literal_offset     |  persistent (constant) data.
+                   |  used for descriptors (fld_desc), 
+                   |  literals, and compressed pictures.
+using_offset       |  for cobol subroutine received parameters
+                   |  (procedure division using ...)
+linkage_offset     |  for linkage section variables (*)
+global_offset      |  this is mostly historical, holding variables
+                   |  with common storage for several program
+                   |  modules (shared). Now it is being used for
+                   |  collecting all file descriptors (**)
+file_offset        |  (??) there seems to be of no use (***)
+
+(*) linkage section variables does not have local storage. Instead they access
+variables arriving from the calling program, as pointers to the actual data
+storage and descriptor.
+(**) This area can be used to allocate static variable storage, saved
+between calls of a subprogram.
+(***) It doesn't exist in the original compiler and I don't remeber why I (who
+defined it?) created it. Anyway, it is doing nothing, because it is storing a
+value at an aliased variable that is being overwritten :->
+
+When the parser finishes parsing the data division and just before reading the
+procedure division, the stack_offset was updated with all automatic storage
+variables already in place and it reserves space in the stack for them,
+generating the following code (function proc_header):
+
+  fprintf(o_src,"\tpushl\t%%ebp\n\tmovl\t%%esp, %%ebp\n");
+  fprintf(o_src,"\tsubl\t$%u, %%esp\n",stack_offset);
+  fprintf(o_src,"\tmovl\t%%ebx, -%u(%%ebp)\n",stack_offset - 16);
+
+(this last line just saves %ebx, in case we need to use that register,
+in particular when accessing subscripted variables)
+Register usage is the same as in a C program, where %ebp holds our 
+stack frame.
+
+To know which kind of structure a symbol is, we look at
+(struct sym *)sy->litflag, as reported above (section "symbol table
+organization"). The structures sym, lit, and vref are as a kind of union
+of three different things, selected by litflag's value. Just by using a 
+cast we convert from one form to the other, as in the following fragment of
+code: 
+  
+  void gen_loadloc( struct sym *sy ) {
+   ...
+   if (sy->litflag == 2) {
+      gen_subscripted( (struct vref *)sy );
+   ...
+
+
+this code says, if the symbol is actually a vref (subscript expression 
+reference), cast it as a (struct vref *) and proceed with the required code
+generation.
+
+
+
+Notes on interfacing with the library functions
+-----------------------------------------------
+
+
+Let us see a code for a typical function generation:
+
+At the parser, we detect the ADD COBOL verb and it's arguments 
+
+	statement:
+	 ...
+	 | ADD { }
+			gname req_to     { $<ival>$=ADD; }
+			var_list
+	 ...			 
+
+Here "gname" is a non-terminal describing any variable name or literal, or some
+figurative constants; "req_to" is a non-terminal that ensures a TO was
+detected (it's not simply TO, because of the minor codes I've told about when
+explaining the scanner); the action { $<ival>$=ADD } makes the stacked value of
+this action equals to the token code ADD, so we can share several statements
+with the same productions in "var_list"; finally "var_list" is _the_ code
+generating production.  Let's see how it works:
+
+	var_list:
+		var_list opt_sep gname
+		...
+		else if ($<ival>0 == ADD)
+				   gen_add($<sval>-2,$<sval>3);
+		...
+
+It's a recursive declaration that generates and ADD instruction for each
+variable detected at the list.  For instance, suppose we are parsing:
+
+    ADD 1 TO VAR-1  VAR-2  VAR-3
+
+this will generate the same code as if we have done instead:
+
+	ADD 1 TO VAR-1
+	ADD 1 TO VAR-2
+	ADD 1 TO VAR-3
+
+Of course, this could be much optimized , but let's keep things simple 
+for now.
+	The test (if condition) of ($<ival>0 == ADD) will tell us if this is really
+the ADD statement (not MOVE, nor SUBTRACT, ...), because it looks one token
+before reaching the present yacc stack position. This is called an "inherited 
+attribute" in compiler theory notation. We are really looking at that action 
+value we talked above.  The need of typing the value with $<ival>$ is because
+an action cannot be named as we do with other non-terminals (it's typeless),
+but share the same stack space as all other terminals and non-terminals, as
+defined by the %union yacc statement. Please look at a good compiler book to
+understand better that, or I have no way to help you.
+
+Now we need to use another inherited attribute to access our left-hand variable
+(before the action and  before the "req_to" at the ADD production), counting
+back we get it's value -2 stack positions far away, that's why the first
+argument for gen_add() will be $<sval>-2.  The other argument is the right-hand
+variable we are just parsing, or $3.  Here there is no need to typify it,
+because it's a known non-terminal of the type "sval" (for "symbol value"). 
+BTW, the "ival" means "integer value".  See the %union statements at the
+beginning of htcobol.y to get a full picture of this.
+
+At the code generation side, we have the following code-generating function:
+
+	void gen_add( struct sym *s1, struct sym *s2 ) {
+	   gen_loadvar( s2 );
+	   gen_loadvar( s1 );
+	   asm_call("add");
+	}
+			
+the function gen_loadvar() generate the code for pushing the "struct fld_desc
+*" and "char *" (the buffer) for the variable which was given (s2 or s1).
+Remember that in C calling conventions, the first variable seen must be at the
+top of stack, so we push it in reversed order.  Each variable occupy 8 bytes of
+the stack as discussed before (2 pointers).  The asm_call() function generate
+the code for calling the library function and take care of cleaning the stack.
+This auto-cleaning is only possible if you don't write code to push variables
+manually (like fprintf(o_src,"\tpushl\t%%eax\n") for pushing %eax register), as
+this keeps the counter with the wrong value.  You shall use the function
+push_eax() instead.  Please look for this section at htcoblib.c. (search
+push_eax and look around!)
+
+
+-- I'll write more later. Please be patient. ...or write it yourself! --
+
+
+
+
+
+Some random notes
+-----------------
+
+As we work within a very heterogeneous group, we have to ensure that the 
+compiler is always usable (runnable). Otherwise, other developers working
+on another part of the compiler or run-time library, would not be able to
+check-in their implementations with the CVS server.
+
+So if you want to do a large number of changes, that will make the compiler 
+temporarily unusable, please create a new branch on your computer, and do your 
+changes and tests there. But please, don't update the main development branch 
+with unusable code. Read the CVS manual for more information.
+
+Our first rule is: "the compiler must compile all times !"
+
+
+Rildo Pragana
+
+Modified by: David Essex
+             Bernard Giroud

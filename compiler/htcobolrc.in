@@ -1,0 +1,154 @@
+# TinyCOBOL resource file
+# Set the default compiler options
+
+
+# Not implemented
+# Specify copybook file suffixes (extensions) used in search sequence
+# Note: On Win32 the path delimiter is ';' NOT ':'
+# Options: 'string'
+#COPYBOOK-SUFFIXES=".cpy:.CPY:.inc:.INC:.cob:.COB:.cbl:.CBL::"
+
+# Specify copybook file locations paths used in search sequence
+# (compiler default=NULL)
+# Note: On Win32 the path delimiter is ';' NOT ':'
+# Options: 'string'
+COPYBOOK-PATH="@copybook_path@::"
+
+
+# Specify COBOL program file suffixes (extensions) used in search sequence
+# (compiler default=.cob:.COB:.cbl:.CBL:)
+# Options: 'string'
+SOURCE-PROGRAM-SUFFIXES=".cob:.COB:.cbl:.CBL:"
+
+
+# A user-defined-word such as PROGRAM-ID name, are case insensitive.
+# However GNU assembler names are case sensitive.
+# Note that this option does not apply to PROGRAM-ID literal-names.
+# Specify PROGRAM-ID name transformation (NONE is a TC extension)
+# Options: TOUPPER TOLOWER NONE
+PROGRAM-ID-TRANSFORMATION=NONE
+
+
+# Specify COBOL program default input format (compiler default=free format)
+# FREE  -> free format  
+# FIXED -> fixed format 
+# Options: FREE FIXED
+DEFAULT-SOURCE-FORMAT=FREE
+
+
+# Currently not implemented
+# Specify the mode for ACCEPT/DISPLAY 
+# The CURSESIO_AUTO option will use STDIN/STDOUT/STDERR
+# for the standard ACCEPT/DISPLAY statements
+# The CURSESIO_SET option will use the CURSES library
+# for all IO, including the standard ACCEPT/DISPLAY statements
+# NOTE: 
+#  COBOL programs compiled with the CURSESIO_SET option
+#  will not work properly with pipes and re-direction 
+#  
+# Options: AUTO SET
+#DISPLAY-IO-OPTION=AUTO
+
+
+# Specify the 'STOP RUN' code generated location
+# Internal: 
+#   Within the program were the 'STOP RUN' verb is encountered
+# External: 
+#   The 'STOP RUN' is generated as a 'EXIT PROGRAM', and the 
+#   'STOP RUN' code must be generated externally. 
+# NOTE: 
+#   The 'STOP RUN' is usually generated in the main program (entry point).
+# 
+# Options: INTERNAL EXTERNAL
+#STOPRUN-PROCEDURE=INTERNAL
+
+
+# Specify if a program 'main' (entry point) is to be generated
+# and which COBOL (sub)program will be executed first.
+#  
+# NOTES:
+# This applies to the compile, assemble, and link options [xcS].
+# The build a module option (shared library, DLL) does not require a 
+# program 'main' (option none).
+# A program 'main' (entry point) include RTL initialization, first program
+# execution call, and RTL termination (equivalent to a STOP RUN).
+# 
+# auto:
+# If a 'STOP RUN' statement is encountered, 
+# a program 'main' (entry point) will be generated.
+# the 'PROGRAM-ID' name of that program will be executed first from main.
+#
+# none:
+# A program 'main' (entry point) will NOT be generated.
+#
+# Options: AUTO NONE
+PROGRAM-ENTRY-POINT=AUTO
+
+
+# Specify the compile default action
+# PREPROCESS     - preprocess
+# COMPILE        - preprocess, compile
+# ASSEMBLE       - preprocess, compile, assemble
+# EXECUTABLE     - preprocess, compile, assemble, executable or shared library (module)
+# Options: PREPROCESS COMPILE ASSEMBLE EXECUTABLE
+DEFAULT-COMPILE-ACTION=EXECUTABLE
+
+
+# Specify the compiler default output type 
+# PROGRAM - executable program
+# MODULE  - shared library or module
+# Options: MODULE PROGRAM
+#DEFAULT-COMPILE-TYPE=MODULE
+DEFAULT-COMPILE-TYPE=PROGRAM
+
+
+# List contents of copybook files - not implemented
+# Options: True False
+#LIST-COPYBOOK-FILES=True
+
+
+# Include source debugging lines (compiler default=False)
+# Options: True False
+INCLUDE-DEBUGGING-LINES=False
+
+
+# Generate program listing (compiler default=NOLIST)
+# Options: True False
+PROGRAM-LISTING=False
+
+
+# Default program listing suffix (compiler default=.lis)
+# Options: 'string'
+#PROGRAM-LISTING-SUFFIX='.listing.txt'
+PROGRAM-LISTING-SUFFIX='.lis'
+
+
+# Generate symbolic cross-reference listing (compiler default=False)
+# Options: True False
+CROSS-REFERENCE-LISTING=True
+
+
+# Set shared library name default (prefix$suffix)
+# Options: 'string'
+#DEFAULT-SHARED-LIBRARY-NAME=lib$.so
+DEFAULT-SHARED-LIBRARY-NAME=$.so
+
+
+# Overide the default libraries and paths to pass to link step
+# Options: 'string'
+#LD-DEFAULTS="@tcob_ld_paths_default@ @tcob_ld_args_default@"
+
+
+# Any extra library paths to append to link step
+# Options: 'string'
+#LD-LIBRARY-PATHS-EXTRA="" 
+
+
+# Any extra libraries
+# Options: 'string'
+#LD-LIBRARY-EXTRA=""
+
+
+# Any extra link flags
+# Options: 'string'
+#LD-FLAGS-EXTRA=""

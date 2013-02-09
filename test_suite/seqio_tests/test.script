@@ -1,0 +1,17 @@
+seqio01:S:Simple form sequential write::
+seqio02:S:Illogical write - No Open::
+seqio03:S:Simple Sequential Read::
+seqio04:S:Read past EOF/Sequential::
+seqio05:S:Write after close Sequential::
+seqio06:S:Label Records OMITTED::
+seqio07:S:Optional Sequential::
+seqio08:S:Sequential rewrite::
+seqio11:S:Variable length (format 1) sequential write::
+seqio13:S:Variable length (format 1) sequential read::
+seqio14:S:Variable length (format 1) sequential rewrite::
+seqio15:S:Variable length (format 2) sequential write::
+seqio17:S:Variable length (format 2) sequential read::
+seqio18:S:Variable length (format 2) sequential rewrite::
+seqio19:S:Variable length (format 3) sequential write::
+seqio21:S:Variable length (format 3) sequential read::
+seqio22:S:Variable length (format 3) sequential rewrite::

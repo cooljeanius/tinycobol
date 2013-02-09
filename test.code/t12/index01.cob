@@ -1,0 +1,307 @@
+ IDENTIFICATION DIVISION.
+
+ PROGRAM-ID. INDEX01.
+
+ AUTHOR. JFMOBACH.
+
+* DATE-WRITTEN.
+*         18-10-1997.
+*
+*  OMSCHRIJVING :
+*
+*     Testprogramm to :
+*      - build an indexed file with 100.000 records,
+*      - update that file with 50.000 records,
+*      - add 50.000 records to that file,
+*      - read via indexes 50.000 records, and
+*      - read the file sequential.
+*     Timestamps of start en end of each phase will be showed.
+
+ ENVIRONMENT DIVISION.
+
+ CONFIGURATION SECTION.
+* SOURCE-COMPUTER.
+*      IBM-PC.
+* OBJECT-COMPUTER.
+*      IBM-PC.
+
+ SPECIAL-NAMES.
+ DECIMAL-POINT IS COMMA.
+
+*
+
+ INPUT-OUTPUT SECTION.
+ FILE-CONTROL.
+
+     SELECT FIDXWERKBESTANDSORT
+         ASSIGN TO "CURRFILENAME"
+         ORGANIZATION IS  INDEXED
+         ACCESS MODE IS DYNAMIC
+         RECORD KEY IS IDXSORTEERVELD
+*         LOCK MODE IS MANUAL
+      .
+ DATA DIVISION.
+ FILE SECTION.
+ FD  FIDXWERKBESTANDSORT
+     LABEL RECORDS ARE STANDARD
+*V*  RECORD IS VARYING IN SIZE DEPENDING ON RECORDLENGTE
+        .
+ 01  RIDXWERKBESTANDSORT.
+     03  IDXSORTEERVELD      PIC X(0013).
+     03  FILLER REDEFINES IDXSORTEERVELD.
+         05  IDXSORTEERVELD-N   PIC 9(13).
+     03  IDXSORTEERDATA      PIC X(0326).
+
+*
+
+ WORKING-STORAGE SECTION.
+
+* 01  RECORDLENGTE            PIC 9(04) COMP SYNC.
+ 01  RECORDLENGTE            PIC 9(04) COMP.
+
+ 01 DATUM-TIJD-VELDEN.
+    03 DATUM                 PIC 9(06).
+    03 FILLER REDEFINES DATUM.
+       05 SYS-JJ             PIC 99.
+       05 SYS-MM             PIC 99.
+       05 SYS-DD             PIC 99.
+    03 TIJD                  PIC 9(08).
+    03 FILLER REDEFINES TIJD.
+       05 SYS-UUR            PIC 99.
+       05 SYS-MIN            PIC 99.
+       05 SYS-SEC            PIC 99.
+       05 SYS-HSS            PIC 99.
+*
+ 01 KOPREGEL-1.
+    03 K1-NAAM                   PIC X(30) VALUE SPACES.
+    03 FILLER                    PIC X(9) VALUE "  Datum: ".
+    03 K1-DD                     PIC 9(2).
+    03 FILLER                    PIC X   VALUE "-".
+    03 K1-MM                     PIC 9(2).
+    03 FILLER                    PIC X   VALUE "-".
+    03 K1-JJ                     PIC 9(2).
+    03 FILLER                    PIC X(7) VALUE " Tijd: ".
+    03 K1-UUR                    PIC 9(2).
+    03 FILLER                    PIC X   VALUE ":".
+    03 K1-MIN                    PIC 9(2).
+    03 FILLER                    PIC X   VALUE ":".
+    03 K1-SEC                    PIC 9(2).
+    03 FILLER                    PIC X(3) VALUE " # ".
+*    03 K1-AANTAL                 PIC ZZZ.ZZ9 BLANK ZERO.
+    03 K1-AANTAL                 PIC ZZZ.ZZ9 VALUE 0.
+*
+ 01  WERKVELDEN.
+     03  CURRFILENAME        PIC X(0030) VALUE "TESTDATA".
+     03  SLEUTELWAARDE       PIC 9(13).
+     03  SLEUTEL-MAX         PIC 9(13) VALUE 1000000.
+     03  SLEUTEL-INTERVAL    PIC 9(13).
+     03  AANTAL-RECORDS      PIC 9(06).
+
+*
+*
+ PROCEDURE DIVISION.
+
+ BESTURING   SECTION.
+ P00.
+*
+*
+     MOVE 0 TO AANTAL-RECORDS
+     MOVE "FILE CONSTRUCTION : START   " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+     OPEN OUTPUT FIDXWERKBESTANDSORT
+     PERFORM GENEREER-RECORD
+         VARYING SLEUTELWAARDE FROM 1 BY 10
+         UNTIL   SLEUTELWAARDE > SLEUTEL-MAX
+     CLOSE       FIDXWERKBESTANDSORT
+*
+     MOVE "FILE CONSTRUCTION : STOP    " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+*
+     MOVE 0 TO AANTAL-RECORDS
+     MOVE "UPDATE 50.000  : START      " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+     OPEN I-O    FIDXWERKBESTANDSORT
+     COMPUTE SLEUTEL-INTERVAL = SLEUTEL-MAX / 50000
+     PERFORM WIJZIG-RECORD
+         VARYING SLEUTELWAARDE FROM 1 BY SLEUTEL-INTERVAL
+         UNTIL   SLEUTELWAARDE > SLEUTEL-MAX
+     CLOSE       FIDXWERKBESTANDSORT
+*
+     MOVE "UPDATE 50.000  : STOP       " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+*
+     MOVE 0 TO AANTAL-RECORDS
+     MOVE "INSERT 50.000  : START      " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+     OPEN I-O    FIDXWERKBESTANDSORT
+     COMPUTE SLEUTEL-INTERVAL = SLEUTEL-MAX / 50000
+     PERFORM WIJZIG-RECORD
+         VARYING SLEUTELWAARDE FROM 3 BY SLEUTEL-INTERVAL
+         UNTIL   SLEUTELWAARDE > SLEUTEL-MAX
+     CLOSE       FIDXWERKBESTANDSORT
+*
+     MOVE "INSERT 50.000  : STOP       " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+*
+     MOVE 0 TO AANTAL-RECORDS
+     MOVE "INDEXED READ   : START      " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+     OPEN I-O    FIDXWERKBESTANDSORT
+     PERFORM LEES-INDEXED
+         VARYING SLEUTELWAARDE FROM 1 BY 10
+         UNTIL   SLEUTELWAARDE > SLEUTEL-MAX
+     CLOSE       FIDXWERKBESTANDSORT
+*
+     MOVE "INDEXED READ   : STOP       " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+*
+     MOVE 0 TO AANTAL-RECORDS
+     MOVE "FILE READ      : START      " TO K1-NAAM          
+     PERFORM TOON-TIJD
+*
+     OPEN INPUT  FIDXWERKBESTANDSORT
+     PERFORM LEES-RECORD
+         VARYING SLEUTELWAARDE FROM 1 BY 10
+         UNTIL   SLEUTELWAARDE > SLEUTEL-MAX
+     CLOSE       FIDXWERKBESTANDSORT
+*
+     MOVE "FILE READ      : STOP       " TO K1-NAAM          
+     PERFORM TOON-TIJD
+         .
+ END-OF-SECTION.
+     STOP RUN.
+*/
+*    * * *
+*    * * *   TOON-TIJD :
+*    * * *       TOON DATUM EN TIJD DER ACTIE.
+*    * * *
+*
+ TOON-TIJD  SECTION.
+ P00.
+     ACCEPT DATUM FROM DATE
+     ACCEPT TIJD  FROM TIME
+     MOVE SYS-DD                  TO K1-DD            
+     MOVE SYS-MM                  TO K1-MM            
+     MOVE SYS-JJ                  TO K1-JJ            
+     MOVE SYS-UUR                 TO K1-UUR           
+     MOVE SYS-MIN                 TO K1-MIN           
+     MOVE SYS-SEC                 TO K1-SEC           
+     MOVE AANTAL-RECORDS          TO K1-AANTAL        
+     DISPLAY KOPREGEL-1
+         .
+*
+*   UITGANG.
+*
+ END-OF-SECTION.
+     EXIT.
+/
+*    * * *
+*    * * *   GENEREER-RECORD :
+*    * * *       GENEREER EEN RECORD IN HET BESTAND.
+*    * * *
+*
+ GENEREER-RECORD  SECTION.
+ P00.
+     ADD 1 TO AANTAL-RECORDS
+     MOVE SLEUTELWAARDE TO IDXSORTEERVELD-N
+     MOVE SPACES        TO IDXSORTEERDATA
+     WRITE   RIDXWERKBESTANDSORT
+          INVALID KEY
+              DISPLAY "WRIT INVALID KEY " SLEUTELWAARDE
+              STOP RUN
+         .
+*
+*   UITGANG.
+*
+ END-OF-SECTION.
+     EXIT.
+/
+*    * * *
+*    * * *   WIJZIG-RECORD :
+*    * * *       WIJZIG EEN RECORD IN HET BESTAND.
+*    * * *
+*
+ WIJZIG-RECORD  SECTION.
+ P00.
+     ADD 1 TO AANTAL-RECORDS
+     MOVE SLEUTELWAARDE TO IDXSORTEERVELD-N
+     READ FIDXWERKBESTANDSORT
+          INVALID KEY
+              GO TO P50
+         .
+     MOVE "UPDATE"      TO IDXSORTEERDATA
+     REWRITE RIDXWERKBESTANDSORT
+          INVALID KEY
+              DISPLAY "REWR INVALID KEY " SLEUTELWAARDE
+              STOP RUN
+         .
+     GO TO END-OF-SECTION
+         .
+ P50.
+     MOVE "INSERT"      TO IDXSORTEERDATA
+     MOVE SLEUTELWAARDE TO IDXSORTEERVELD-N
+     WRITE   RIDXWERKBESTANDSORT
+          INVALID KEY
+              DISPLAY "WRIT INVALID KEY " SLEUTELWAARDE
+              STOP RUN
+         .
+*
+*   UITGANG.
+*
+ END-OF-SECTION.
+     EXIT.
+/
+*    * * *
+*    * * *   LEES-INDEXED :
+*    * * *       LEES EEN RECORD VIA DE INDEX UIT HET BESTAND.
+*    * * *
+*
+ LEES-INDEXED  SECTION.
+ P00.
+     ADD 1 TO AANTAL-RECORDS
+     MOVE SLEUTELWAARDE TO IDXSORTEERVELD-N
+     READ FIDXWERKBESTANDSORT
+          INVALID KEY
+              DISPLAY "READ INVALID KEY " SLEUTELWAARDE
+              STOP RUN
+         .
+*
+*   UITGANG.
+*
+ END-OF-SECTION.
+     EXIT.
+/
+*    * * *
+*    * * *   LEES-RECORD :
+*    * * *       LEES EEN RECORD UIT HET BESTAND.
+*    * * *
+*
+ LEES-RECORD  SECTION.
+ P00.
+     ADD 1 TO AANTAL-RECORDS
+     READ FIDXWERKBESTANDSORT
+         NEXT RECORD
+         AT END
+             ADD SLEUTEL-MAX, 1 GIVING SLEUTELWAARDE
+         .
+*
+*   UITGANG.
+*
+ END-OF-SECTION.
+     EXIT.
+*
+*    SERVICE ROUTINES.
+*
+ IO-CALL   SECTION.
+ P00.
+ DUMMY-SECTION.
+ END-OF-SECTION. 
+     EXIT.

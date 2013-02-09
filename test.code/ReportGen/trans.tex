@@ -1,0 +1,291 @@
+%---------------------------------------------------------------
+% PostScript transformations for DVIPS        (c) BOP 1993, 1994
+%   BOP s.c.
+%   ul. Piastowska 70, 80-363 Gda\'nsk, Poland
+%   tel. +48 58 53-46-59
+%   email: jacko@ipipan.gda.pl
+%   
+%---------------------------------------------------------------
+% USAGE:
+%
+%   1) 
+%      x_scale and y_scale are given in percents:
+%      \zscale changes uniformly x_size and y_size (x_scale=y_scale=scale);
+%      \xscale changes only x_size (y_scale=100);
+%      \yscale changes only y_size (x_scale=100);
+%
+%         \zscale{scale} followed by an \hbox or a \vbox
+%         \xyscale{x_scale}{y_scale} followed by an \hbox or a \vbox
+%         \yxscale{y_scale}{x_scale} followed by an \hbox or a \vbox
+%         \xscale{x_scale} followed by an \hbox or a \vbox
+%         \yscale{y_scale} followed by an \hbox or a \vbox
+%
+%   2) 
+%      \xyscaleto resizes a box uniformly such that the resulting wd=x_dimen;
+%      \yxscaleto resizes a box uniformly such that the resulting ht=y_dimen;
+%      \xscaleto resizes a box horizontally such that the resulting wd=x_dimen;
+%      \yscaleto resizes a box verically such that the resulting ht=y_dimen;
+%
+%         \xyscaleto{x_size} followed by an \hbox or a \vbox
+%         \yxscaleto{y_size} followed by an \hbox or a \vbox
+%         \xscaleto{x_size} followed by an \hbox or a \vbox
+%         \yscaleto{y_size} followed by an \hbox or a \vbox
+%
+%   3)
+%      \revolve rotates anticlockwise the box (either \hbox or \vbox
+%      following the command) by 90 degree; for the resulting box
+%      width = height + depth of the original box, height = width
+%      of the original box, and the reference point is the left top corner
+%      of the original box; this means that revolving a box four times
+%      yields the original box if and only if its depth is zero.
+%      \revolvedir- is equivalent to \revolve, \revolvedir+ does almost
+%      the same, but rotates the box clockwise;
+%     
+%         \revolve followed by an \hbox or a \vbox
+%         \revolvedir+ followed by an \hbox or a \vbox
+%         \revolvedir- followed by an \hbox or a \vbox
+%     
+%   4) 
+%      \rotate rotates a box bay an arbitrary angle, clockwise for angle>0,
+%      the resulting box width=height=depth=0pt;
+%
+%         \rotate{angle} followed by an \hbox or a \vbox
+%
+%   5)
+%      \xflip and \yflip flip the box horizontally and vertically, resp.,
+%      i.e., with respect to a vertical and horizontal axis of the box,
+%      without changing dimensions of the \box;
+%     
+%         \xflip followed by an \hbox or a \vbox
+%         \yflip followed by an \hbox or a \vbox
+%     
+%   6) 
+%      \slant slopes a box by the angle alpha such that tan(alpha)=slant,
+%      without changing dimensions of the \box;
+%
+%         \slant{slant} followed by an \hbox or a \vbox
+%     
+%---------------------------------------------------------------
+% HISTORY:
+% 18 VIII 1993 ver. 0.1
+%    * first release
+% 30--31 VIII 1993 ver. 0.2
+%    * third parameter eliminated from \scale (via \afterassignment
+%      and \aftergroup hackery)
+%    * added \zscale, \xyscale, \yxscale, \xscale, and \yscale
+%      with scaling given in percents
+%    * added \scaleto, \xyscaleto, \yxscaleto, \xscaleto, and \yscaleto
+% 3 IX 1993 ver. 0.21
+%    * \the_scale renamed to \lastscale and made global, thus it became 
+%      available to a user
+% 8 IX 1993 ver. 0.22
+%    * all transformations return \hbox, because of currentpoint
+%      positioning
+%    * the old version of \scale is become undefined
+%    * \slant and \rotate fit the new convention of parameter's
+%      hackery -- they are assumed to be followed by an \hbox
+%      or a \vbox
+% 6 XII 1993 ver. 0.23
+%    * \revolve added
+%    * \rotate with \vbox patched
+% 10 II 1994 ver. 0.24
+%    * \revolvedir+, \revolvedir-, \xflip, and \yflip  added
+%---------------------------------------------------------------
+\edef\undtranscode{\the\catcode`\_} \catcode`\_11
+%---------------------------------------------------------------
+\newbox\box_tmp % temporary box register
+\newdimen\dim_tmp % temporary dimen register (for arithmetic manipulation)
+%---------------------------------------------------------------
+\def\jump_setbox{\aftergroup\after_setbox}% a general trick
+%---------------------------------------------------------------
+% ``floating point arithmetic'' (excerpted from T. Rokicki):
+% r  y
+%
+% ^
+% |
+% |
+% |
+% |
+% |
+% 0--------------> t   x
+%
+\def\resize
+    % dimen registers:
+    #1% y   make y such that y/r=x/t
+    #2% r
+    #3% x
+    #4% t
+%   We have a sticky problem here:  TeX doesn't do floating point arithmetic!
+%   Our goal is to compute y = rx/t. The following loop does this reasonably
+%   fast, with an error of at most about 16 sp (about 1/4000 pt).
+    {%
+    % save parameters to the internal variables:
+    \dim_r#2\relax \dim_x#3\relax \dim_t#4\relax
+    \dim_tmp=\dim_r \divide\dim_tmp\dim_t
+    \dim_y=\dim_x \multiply\dim_y\dim_tmp
+    \multiply\dim_tmp\dim_t \advance\dim_r-\dim_tmp
+    \dim_tmp=\dim_x
+    \loop \advance\dim_r\dim_r \divide\dim_tmp 2
+    \ifnum\dim_tmp>0
+      \ifnum\dim_r<\dim_t\else
+        \advance\dim_r-\dim_t \advance\dim_y\dim_tmp \fi
+    \repeat
+    % assign result:
+    #1\dim_y\relax
+    }
+\newdimen\dim_x    % horizontal size after scaling
+\newdimen\dim_y    % vertical size after scaling
+\newdimen\dim_t    % horizontal size before scaling
+\newdimen\dim_r    % vertical size before scaling
+%\newdimen\dim_tmp % register for arithmetic manipulation (already declared)
+%---------------------------------------------------------------
+\def\perc_scale#1#2{% #1 -- xscale, #2 -- yscale, in percents,
+                    % to be followed by an \hbox or a \vbox
+  \def\after_setbox{%
+    \hbox\bgroup
+    \special{ps: gsave currentpoint #2 100 div div exch #1 100 div div exch
+             currentpoint neg #2 100 div mul exch neg #1 100 div mul exch
+             translate #1 100 div #2 100 div scale translate}%
+    \dim_tmp\wd\box_tmp \divide\dim_tmp100 \wd\box_tmp#1\dim_tmp
+    \dim_tmp\ht\box_tmp \divide\dim_tmp100 \ht\box_tmp#2\dim_tmp
+    \dim_tmp\dp\box_tmp \divide\dim_tmp100 \dp\box_tmp#2\dim_tmp
+    \box\box_tmp \special{ps: grestore}\egroup}%
+    \afterassignment\jump_setbox\setbox\box_tmp =
+}%
+%---------------------------------------------------------------
+{\catcode`\p12 \catcode`\t12 \gdef\PT_{pt}}
+\def\hull_num{\expandafter\hull_num_}
+\expandafter\def\expandafter\hull_num_\expandafter#\expandafter1\PT_{#1}
+%---------------------------------------------------------------
+\def\find_scale#1#2{% #1 -- size after rescaling, #2 -- \wd or \ht
+% Finds a scale (\lastscale macro) such that the box following the macro
+% call would have the respective dimen (i.e., #2) equal to #1 after rescaling.
+% NOTE: it is assumed that prior to calling \find_scale a macro
+%       \extra_complete is defined.
+  \def\after_setbox{%
+    \resize\dim_tmp{100pt}{#1}{#2\box_tmp}%
+    \xdef\lastscale{\hull_num\the\dim_tmp}\extra_complete}%
+  \afterassignment\jump_setbox\setbox\box_tmp =
+}
+%---------------------------------------------------------------
+\def\scaleto#1#2#3#4{% #1 -- size of dimen #2 (\wd or \ht) after scaling
+                     % #3 -- actual x-size, #4 -- actual y-size
+  \def\extra_complete{\perc_scale{#3}{#4}\hbox{\box\box_tmp}}%
+  \find_scale{#1}#2}
+%---------------------------------------------------------------
+\let\xyscale\perc_scale
+\def\zscale#1{\xyscale{#1}{#1}}
+\def\yxscale#1#2{\xyscale{#2}{#1}}
+\def\xscale#1{\xyscale{#1}{100}}
+\def\yscale#1{\xyscale{100}{#1}}
+%---------------------------------------------------------------
+\def\xyscaleto#1{\scaleto{#1}\wd\lastscale\lastscale}
+\def\yxscaleto#1{\scaleto{#1}\ht\lastscale\lastscale}
+\def\xscaleto#1{\scaleto{#1}\wd\lastscale{100}}
+\def\yscaleto#1{\scaleto{#1}\ht{100}\lastscale}
+%---------------------------------------------------------------
+\def\slant#1{% #1 (slant) = tan(alpha), where alpha is the "italic" angle.
+             % To be followed by an \hbox or a \vbox
+  \hbox\bgroup
+  \def\after_setbox{%
+    \special{ps: gsave 0 currentpoint neg exch pop 0 currentpoint exch pop
+             translate [1 0 #1 1 0 0] concat translate}%
+    \box\box_tmp \special{ps: grestore}\egroup}%
+  \afterassignment\jump_setbox\setbox\box_tmp =
+}%
+%---------------------------------------------------------------
+\def\rotate#1{% #1 -- angle,
+              % to be followed by an \hbox or a \vbox
+  \hbox\bgroup
+  \def\after_setbox{%
+    \setbox\box_tmp\hbox{\box\box_tmp}% otherwise does not work with \vbox
+    \wd\box_tmp 0pt \ht\box_tmp 0pt \dp\box_tmp 0pt
+    \special{ps: gsave currentpoint currentpoint translate
+             #1 rotate neg exch neg exch translate}%
+    \box\box_tmp
+    \special{ps: grestore}%
+    \egroup}%
+  \afterassignment\jump_setbox\setbox\box_tmp =
+}%
+%---------------------------------------------------------------
+\newdimen\box_tmp_dim_a
+\newdimen\box_tmp_dim_b
+\newdimen\box_tmp_dim_c
+\def\plus_{+}
+\def\minus_{-}
+\def\revolvedir#1{% to be followed by an \hbox or a \vbox
+  \hbox\bgroup
+% check parameter:
+   \def\param_{#1}%
+   \ifx\param_\plus_ \else \ifx\param_\minus_
+   \else
+     \errhelp{I would rather suggest to stop immediately.}%
+     \errmessage{Argument to \noexpand\revolvedir should be either + or -}%
+   \fi\fi
+  \def\after_setbox{%
+    \box_tmp_dim_a\wd\box_tmp
+% prepare to revolving:
+    \setbox\box_tmp\hbox{%
+     \ifx\param_\plus_\kern-\box_tmp_dim_a\fi
+     \box\box_tmp
+     \ifx\param_\plus_\kern\box_tmp_dim_a\fi}%
+% compute dimensions of the box to be revolved:
+    \box_tmp_dim_a\ht\box_tmp \advance\box_tmp_dim_a\dp\box_tmp
+    \box_tmp_dim_b\ht\box_tmp \box_tmp_dim_c\dp\box_tmp
+    \dp\box_tmp0pt \ht\box_tmp\wd\box_tmp \wd\box_tmp\box_tmp_dim_a
+% revolve:
+    \kern \ifx\param_\plus_ \box_tmp_dim_c \else \box_tmp_dim_b \fi
+    \special{ps: gsave currentpoint currentpoint translate
+             #190 rotate neg exch neg exch translate}%
+    \box\box_tmp
+    \special{ps: grestore}%
+    \kern -\ifx\param_\plus_ \box_tmp_dim_c \else \box_tmp_dim_b \fi
+    \egroup}%
+  \afterassignment\jump_setbox\setbox\box_tmp =
+}%
+\def\revolve{\revolvedir-}
+%---------------------------------------------------------------
+\def\xflip{% to be followed by an \hbox or a \vbox
+  \hbox\bgroup
+  \def\after_setbox{%
+    \box_tmp_dim_a.5\wd\box_tmp
+% prepare to flipping:
+   \setbox\box_tmp
+     \hbox{\kern-\box_tmp_dim_a \box\box_tmp \kern\box_tmp_dim_a}%
+% flip:
+   \kern\box_tmp_dim_a
+    \special{ps: gsave currentpoint currentpoint translate
+         [-1 0 0 1 0 0] concat neg exch neg exch translate}%
+    \box\box_tmp
+    \special{ps: grestore}%
+    \kern-\box_tmp_dim_a
+    \egroup}%
+  \afterassignment\jump_setbox\setbox\box_tmp =
+}%
+%---------------------------------------------------------------
+\def\yflip{% to be followed by an \hbox or a \vbox
+  \hbox\bgroup
+  \def\after_setbox{%
+    \box_tmp_dim_a\ht\box_tmp \box_tmp_dim_b\dp\box_tmp
+    \box_tmp_dim_c\box_tmp_dim_a \advance\box_tmp_dim_c\box_tmp_dim_b
+    \box_tmp_dim_c.5\box_tmp_dim_c
+% prepare to flipping:
+   \setbox\box_tmp\hbox{\vbox{%
+     \kern\box_tmp_dim_c\box\box_tmp\kern-\box_tmp_dim_c}}%
+% flip:
+   \advance\box_tmp_dim_c-\box_tmp_dim_b
+   \setbox\box_tmp\hbox{%
+     \special{ps: gsave currentpoint currentpoint translate
+         [1 0 0 -1 0 0] concat neg exch neg exch translate}%
+     \lower\box_tmp_dim_c\box\box_tmp
+     \special{ps: grestore}}%
+% restore dimensions of the flipped box:
+    \ht\box_tmp\box_tmp_dim_a \dp\box_tmp\box_tmp_dim_b
+    \box\box_tmp
+    \egroup}%
+  \afterassignment\jump_setbox\setbox\box_tmp =
+}%
+%---------------------------------------------------------------
+\catcode`\_\undtranscode
+%---------------------------------------------------------------
+\endinput

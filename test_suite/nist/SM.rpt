@@ -1,0 +1,12 @@
+Module :  SM
+ Filename    Tot   OK  Fai  Del  Man
+ SM103A.PRT    6    6    0    0    0 OK
+ SM105A.PRT    9    9    0    0    0 OK
+ SM106A.PRT    1    0    0    0    1 OK
+ SM107A.PRT  200  200    0    0    0 OK
+ SM201A.PRT   11   10    1    0    0   
+ SM203A.PRT    1    1    0    0    0 OK
+ SM205A.PRT    9    9    0    0    0 OK
+ SM208A.PRT    7    0    6    1    0   
+ Total:      244  235    7    1    1    8    6 OK
+    Percentages: pgms ok: 75 %  Tests ok: 96.3115 %

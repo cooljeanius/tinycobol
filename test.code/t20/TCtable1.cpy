@@ -1,0 +1,10 @@
+    05  FILLER  PIC X(20) VALUE '001MIS              '.
+    05  FILLER  PIC X(20) VALUE '002PAYROLL          '.
+    05  FILLER  PIC X(20) VALUE '003SALES            '.
+    05  FILLER  PIC X(20) VALUE '004SHIPPING         '.
+    05  FILLER  PIC X(20) VALUE '005ACCOUNTING       '.
+    05  FILLER  PIC X(20) VALUE '006DEPT1            '.
+    05  FILLER  PIC X(20) VALUE '007DEPT2            '.
+    05  FILLER  PIC X(20) VALUE '008DEPT3            '.
+    05  FILLER  PIC X(20) VALUE '009DEPT4            '.
+    05  FILLER  PIC X(20) VALUE '010OTHERS           '.

@@ -1,0 +1,84 @@
+#
+# Makefile for htcobrun
+#
+
+prefix=@prefix@
+drive_prefix=@drive_prefix@
+exec_prefix=${prefix}
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+#tcob_docdir=@tcob_docdir@
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+
+#DESTDIR=${drive_prefix}
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d
+INSTALL_PROGRAM=$(INSTALL) -s
+
+tc_library=../lib/libhtcobol.a
+
+RM=@RM@
+
+EXEEXT=@exeext@
+
+CCX=@CC@
+
+INCLUDES=@INCLUDES@ 
+LIBS=@LIBS@ @tcob_ld_args_htcobol@ @tcob_ld_args_db@ @tcob_ld_args_isam@ @tcob_ld_args_curses@ @tcob_ld_args_readline@
+LIBS1=@LIBS@ @tcob_ld_args_db@ @tcob_ld_args_isam@ @tcob_ld_args_curses@ @tcob_ld_args_readline@
+LIBS2=@LIBS@ @tcob_ld_args_htcobol@
+LDFLAGS=
+CCXFLAGS=${INCLUDES} -Wall
+
+SRC01 = htcobrun.c
+
+OBJ01 = $(SRC01:.c=.o)
+OBJS = $(OBJ01)
+
+PROG00 = htcobrun$(EXEEXT)
+PROG01 = @tcob_cobrun_name1_opt@$(EXEEXT)
+PROG02 = @tcob_cobrun_name2_opt@$(EXEEXT)
+PROGS = $(PROG00) $(PROG01) $(PROG02)
+
+
+#include ${prefix}/config/C.rules.in
+#
+# Rules for compiling .c sources
+#
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+
+all: @tcob_cobrun_build_opt@
+
+build-static: ${PROG01}
+
+build-shared: ${PROG02}
+ 
+
+# This program does not properly initialize the RTL on Win32 
+# Does not display the COMMAND-LINE
+${PROG01}: ${OBJ01} ${tc_library}
+	${CCX} ${OBJ01} -Wl,-export-dynamic -o ${PROG01} \
+	${INCLUDES} -Wl,-whole-archive ${tc_library} \
+	-Wl--enable-auto-import -Wl,-no-whole-archive $(LIBS1)
+	strip ${PROG01}
+
+${PROG02}:  ${OBJ01}
+	$(CCX) -o $@ ${OBJ01} $(LDFLAGS) $(LIBS2) 
+	strip $@
+
+cleanall allclean: clean
+clean:
+	@${RM} $(PROGS) ${OBJS} *.lis *.s *.i *.def core
+
+install: $(PROG00)
+	${INSTALL_PROGRAM} $(PROG00) $(DESTDIR)$(bindir)/$(PROG00)
+
+uninstall: 
+	${RM} $(DESTDIR)$(bindir)/$(PROG00)

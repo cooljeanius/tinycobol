@@ -1,0 +1,70 @@
+; Inno Setup Script for TinyCOBOL MinGW edition.
+;
+
+[Setup]
+AppName=TinyCOBOL MinGW edition
+AppVerName=TinyCOBOL version @TCOB_VERSION@
+AppPublisherURL=http://tiny-cobol.sf.net/
+AppSupportURL=http://tiny-cobol.sf.net/
+AppUpdatesURL=http://tiny-cobol.sf.net/
+DefaultDirName=\MinGW\local
+;DefaultDirName={pf}\MinGW\local
+DefaultGroupName=TinyCOBOL MinGW edition
+LicenseFile=info\isetup\license.txt
+;InfoBeforeFile=Notes.mingw.txt
+;InfoAfterFile=Readme.mingw32.txt
+InfoAfterFile=info\isetup\Readme.isetup.txt
+OutputDir=.
+OutputBaseFilename=tinycobol-@TCOB_VERSION@-@TCOB_RELEASE_VERSION@.mingw
+WizardImageFile=info\isetup\image3e1.bmp
+
+[Tasks]
+Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"
+
+[Files]
+Source: "compiler\htcobol.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "compiler\htcobolrc"; DestDir: "{app}\share\htcobol"; Flags: ignoreversion
+
+Source: "lib\htcobol.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "lib\htcobol.dll.a"; DestDir: "{app}\lib"; Flags: ignoreversion
+Source: "lib\libhtcobol.a"; DestDir: "{app}\lib"; Flags: ignoreversion
+Source: "lib\htrtconf"; DestDir: "{app}\share\htcobol"; Flags: ignoreversion
+
+Source: "cobrun\htcobrun.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+
+Source: "info\isetup\tcobol.bat"; DestDir: "{app}\share\htcobol"; Flags: ignoreversion
+Source: "info\isetup\Readme.isetup.txt"; DestDir: "{app}\share\htcobol"; Flags: ignoreversion
+
+Source: "info\isetup\license.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "Readme.mingw32.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "Readme.cygwin.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "Readme.isam.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+;Source: "info\htcobol_en.html"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+;Source: "info\htcobrun_en.html"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "info\htcobol.html"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "info\htcobrun.html"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+;Source: "info\htcobf2f_en.html"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+;Source: "info\htcobol_en.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+;Source: "info\htcobrun_en.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "info\htcobol.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "info\htcobrun.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+;Source: "info\htcobf2f_en.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "README"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "INSTALL"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "STATUS"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "HISTORY"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+;Source: "INSTALL.Win32"; DestDir: "{app}\doc"; Flags: ignoreversion
+;Source: "install.txt"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "COPYING"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+Source: "COPYING.LIB"; DestDir: "{app}\share\htcobol\doc"; Flags: ignoreversion
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Icons]
+Name: "{group}\TinyCOBOL"; Filename: "{cmd}"; WorkingDir: "{app}";
+Name: "{group}\Uninstall"; Filename: "{uninstallexe}"
+Name: "{userdesktop}\TinyCOBOL MinGW edition"; Filename: "{cmd}"; WorkingDir: "{app}"; Tasks: desktopicon
+
+;[Run]
+;Filename: "{app}\tcobol.bat"; Description: "Launch TinyCOBOL MinGW edition"; Flags: nowait postinstall skipifsilent
+;Filename: "{app}\Readme.isetup.txt"; Description: "Read TinyCOBOL manual setup"; Flags: nowait postinstall skipifsilent
+

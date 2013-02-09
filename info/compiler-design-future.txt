@@ -1,0 +1,25 @@
+Notes on the Compiler Design of Tiny Cobol 
+------------------------------------------
+
+There are some changes that could make the compiler much simpler. Here is
+a sketch of what I think:
+
+* Make the scanner with 4 main states, each corresponding to a COBOL division.
+Of course, some of these states could have some sub-states (for example, during
+a PIC processing). Much of the identification division are just comments and
+can be deleted.
+
+* During the data division we collect and define all variables, including their
+full hierarchy, so we can return a single token for each "VAR IN/OF PARENTVAR"
+found in the next (procedure) division.
+
+* During the procedure division all undefined symbols could be just labels or
+literals and are returned as such by the scanner. As all labels could be
+identified at the scanner too, because they should be followed by a period, it
+can fully qualify the kind of symbol found (LITERAL, LABEL or VARIABLE).
+The tokenizing of "VAR IN PARENTVAR IN ... IN GRANDPARENTVAR" 
+is also done at the scanner. 
+This will relief much of the complexity of the parser.
+
+Rildo Pragana
+

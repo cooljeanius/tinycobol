@@ -1,0 +1,25 @@
+#
+SHELL=/bin/sh
+
+RM=rm -f
+
+subdirs=compile_tests format_tests perform_tests seqio_tests lseqio_tests \
+call_tests condition_tests idxio_tests relio_tests search_tests sortio_tests
+
+all:
+
+tests:
+	perl cobol_test.pl
+
+runtests:
+	./rp.sh
+
+clean:
+	@for i in ${subdirs}; do \
+		echo -n Cleaning in directory $$i ; \
+		(cd $$i; ${RM}  *.s *.o *.i *.exe *.lis* *.scan *.txt *.dbx *.idx *.dat core libcalls.a temp*cob) ; \
+		echo " (done)" ; \
+	done
+	@echo -n Cleaning in directory ./
+	@${RM} -f foo* basic.c* *.log temp*cob *.s *.o *.i *.lis*
+	@echo " (done)" 

@@ -1,0 +1,36 @@
+tinycobol (0.63) unstable; urgency=low
+
+  * NMU.
+
+ --  Herbert Parentes Fortes Neto Sat, 12 Nov 2005 16:04:19 -0200
+
+tinycobol (0.62) unstable; urgency=low
+
+  * NMU.
+  * Last maintainer Ferran Pegueroles Forcadell.
+  * New format, three debian packages
+  * tinycobol, libhtcobol-dev, tinycobol-testfiles.
+
+ -- Herbert Parentes Fortes Neto  Thu, 13 Oct 2005 14:55:11 -0300
+
+tinycobol (0.54-1) unstable; urgency=low
+
+  * New Release.
+
+ -- Ferran Pegueroles Forcadell  <pegueroles@airtel.net>  
+
+tinycobol (0.53-1) unstable; urgency=low
+
+  * New Release.
+
+ -- Ferran Pegueroles Forcadell  <pegueroles@airtel.net>  
+
+tinycobol (0.52-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Ferran Pegueroles Forcadell  <pegueroles@airtel.net>  Sat,  5 May 2001 20:25:37 +0200
+
+Local variables:
+mode: debian-changelog
+End:

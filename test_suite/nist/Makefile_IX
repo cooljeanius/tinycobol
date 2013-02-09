@@ -1,0 +1,7 @@
+#
+# Makefile for IX NIST Module
+#
+include ../Makefile_head.h
+MODULE=IX
+include ../${MODULE}.idx
+include ../Makefile_trail.h

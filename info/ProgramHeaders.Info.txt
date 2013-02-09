@@ -1,0 +1,19 @@
+Internal main routine names.
+-----------------------------------------------
+
+In an attempt to generate GCC similar code, the main program will generate 
+the following header; 
+
+
+.globl main
+	.type	main,@function 
+main:
+
+
+Sub-programs will generate the following header; 
+
+.global	_TEST02
+	.type	_TEST02,@function 
+_TEST02:
+
+

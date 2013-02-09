@@ -1,0 +1,44 @@
+Lists are in alphabetic order.
+
+Author:
+-------------------------------------------------------------------------------
+Rildo Pragana.
+
+Maintained-by:
+-------------------------------------------------------------------------------
+
+Contributors:		Contribution:	
+-------------------------------------------------------------------------------
+Andrew Cameron          - File IO RTL.
+Alain Lucari            - Fixes for write with advancing.
+Alan Cox		- Initial code to generate GNU assembler. 
+Bernard Giroud          - Declaratives, Intrinsic functions, CALL statements.
+David Douthitt		- Produced libc6 RPM packages for releases.
+David Essex             - Preprocessor, internationalization, core compiler.
+David Billsbrough	- Sample spec file for RPM version 4 format.
+Ferran Pegueroles       - Created Debian package release and man files, 
+                          Screen status and function keys for screenIO,
+                          Intrinsic functions.
+Fred Mobach		- Resident COBOL standard expert.
+Gerard Hollard          - Qualification problem fix.
+Glen Colbert		- Initial code for both command line front end and 
+                          regression test suite 
+Hudson Reis             - Portuguese version of man files.
+Jeff Smith              -
+Jim Morcombe            - External file MF compatibility option.
+Jim Noeth               - Move routines in RTS (Run Time System).
+Jonathan Riddell	- Docs: Introduction to COBOL and TinyCOBOL.
+Jose de Souza           - Several bug fixes in compiler and RTL.
+Keiichi Takahashi       - Created libc6 RPM packages.
+Keisuke Nishida		- Bison patch and misc. fixes.
+Laura Tweedy		- Initial lex code for preprocessor and cobf2f utility.
+Leonardo Epifani        - Several RTS patches.
+Luciano D. C. Manzo	- Initial spec file to create RPMs.
+Mariusz Stakowski	- INSPECT TALLYING.
+Matt Verran             - BeOS configuration.
+Paolo Bizzarri          - Several RTS patches.
+Roger While             - Initial htcobrun code and several RTS patches.
+Sean Bufford		- Patch to fix indexed file index file I/O offset 
+                          calculation
+Stephen Connolly
+

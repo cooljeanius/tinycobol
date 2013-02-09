@@ -1,0 +1,192 @@
+#
+#
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SRC01 = test18a01.cob
+SRC02 = test18a02.cob
+SRC03 = test18a03.cob
+SRC04 = test18a04.cob
+SRC05 = test18a05.cob
+SRC06 = test18a06.cob
+SRC07 = test18a07.cob
+SRC08 = test18a08.cob
+SRC09 = test18a09.cob
+SRC10 = test18a10.cob
+SRC11 = test18a11.cob
+SRC12 = test18b01.cob
+SRC13 = test18b02.cob
+SRC14 = test18b03.cob
+SRC15 = test18c01.cob
+SRC16 = test18c02.cob
+SRC17 = test18c03.cob
+SRC18 = test18d01.cob
+SRC19 = test18d02.cob
+SRC20 = test18d03.cob
+  
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.cob=.o)
+OBJ03 = $(SRC03:.cob=.o)
+OBJ04 = $(SRC04:.cob=.o)
+OBJ05 = $(SRC05:.cob=.o)
+OBJ06 = $(SRC06:.cob=.o)
+OBJ07 = $(SRC07:.cob=.o)
+OBJ08 = $(SRC08:.cob=.o)
+OBJ09 = $(SRC09:.cob=.o)
+OBJ10 = $(SRC10:.cob=.o)
+OBJ11 = $(SRC11:.cob=.o)
+OBJ12 = $(SRC12:.cob=.o)
+OBJ13 = $(SRC13:.cob=.o)
+OBJ14 = $(SRC14:.cob=.o)
+OBJ15 = $(SRC15:.cob=.o)
+OBJ16 = $(SRC16:.cob=.o)
+OBJ17 = $(SRC17:.cob=.o)
+OBJ18 = $(SRC18:.cob=.o)
+OBJ19 = $(SRC19:.cob=.o)
+OBJ20 = $(SRC20:.cob=.o)
+OBJS =  $(OBJ01) $(OBJ02) $(OBJ03) $(OBJ04) $(OBJ05) \
+        $(OBJ06) $(OBJ07) $(OBJ08) $(OBJ09) $(OBJ10) \
+        $(OBJ11) $(OBJ12) $(OBJ13) $(OBJ14) $(OBJ15) \
+        $(OBJ16) $(OBJ17) $(OBJ18) $(OBJ19) $(OBJ20)
+
+PROG01 = test18a01
+PROG02 = test18a02
+PROG03 = test18a03
+PROG04 = test18a04
+PROG05 = test18a05
+PROG06 = test18a06
+PROG07 = test18a07
+PROG08 = test18a08
+PROG09 = test18a09
+PROG10 = test18a10
+PROG11 = test18a11
+PROG12 = test18b01
+PROG13 = test18b02
+PROG14 = test18b03
+PROG15 = test18c01
+PROG16 = test18c02
+PROG17 = test18c03
+PROG18 = test18d01
+PROG19 = test18d02
+PROG20 = test18d03
+PROGS =  $(PROG01) $(PROG02) $(PROG03) $(PROG04) $(PROG05) \
+         $(PROG06) $(PROG07) $(PROG08) $(PROG09) $(PROG10) \
+         $(PROG11) $(PROG12) $(PROG13) $(PROG14) $(PROG15) \
+         $(PROG16) $(PROG17) $(PROG18) $(PROG19) $(PROG20)
+
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#
+
+all: ${PROGS}
+
+${PROG01}: ${OBJ01}
+	$(CCX) -g -o $@ ${OBJ01} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG02}: ${OBJ02}
+	$(CCX) -g -o $@ ${OBJ02} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG03}: ${OBJ03}
+	$(CCX) -g -o $@ ${OBJ03} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG04}: ${OBJ04}
+	$(CCX) -g -o $@ ${OBJ04} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG05}: ${OBJ05}
+	$(CCX) -g -o $@ ${OBJ05} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG06}: ${OBJ06}
+	$(CCX) -g -o $@ ${OBJ06} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG07}: ${OBJ07}
+	$(CCX) -g -o $@ ${OBJ07} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG08}: ${OBJ08}
+	$(CCX) -g -o $@ ${OBJ08} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG09}: ${OBJ09}
+	$(CCX) -g -o $@ ${OBJ09} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG10}: ${OBJ10}
+	$(CCX) -g -o $@ ${OBJ10} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG11}: ${OBJ11}
+	$(CCX) -g -o $@ ${OBJ11} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG12}: ${OBJ12}
+	$(CCX) -g -o $@ ${OBJ12} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG13}: ${OBJ13}
+	$(CCX) -g -o $@ ${OBJ13} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG14}: ${OBJ14}
+	$(CCX) -g -o $@ ${OBJ14} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG15}: ${OBJ15}
+	$(CCX) -g -o $@ ${OBJ15} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG16}: ${OBJ16}
+	$(CCX) -g -o $@ ${OBJ16} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG17}: ${OBJ17}
+	$(CCX) -g -o $@ ${OBJ17} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG18}: ${OBJ18}
+	$(CCX) -g -o $@ ${OBJ18} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG19}: ${OBJ19}
+	$(CCX) -g -o $@ ${OBJ19} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG20}: ${OBJ20}
+	$(CCX) -g -o $@ ${OBJ20} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+clean: cleanfiles
+	@${RM} $(PROGS) $(OBJS) *.lis *.listing.txt *.s *.i *.exe core
+
+cleanfiles filesclean:
+	@${RM} *.dat *.idx

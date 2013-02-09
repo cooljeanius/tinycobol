@@ -1,0 +1,152 @@
+#
+# Makefile.in for the TinyCOBOL run-time library (MinGW)
+#
+
+MV=@MV@
+RM=@RM@
+MKDIR=@MKDIR@
+
+prefix=@prefix@
+drive_prefix=@drive_prefix@
+exec_prefix=${prefix}
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+#tcob_docdir=@tcob_docdir@
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+lib_dir=${exec_prefix}/lib
+
+#DESTDIR=${drive_prefix}
+
+#
+# Debug flags are set in htconfig.h
+# -DPICTURE_TESTING -DDEBUG_RTS
+#
+CCX=@CC@
+ASM=@AS@
+INCLUDES=@INCLUDES@
+CCXFLAGS=${INCLUDES}  -Wall 
+#CCXFLAGS1=${INCLUDES} -Wall -DDLL_EXPORTS 
+CCXFLAGS1=${INCLUDES} -Wall 
+ACXFLAGS=-D -as
+
+WRES=@WINDRES@
+WRESFLAGS=-O coff
+
+RANLIB=@RANLIB@
+AR=@AR@
+
+INSTRC=@tcob_default@
+#RCFILE=@rtoptfile_default@
+RCFILE=htrtconf
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d
+INSTALL_PROGRAM=$(INSTALL) -s
+
+#
+LIBS=@LIBS@ @tcob_ld_args_db@ @tcob_ld_args_isam@ @tcob_ld_args_curses@ @tcob_ld_args_readline@
+#
+lib_version=@tcob_version@
+lib_name1=htcobol
+
+STATIC_LIB1=lib${lib_name1}.a
+DLL_LIB1=${lib_name1}.dll
+DLL_IMLIB1=${lib_name1}.dll.a
+DLL_DEF1=${lib_name1}.def
+
+SRC01 = general.c \
+	pictures.c basicio.c strings.c screenio.c \
+	cobmove.c cobmove_f_.c cobmove_x_.c cobmove_e_.c \
+	cobmove_9_.c cobmove_b_.c cobmove_c_.c \
+	rterrors.c scr_curses.c \
+	fileio.c sortio.c fileisam.c filerel.c \
+	mcmath.c intrinsic.c \
+	dyncall.c config.c
+#	fixnumeric.c imath.c
+
+SRC03 = htcobolrt.rc
+
+OBJS01 = $(SRC01:.c=.o)
+
+OBJD01 = $(SRC01:.c=.o)
+OBJD02 = $(SRC03:.rc=.o)
+
+#
+# Rules for compiling .c .s sources
+#
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+%.lo: %.c
+	$(CCX) $(CCXFLAGS1) -c $< -o $@
+
+#
+# Notes on building and using the htcobol DLL.
+# - The linker will try to use the DLL by default. 
+#   If not available it will try to use the static libraries.
+# - When linking with the htcobol DLL, all other libraries (DLL's) must be 
+#   named, whether or not they are used in the cobol program. 
+#   (i.e. -lpdcurses -ldb)
+# - To run a cobol program built with the htcobol DLL, and the
+#   htcobol DLL location must be included in the PATH or be located in the CWD. 
+# - For testing purposes, it is recommended that only a static htcobol library 
+#   be used, since gdb will not work properly with DLL's.
+#
+
+#all: static-libs
+all: static-libs @tcob_shared_libs_opt@
+#all: static-libs shared-libs
+
+static-libs: ${STATIC_LIB1}
+shared-libs: ${DLL_LIB1}
+
+# Rules for building the DLL resources
+#
+htcobolrt.o: htcobolrt.rc
+	$(WRES) $(WRESFLAGS) $< $@
+
+# Rules for building the static library
+#
+${STATIC_LIB1}: ${OBJS01}
+	${AR} cr ${STATIC_LIB1} ${OBJS01}
+	${RANLIB} ${STATIC_LIB1}
+
+# Rules for building the shared library (DLL)
+#
+${DLL_LIB1}: ${OBJD01} $(OBJD02)
+	${CCX} -shared -Wl,--export-all-symbols,--enable-auto-import -Wl,--out-implib,${DLL_IMLIB1},--output-def,${DLL_DEF1} -o ${DLL_LIB1} $(OBJD01) $(OBJD02) ${LIBS}
+#	${CCX} -shared -Wl,--out-implib,${DLL_IMLIB1},--output-def,${DLL_DEF1} -o ${DLL_LIB1} $(OBJD01) $(OBJD02) ${LIBS}
+#	${CCX} -shared -Wl,--out-implib,${lib_name1}.dll.a,--output-def,${lib_name1}.def  -o ${DLL_LIB1} $(OBJD01) $(OBJD02) ${LIBS}
+
+cleanall allclean: clean
+clean:
+	@${RM} ${OBJS} ${STATIC_LIB1} ${DLL_LIB1} ${DLL_DEF1} ${DLL_IMLIB1} \
+	core *.bak *.o
+
+install: install-rts-config install-static-libs @tcob_shared_libs_install_opt@
+
+install-rts-config:
+	${INSTALL_DATA} $(RCFILE) $(DESTDIR)$(pkgdatadir)/$(RCFILE)
+
+install-static-libs: ${STATIC_LIB1}
+	${INSTALL_DATA} ${STATIC_LIB1} $(DESTDIR)${lib_dir}/${STATIC_LIB1}
+
+install-shared-libs: ${DLL_LIB1}
+	${INSTALL_DATA} ${DLL_LIB1} $(DESTDIR)${bindir}/${DLL_LIB1}
+	${INSTALL_DATA} ${DLL_IMLIB1} $(DESTDIR)${lib_dir}/${DLL_IMLIB1}
+
+uninstall: uninstall-rts-config uninstall-static-libs uninstall-shared-libs
+
+uninstall-rts-config:
+	$(RM) $(DESTDIR)$(pkgdatadir)/$(RCFILE)
+
+uninstall-static-libs:
+	$(RM) $(DESTDIR)${lib_dir}/${STATIC_LIB1}
+
+uninstall-shared-libs:
+	$(RM) $(DESTDIR)${bindir}/${DLL_LIB1}
+	$(RM) $(DESTDIR)${lib_dir}/${DLL_IMLIB1}

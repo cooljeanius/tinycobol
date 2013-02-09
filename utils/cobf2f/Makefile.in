@@ -1,0 +1,71 @@
+#
+# Makefile.in for cobf2f - a COBOL format (free/fixed) convert utility
+#
+
+SHELL=/bin/sh
+
+@SET_MAKE@
+RM=rm -f
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d -m 755 
+INSTALL_PROGRAM=$(INSTALL) -s -m 755
+
+LEX=@LEX@
+CCX=@CC@
+
+EXEEXT=@exeext@
+
+#
+INCLUDES= -I. -I../../
+CCXFLAGS=${INCLUDES} @CCXFLAGS@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+
+#
+# Rules for compiling .c .l sources
+#
+.SUFFIX: .c .o 
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+#
+
+
+SRCS = cobf2f.c lexyy.c 
+
+OBJS = $(SRCS:.c=.o)
+
+PROG = htcobf2f$(EXEEXT)
+
+
+all: $(PROG)
+
+
+${PROG}: ${OBJS}
+	$(CCX) -o $@ ${OBJS} $(LDFLAGS) $(LIBS) 
+#	strip $@
+
+
+lexyy.c: scanner.l
+	$(LEX) -o$@ $< 
+
+cleanall allclean: clean
+clean:
+	@$(RM) $(PROG) $(OBJS) lexyy.c
+
+install: $(PROG)
+#	strip $(PROG)
+	${INSTALL_PROGRAM} $(PROG) $(DESTDIR)$(bindir)/$(PROG)
+
+uninstall: 
+	${RM} $(DESTDIR)$(bindir)/$(PROG)

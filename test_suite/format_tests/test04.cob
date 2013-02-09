@@ -1,0 +1,172 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. TEST4_FORMATS.
+ AUTHOR.  GLEN COLBERT.
+
+ ENVIRONMENT DIVISION.
+* INPUT-OUTPUT SECTION.
+* FILE-CONTROL.
+ DATA DIVISION.
+ FILE SECTION.
+
+ WORKING-STORAGE SECTION.
+ 01  WS-EDITED-FIELDS.
+     05 WS-FX-0                      PIC 99B99.
+     05 WS-FX-1                      PIC 9,999.
+     05 WS-FX-2                      PIC 9B9/900.
+     05 WS-FX-3                      PIC $99CR.
+     05 WS-FX-4                      PIC $999DB.
+     05 WS-FX-5                      PIC 009B9/9.
+
+ 01  WS-NUMERIC-FIELDS.
+     05 WS-DISPLAY-NUM-0             PIC 9999.
+     05 WS-DISPLAY-NUM-V2            PIC V99.
+     05 WS-X1 REDEFINES WS-DISPLAY-NUM-V2
+                                     PIC XX.
+     05 WS-DISPLAY-NUM-2             PIC 9999.
+     05 WS-DISPLAY-NUM-4V1           PIC 9999V99.
+     05 WS-X2 REDEFINES WS-DISPLAY-NUM-4V1
+                                     PIC X(6).
+     05 WS-DISPLAY-NUM-NV1           PIC S9(4)V99.
+     05 WS-X3 REDEFINES WS-DISPLAY-NUM-NV1
+                                     PIC X(6).
+
+ PROCEDURE DIVISION.
+ 0000-PROGRAM-ENTRY-POINT.
+
+     PERFORM A000-ALPHANUMERIC-TESTS THRU A000-EXIT.
+
+     STOP RUN.
+
+ A000-ALPHANUMERIC-TESTS.
+
+ AN01-TEST.
+     MOVE "0"                 TO WS-DISPLAY-NUM-0.
+     MOVE ".02"               TO WS-DISPLAY-NUM-V2.
+     MOVE "2"                 TO WS-DISPLAY-NUM-2.
+     MOVE "123450"            TO WS-X2.
+     MOVE "-123.4"            TO WS-DISPLAY-NUM-NV1.
+
+     DISPLAY "0000:(" WS-DISPLAY-NUM-0 "):(0000):"
+             "DISPLAY SOURCE FIELD 9999".
+
+     DISPLAY "0000:(" WS-DISPLAY-NUM-V2 "):(.02):"
+             "NOTE DISPLAY SOURCE FIELD V99".
+
+     MOVE "02"                TO WS-X1.
+     DISPLAY "0000:(" WS-DISPLAY-NUM-V2 "):(.02):"
+             "DISPLAY SOURCE FIELD V99".
+
+     DISPLAY "0000:(" WS-DISPLAY-NUM-2 "):(0002):"
+             "DISPLAY SOURCE FIELD 9999".
+
+     DISPLAY "0000:(" WS-DISPLAY-NUM-4V1 "):(1234.50):"
+             "DISPLAY SOURCE FIELD 9999V99".
+
+     DISPLAY "0000:(" WS-X3 "):(01234}):"
+             "DISPLAY SOURCE FIELD S9(4)V9(2)".
+
+ FX00-INSERT-ZZ99.
+     MOVE WS-DISPLAY-NUM-0    TO WS-FX-0.
+     DISPLAY "FX01:(" WS-FX-0 "):(00 00):"
+             "FLOAT-INSERT MOVE 0 TO 99B99".
+
+     MOVE WS-DISPLAY-NUM-V2    TO WS-FX-0.
+     DISPLAY "FX02:(" WS-FX-0 "):(00 00):"
+             "FLOAT-INSERT MOVE .02 TO 99B99".
+
+     MOVE WS-DISPLAY-NUM-2    TO WS-FX-0.
+     DISPLAY "FX03:(" WS-FX-0 "):(00 02):"
+             "FLOAT-INSERT MOVE 2 TO 99B99".
+
+     MOVE WS-DISPLAY-NUM-4V1    TO WS-FX-0.
+     DISPLAY "FX04:(" WS-FX-0 "):(12 34):"
+             "FLOAT-INSERT MOVE 1234.5 TO 99B99".
+
+     MOVE WS-DISPLAY-NUM-NV1    TO WS-FX-0.
+     DISPLAY "FX05:(" WS-FX-0 "):(01 23):"
+             "FLOAT-INSERT MOVE -123.4 TO 99B99".
+
+ FX10-INSERT-9C99.
+     MOVE WS-DISPLAY-NUM-0    TO WS-FX-1.
+     DISPLAY "FX11:(" WS-FX-1 "):(0,000):"
+             "FLOAT-INSERT MOVE 0 TO 9,999".
+
+     MOVE WS-DISPLAY-NUM-V2    TO WS-FX-1.
+     DISPLAY "FX12:(" WS-FX-1 "):(0,000):"
+             "FLOAT-INSERT MOVE .02 TO 9,999".
+
+     MOVE WS-DISPLAY-NUM-2    TO WS-FX-1.
+     DISPLAY "FX13:(" WS-FX-1 "):(0,002):"
+             "FLOAT-INSERT MOVE 2 TO 9,999".
+
+     MOVE WS-DISPLAY-NUM-4V1    TO WS-FX-1.
+     DISPLAY "FX14:(" WS-FX-1 "):(1,234):"
+             "FLOAT-INSERT MOVE 1234.5 TO 9,999".
+
+     MOVE WS-DISPLAY-NUM-NV1    TO WS-FX-1.
+     DISPLAY "FX15:(" WS-FX-1 "):(0,123):"
+             "FLOAT-INSERT MOVE -123.4 TO 9,999".
+
+ FX20-INSERT-9C99.
+     MOVE WS-DISPLAY-NUM-0    TO WS-FX-2.
+     DISPLAY "FX21:(" WS-FX-2 "):(0 0/000):"
+             "FLOAT-INSERT MOVE 0 TO 9B9/900".
+
+     MOVE WS-DISPLAY-NUM-V2    TO WS-FX-2.
+     DISPLAY "FX22:(" WS-FX-2 "):(0 0/000):"
+             "FLOAT-INSERT MOVE .02 TO 9B9/900".
+
+     MOVE WS-DISPLAY-NUM-2    TO WS-FX-2.
+     DISPLAY "FX23:(" WS-FX-2 "):(0 0/200):"
+             "FLOAT-INSERT MOVE 2 TO 9B9/900".
+
+     MOVE WS-DISPLAY-NUM-4V1    TO WS-FX-2.
+     DISPLAY "FX24:(" WS-FX-2 "):(2 3/400):"
+             "FLOAT-INSERT MOVE 1234.5 TO 9B9/900".
+
+     MOVE WS-DISPLAY-NUM-NV1    TO WS-FX-2.
+     DISPLAY "FX25:(" WS-FX-2 "):(1 2/300):"
+             "FLOAT-INSERT MOVE -123.4 TO 9B9/900".
+
+     MOVE WS-DISPLAY-NUM-NV1    TO WS-FX-5.
+     DISPLAY "FX26:(" WS-FX-5 "):(001 2/3):"
+             "FLOAT-INSERT MOVE -123.4 TO 009B9/9".
+
+ FX30-CREDIT-INSERTION.
+
+     MOVE WS-DISPLAY-NUM-2    TO WS-FX-3.
+     DISPLAY "FX31:(" WS-FX-3 "):($02  ):"
+             "CREDIT-INSERT MOVE 2 TO $99CR".
+
+     MOVE WS-DISPLAY-NUM-NV1  TO WS-FX-3.
+     DISPLAY "FX32:(" WS-FX-3 "):($23CR):"
+             "CREDIT-INSERT MOVE -123.4 TO $99CR".
+
+     MOVE WS-DISPLAY-NUM-V2   TO WS-FX-3.
+     DISPLAY "FX33:(" WS-FX-3 "):($00  ):"
+             "CREDIT-INSERT MOVE .02 TO $99CR".
+
+     MOVE WS-DISPLAY-NUM-0    TO WS-FX-3.
+     DISPLAY "FX34:(" WS-FX-3 "):($00  ):"
+             "CREDIT-INSERT MOVE ZERO TO $99CR".
+
+ FX40-DEBIT-INSERTION.
+
+     MOVE WS-DISPLAY-NUM-2    TO WS-FX-4.
+     DISPLAY "FX41:(" WS-FX-4 "):($002  ):"
+             "DEBIT-INSERT MOVE 2 TO $999DB".
+
+     MOVE WS-DISPLAY-NUM-NV1  TO WS-FX-4.
+     DISPLAY "FX42:(" WS-FX-4 "):($123DB):"
+             "DEBIT-INSERT MOVE -123.4 TO $999DB".
+
+     MOVE WS-DISPLAY-NUM-V2   TO WS-FX-4.
+     DISPLAY "FX43:(" WS-FX-4 "):($000  ):"
+             "DEBIT-INSERT MOVE .02 TO $999DB".
+
+     MOVE WS-DISPLAY-NUM-0    TO WS-FX-4.
+     DISPLAY "FX44:(" WS-FX-4 "):($000  ):"
+             "DEBIT-INSERT MOVE ZERO TO $999DB".
+
+ A000-EXIT.
+     EXIT.

@@ -1,0 +1,56 @@
+..\"
+.\"  Created by Ferran Pegueroles using help2man and modified by hand.
+.\"  Modified and updated by David Essex.
+.\" 
+.TH HTCOBF2F 1 "January 22, 2002"
+.UC 6
+.SH "NAME"
+htcobf2f \- Utility program to convert COBOL sources between formats.
+.SH SYNOPSIS
+.B htcobf2f 
+[
+.I options=hVmxf
+] 
+[ \-i
+.I input filename
+] 
+[ \-o
+.I output filename
+] 
+.SH "DESCRIPTION"
+Utility to convert from/to fixed COBOL source to/from free\(hy-form COBOL formats. 
+
+The default input stream is standard input.
+
+The default output stream is standard output.
+
+Note this version will not automatically convert tabs to white space. The 
+.B expand 
+(1) tabs conversion utility is better suited to perform this task.
+
+.SH "OPTIONS"
+.TP
+\fB\-h\fR
+Display help.
+.TP 
+\fB\-V\fR
+Print version.
+.TP 
+\fB\-x\fR
+Convert source to X/Open free format (Default)
+.TP 
+\fB\-f\fR
+Convert source to Standard fixed column format
+.TP 
+\fB\-m\fR <num> 
+Fixed format line multiplier. When converting to fixed 
+format, number liner wit an increment of <num> .
+.TP 
+\fB\-i\fR <file> 
+Input COBOL source file to convert (Default Standard Input).
+.TP 
+\fB\-o\fR <file> 
+Output COBOL source file (Default Standard Output).
+
+.SH "SEE ALSO"
+htcobol(1),  expand(1)

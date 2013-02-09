@@ -1,0 +1,34 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. TEST5_STRUCTURE.
+ AUTHOR.  GLEN COLBERT.
+ INSTALLATION. Tiny Cobol Compiler Project.
+ DATE-WRITTEN. 11-12-1999.
+ DATE-COMPILED.
+ SECURITY.
+*REMARKS. VALIDATE COMPILE FOR MOVING FIGURATIVE CONSTANTS
+
+ ENVIRONMENT DIVISION.
+* INPUT-OUTPUT SECTION.
+* FILE-CONTROL.
+ DATA DIVISION.
+ FILE SECTION.
+
+ WORKING-STORAGE SECTION.
+ 01  WS-ALPHANUMERICS.
+     05 WS-PICX-4                              PIC X(4).
+     05 WS-PICX-6                              PIC X(4).
+
+ 01  WS-NUMERICS.
+     05 WS-PIC9-4                              PIC X(9).
+     05 WS-PIC9-6                              PIC X(9).
+
+ PROCEDURE DIVISION.
+   MOVE ALL "A"                   TO WS-PICX-4.
+   MOVE ALL ZEROES                TO WS-PIC9-6.
+   MOVE HIGH-VALUES               TO WS-PICX-4.
+   MOVE LOW-VALUES                TO WS-PICX-4.
+   MOVE QUOTES                    TO WS-PICX-4.
+
+   STOP RUN.
+ A000-EXIT.
+     EXIT.

@@ -1,0 +1,114 @@
+#
+# Top make file (MinGW)
+#
+
+RM=@RM@
+MAKE=@MAKE@
+
+prefix=@prefix@
+drive_prefix=@drive_prefix@
+exec_prefix=@exec_prefix@
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+mandir = $(prefix)/man/man1
+lib_dir=${exec_prefix}/lib
+#tcob_docdir=@tcob_docdir@
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+
+#tcob_docdir=@tcob_docdir@
+#INSTTEXT1=${tcob_docdir}
+
+#DESTDIR=${drive_prefix}
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_DIR=$(INSTALL) -d
+INSTALL_PROGRAM=$(INSTALL) -s
+
+TEXTFILE01=README
+TEXTFILE02=AUTHORS
+TEXTFILE03=COPYING
+TEXTFILE04=COPYING.LIB
+TEXTFILE05=COPYRIGHT
+TEXTFILE06=INSTALL
+TEXTFILE07=STATUS
+TEXTFILE08=HISTORY
+TEXTFILE09=Readme.mingw32.txt
+TEXTFILE10=Readme.cygwin.txt
+
+subdirs=misclib compiler lib cobrun info
+subdirs1=compiler lib cobrun info utils @tcob_cobf2f_dir1@ test_suite test_suite/nist test.code
+#subdirs=misclib compiler lib cobrun test.code/copybooks info @tcob_cobf2f_dir@
+##subdirs1=misclib compiler lib cobrun cobrun/test.code test.code/copybooks info utils @tcob_cobf2f_dir@
+#subdirs1=misclib compiler lib cobrun test.code/copybooks info utils @tcob_cobf2f_dir@
+#subdirs1=misclib compiler lib cobrun info utils @tcob_cobf2f_dir@
+#subdirs2=test.code
+
+all:
+	@for i in ${subdirs}; do \
+		echo Making all in $$i ; \
+		(cd $$i; ${MAKE} all) ; \
+	done
+
+install: all
+	${INSTALL_DIR} $(DESTDIR)$(bindir)
+	${INSTALL_DIR} $(DESTDIR)$(lib_dir)
+	${INSTALL_DIR} $(DESTDIR)$(pkgdatadir)
+	${INSTALL_DIR} $(DESTDIR)$(tcob_docdir)
+	@for i in ${subdirs}; do \
+		echo Installing in $$i ; \
+		(cd $$i; ${MAKE} install) ; \
+	done
+	${INSTALL_DATA} $(TEXTFILE01) $(DESTDIR)${tcob_docdir}/$(TEXTFILE01)
+	${INSTALL_DATA} $(TEXTFILE02) $(DESTDIR)${tcob_docdir}/$(TEXTFILE02)
+	${INSTALL_DATA} $(TEXTFILE03) $(DESTDIR)${tcob_docdir}/$(TEXTFILE03)
+	${INSTALL_DATA} $(TEXTFILE04) $(DESTDIR)${tcob_docdir}/$(TEXTFILE04)
+	${INSTALL_DATA} $(TEXTFILE05) $(DESTDIR)${tcob_docdir}/$(TEXTFILE05)
+	${INSTALL_DATA} $(TEXTFILE06) $(DESTDIR)${tcob_docdir}/$(TEXTFILE06)
+	${INSTALL_DATA} $(TEXTFILE07) $(DESTDIR)${tcob_docdir}/$(TEXTFILE07)
+	${INSTALL_DATA} $(TEXTFILE08) $(DESTDIR)${tcob_docdir}/$(TEXTFILE08)
+	${INSTALL_DATA} $(TEXTFILE09) $(DESTDIR)${tcob_docdir}/$(TEXTFILE09)
+	${INSTALL_DATA} $(TEXTFILE10) $(DESTDIR)${tcob_docdir}/$(TEXTFILE10)
+
+uninstall:
+	@for i in ${subdirs}; do \
+		echo Un-Installing in $$i ; \
+		(cd $$i; ${MAKE} uninstall) ; \
+	done
+#	${RM} $(INSTTEXT1)/$(TEXTFILE01)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE02)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE03)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE04)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE05)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE06)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE07)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE08)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE09)
+#	${RM} $(INSTTEXT1)/$(TEXTFILE10)
+	${RM} $(DESTDIR)$(pkgdatadir)
+	${RM} $(DESTDIR)$(tcob_docdir)
+
+clean:
+	@for i in ${subdirs}; do \
+		echo Cleaning in $$i ; \
+		(cd $$i; ${MAKE} clean) ; \
+	done
+
+distclean cleandist:
+	@for i in ${subdirs}; do \
+		(cd $$i; ${MAKE} clean; ${RM} Makefile) ; \
+	done
+	@${RM} config.cache config.status config.log htconfig.h tcobol.iss Makefile \
+	compiler/htversion.h compiler/htcobolrc lib/htcobolrt.rc cobrun/tcrunversion.h \
+	test.code/mconfig.inc test.code/Makefile utils/cobf2f/Makefile \
+	test_suite/nist/Makefile test_suite/nist/makeConfig.inc \
+	test_suite/Makefile test_suite/coboltest.inc
+
+cleanall allclean: 
+	@for i in ${subdirs}; do \
+		echo Cleaning all in $$i ; \
+		(cd $$i; ${MAKE} cleanall) ; \
+	done
+	@${RM} config.cache config.status config.log 

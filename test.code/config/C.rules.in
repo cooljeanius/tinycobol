@@ -1,0 +1,8 @@
+#
+# Rules for compiling .c sources
+.SUFFIX: .c .o
+
+.c.o:
+	$(CCX) $(CCXFLAGS) -o $@ -c $<
+
+#

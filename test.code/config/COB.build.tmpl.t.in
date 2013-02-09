@@ -1,0 +1,11 @@
+all: ${PROG}
+
+cleanbase:
+	@${RM} ${OBJS} $(PROG) core $(PROG)*lis ${PROG}*txt ${PROG}*s ${PROG}*i \
+	core *run.err.trace.txt *run.trace.txt temp*cob	
+
+${PROG}: ${OBJS}
+	$(CCX) -g -o $@ ${OBJS} $(LDFLAGS) $(LIBS)
+
+programlist:
+	@echo ${PROG} ${PROGS}

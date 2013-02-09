@@ -1,0 +1,110 @@
+13. Appendix B - Making your own RPMs
+
+The RPM package format is already very well documented, particularly in the
+book Maximum RPM by Ed Bailey, which you can download from the RPM WWW site
+- also available from all good book stores! This is just a couple of quick
+hints for people in a hurry.
+
+RPM packages are built from a spec file. This consists (in a similar fashion
+to the KickStart config file) of a recipe of steps that need to be taken in
+order to build the package - it's expected that you'll have to build it from
+source, potentially for multiple platforms, and may need to apply patches
+before compiling. Once built and installed, a binary RPM will be created
+from the files and directories you specify as being associated with the
+package. It's important to note that RPM has no idea of which files and
+directories are related to a given package - you have to tell it.
+
+Here's a sample specification for a custom RPM of the Squid WWW cache
+server:
+
+     Summary: Squid Web Cache server
+     Name: squid
+     Version: 1.NOVM.22
+     Release: 1
+     Copyright: GPL/Harvest
+     Group: Networking/Daemons
+     Source: squid-1.NOVM.22-src.tar.gz
+     Patch: retry-1.NOVM.20.patch
+     %description
+     This is just a first attempt to package up the Squid Web Cache for easy
+     installation on our RedHat Linux servers
+
+     %prep
+     %setup
+     %build
+     configure --prefix=/usr/squid
+     perl -spi -e 's!#( -DALLOW_HOSTNAME_UNDERSCORES)!$1!' src/Makefile
+     make
+
+     %install
+     make install
+
+     %files
+     /usr/squid
+
+Here's how to build this RPM:
+
+     % mkdir -p SOURCES BUILD SRPMS RPMS/i386
+     % cp ~/squid-1.NOVM.22-src.tar.gz SOURCES
+     % cp ~/retry-1.NOVM.20.patch SOURCES
+     % rpm -ba squid-1.NOVM.22+retry-1.spec
+
+This will automatically create a subdirectory under the BUILD directory,
+into which it'll unpack the source code and then apply the patch (there are
+a number of options available for patching - check the book for details).
+Now, RPM will automatically build the package by running configure and then
+make, install it using make install, and take a snapshot of the files under
+/usr/squid. It's the latter which will form the binary RPM of the Squid
+software.
+
+Note that we can insert arbitrary shell commands into the unpacking,
+building and installing processes, e.g. the call to perl which tweaks one of
+Squid's compile-time parameters.
+
+The final binary RPM will be left under the RPMS directory in the platform
+specific subdirectory i386. In this case it will be called
+squid-1.NOVM.22-1.i386.rpm. Note that the filename is created by
+concatenating the values of the following parameters from the spec file:
+Name, Version and Release - plus the hardware platform in question, i386 in
+this case. Try to bear this in mind when creating your own RPMs, to avoid
+giving them overly long or painful names!
+
+It's also worth bearing in mind that you can build RPMs without having to
+rebuild the whole software package, e.g.
+
+     Summary: Linux 2.0.36 kernel + filehandle patch + serial console patch
+
+     Name: linux
+     Version: 2.0.36+filehandle+serial_console
+     Release: 1
+     Copyright: GPL
+     Group: Base/Kernel
+     Source: linux-2.0.36+filehandle+serial_console.tar.gz
+     %description
+     This is just a first attempt to package up the Linux kernel with patches
+     for installation on our RedHat Linux servers
+
+     %prep
+     echo
+
+     %setup
+     echo
+
+     %build
+     echo
+
+     %install
+     echo
+
+     %post
+     /sbin/lilo
+
+     %files
+     /lib/modules/2.0.36
+     /boot/vmlinuz
+
+In this case we simply create an RPM based on the /boot/vmlinuz file and the
+contents of the directory /lib/modules/2.0.36, and execute /sbin/lilo after
+the package has been installed on a target machine. Let me know if you know
+much neater way of writing the spec file than this.
+

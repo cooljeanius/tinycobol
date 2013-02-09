@@ -1,0 +1,99 @@
+#
+#
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SRC01 = test15.cob 
+SRC02 = test15a.cob
+SRC03 = test15b.c
+SRC04 = test15d.c 
+SRC05 = test15a.cob
+SRC06 = test15e.cob
+SRC07 = test15f.c
+SRC08 = test15g.cob
+SRC09 = test15h.cob
+SRC10 = test15i.cob
+SRC11 = test15j.cob
+SRC12 = test15k.cob
+SRC13 = test15l.c
+
+OBJ01 = $(SRC01:.cob=.o) $(SRC02:.cob=.o) $(SRC03:.c=.o)
+OBJ02 = $(SRC04:.c=.o) $(SRC05:.cob=.o)
+OBJ03 = $(SRC06:.cob=.o) $(SRC07:.c=.o)
+OBJ04 = $(SRC08:.cob=.o) $(SRC09:.cob=.o)
+OBJ05 = $(SRC10:.cob=.o) $(SRC11:.cob=.o) $(SRC07:.c=.o)
+OBJ06 = $(SRC12:.cob=.o) $(SRC13:.c=.o)
+OBJS  = $(OBJ01) $(OBJ02) $(OBJ03) $(OBJ04) $(OBJ05) $(OBJ06)
+
+PROG01 = test15$(EXEEXT)
+PROG02 = test15d$(EXEEXT)
+PROG03 = test15e$(EXEEXT)
+PROG04 = test15g$(EXEEXT)
+PROG05 = test15i$(EXEEXT)
+PROG06 = test15k$(EXEEXT)
+PROGS  = $(PROG01) $(PROG02) $(PROG03) $(PROG04) $(PROG05) $(PROG06)
+
+#include ${prefix}/config/C.rules.in
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling .c sources
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#
+
+all: ${PROGS}
+
+${PROG01}: ${OBJ01}
+	$(CCX) -g -o $@ ${OBJ01} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG02}: ${OBJ02}
+	$(CCX) -g -o $@ ${OBJ02} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG03}: ${OBJ03}
+	$(CCX) -g -o $@ ${OBJ03} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG04}: ${OBJ04}
+	$(CCX) -g -o $@ ${OBJ04} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG05}: ${OBJ05}
+	$(CCX) -g -o $@ ${OBJ05} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG06}: ${OBJ06}
+	$(CCX) -g -o $@ ${OBJ06} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+clean:
+	@${RM} $(PROGS) ${OBJS} *.lis *.listing.txt *.s *.i *.exe core

@@ -1,0 +1,17 @@
+#
+# Makefile for NC NIST Module
+#
+include ../Makefile_head.h
+MODULE=NC
+include ../${MODULE}.idx
+#
+# Specific rules follow: these should override the general rules. Why not?
+#
+#NC109M.PRT:
+#	./NC109M.EXE <NC109M.DATA
+#	mv prt NC109M.PRT
+#	${RM} NC109M.cob NC109M.lis* NC109M.o NC109M.s NC109M.scan NC109M.EXE
+#NC110M.PRT: NC110M.EXE
+#	./NC110M.EXE >NC110M.PRT
+#	${RM} NC110M.cob NC110M.lis* NC110M.o NC110M.s NC110M.scan NC110M.EXE
+include ../Makefile_trail.h

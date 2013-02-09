@@ -1,0 +1,5 @@
+ptest01:S:Call by default
+ptest02:S:Calling C
+ptest03:S:Memory references
+ptest04:S:Intrinsic functions
+ptest05:S:Initial

@@ -1,0 +1,79 @@
+
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. TEST01E.
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+* INPUT-OUTPUT SECTION.
+ DATA DIVISION.
+ FILE SECTION.
+
+WORKING-STORAGE SECTION.
+  
+ 01 W01-COMPUTE.
+    05  W01-COMP         PIC 9(8).
+    05  W01-COMP1        PIC 9(8).
+    05  W01-COMP2        PIC 9(8)V99.
+    05  W01-COMP3        PIC 9(2).
+    05  W01-COMP4        PIC 9(5).
+    05  W01-COMP5        PIC 9(1).
+ 
+PROCEDURE DIVISION.
+
+A-000.
+ PERFORM A-100.
+ STOP RUN.
+
+A-100.
+
+ DISPLAY "* ------ compute statements tests begin   ------ *".
+
+ MOVE 99 TO W01-COMP W01-COMP1 W01-COMP2 W01-COMP3.
+ DISPLAY "W01-COMP=" W01-COMP " W01-COMP1=" W01-COMP1 
+         " W01-COMP2=" W01-COMP2 " W01-COMP3=" W01-COMP3.
+
+ COMPUTE W01-COMP W01-COMP1 ROUNDED W01-COMP2 W01-COMP3 ROUNDED = ( 100 * 10 ) / ( 9 - 3 )
+          ON SIZE ERROR PERFORM E-100
+          NOT ON SIZE ERROR PERFORM D-100
+ END-COMPUTE.
+
+ DISPLAY "compute W01-COMP  = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP.
+ DISPLAY "compute W01-COMP1 rounded = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP1.
+ DISPLAY "compute W01-COMP2 = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP2.
+ DISPLAY "compute W01-COMP3 rounded = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP3.
+
+ MOVE 99 TO W01-COMP W01-COMP1 W01-COMP2 W01-COMP3.
+ DISPLAY "W01-COMP=" W01-COMP " W01-COMP1=" W01-COMP1 
+         " W01-COMP2=" W01-COMP2 " W01-COMP3=" W01-COMP3.
+
+ COMPUTE W01-COMP W01-COMP1 ROUNDED W01-COMP2 W01-COMP3 ROUNDED = ( 100 * 10 ) / ( 9 - 3 )
+          NOT ON SIZE ERROR PERFORM D-100
+ END-COMPUTE.
+
+ DISPLAY "compute W01-COMP  = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP.
+ DISPLAY "compute W01-COMP1 rounded = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP1.
+ DISPLAY "compute W01-COMP2 = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP2.
+ DISPLAY "compute W01-COMP3 rounded = ( 100 * 10 ) / ( 9 - 3 ) = " W01-COMP3.
+
+* MOVE 0 TO W01-COMP5.
+* COMPUTE W01-COMP4 = 2 ** 0
+ COMPUTE W01-COMP4 = 2 ** 3 ** 2
+* COMPUTE W01-COMP5 = 2 ** 3 ** 2
+*    ON SIZE ERROR PERFORM E-100
+    NOT ON SIZE ERROR PERFORM D-100
+ END-COMPUTE.
+ DISPLAY "A-100 4: COMPUTE W01-COMP4 = 2 ** 3 ** 2   =" W01-COMP4. 
+* DISPLAY "A-100 4: COMPUTE W01-COMP5 = 2 ** 3 ** 2   =" W01-COMP5. 
+ 
+ COMPUTE W01-COMP4 = 2 ** (3 ** 2).
+ DISPLAY "A-100 4: COMPUTE W01-COMP4 = 2 ** (3 ** 2) =" W01-COMP4. 
+ 
+ COMPUTE W01-COMP4 = (2 ** 3) ** 2.
+ DISPLAY "A-100 4: COMPUTE W01-COMP4 = (2 ** 3) ** 2 =" W01-COMP4. 
+
+ DISPLAY "* ------ compute statements tests end     ------ *".
+
+D-100.
+ DISPLAY "D-100: An compute exception erorr has NOT occured" .
+
+E-100.
+ DISPLAY "E-100: An compute exception erorr has occured" .

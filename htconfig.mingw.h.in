@@ -1,0 +1,238 @@
+/* htconfig.h.  Generated automatically by configure.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+/* #undef const */
+
+/* Define if you don't have vprintf but do have _doprnt.  */
+/* #undef HAVE_DOPRNT */
+
+/* Define if you have the vprintf function.  */
+#define HAVE_VPRINTF 1
+
+/* Define to `long' if <sys/types.h> doesn't define.  */
+/* #undef off_t */
+
+/* Define to `unsigned' if <sys/types.h> doesn't define.  */
+/* #undef size_t */
+
+/* Define if you have the ANSI C header files.  */
+#define STDC_HEADERS 1
+
+/* Define to be the name of the operating system.  */
+/* #undef OS_TYPE */
+
+/* Define if you have the <ctype.h> header file. */
+#define HAVE_CTYPE_H 1
+
+/* Define if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 1
+
+/* Define if you have the <stdlib.h> header file. */
+#define HAVE_STDLIB_H 1
+
+/* Define if you have the <strings.h> header file. */
+/* #undef HAVE_STRINGS_H */
+
+/* Define if you have the <string.h> header file. */
+#define HAVE_STRING_H 1
+
+/* Define if your <sys/time.h> declares struct tm.  */
+/* #undef TM_IN_SYS_TIME */
+
+/* Define if you have the strcspn function.  */
+#define HAVE_STRCSPN 1
+
+/* Define if you have the strdup function.  */
+#define HAVE_STRDUP 1
+
+/* Define if you have the strerror function.  */
+#define HAVE_STRERROR 1
+
+/* Define if you have the strspn function.  */
+#define HAVE_STRSPN 1
+
+/* Define if you have the putenv function.  */
+#define HAVE_PUTENV 1
+
+/* Define if you have the <fcntl.h> header file.  */
+#define HAVE_FCNTL_H 1
+
+/* Define if you have the <limits.h> header file.  */
+#define HAVE_LIMITS_H 1
+
+/* Define if you have the <sys/time.h> header file.  */
+#define HAVE_SYS_TIME_H 1
+
+/* Define if you have the <unistd.h> header file.  */
+#define HAVE_UNISTD_H 1
+
+/* Define if your system has a working `malloc' function. */
+/* #undef HAVE_MALLOC */
+
+/* Define if you have the <malloc.h> header file. */
+#define HAVE_MALLOC_H 1
+
+/* Define if you have the `memcpy' function. */
+/* #undef HAVE_MEMCPY */
+
+/* Define if you have the `memmove' function. */
+/* #undef HAVE_MEMMOVE */
+
+/* Define if you have the <memory.h> header file. */
+/* #undef HAVE_MEMORY_H */
+
+/* Define if you have the `memset' function. */
+/* #undef HAVE_MEMSET */
+
+/* Define if you have the m library (-lm).  */
+#define HAVE_LIBM 1
+
+/* Define if you have the curses library.  */
+#define HAVE_LIBCURSES 1
+
+/* Define if you the curses library with color_set function.  */
+/* #undef CURSES_HAS_COLOR_SET */
+
+/* Set use readline library features.  */
+/* #undef HAVE_LIBREADLINE */
+/* #undef WANT_READLINE */
+/* Define if you have and are using the readline library.  */
+/* #undef WITH_LIBREADLINE */
+
+/* Define if you have the dl library (-ldl).  */
+/* #undef HAVE_LIBDL */
+
+/* 
+   Note: Some libraries are not needed by htcobol or RTL, 
+   but are required by the linker to create a executable.
+*/
+
+/* 
+Note on library db: 
+Version 1.85 and 2.0 are named -ldb or -ldb1. 
+Version 2.xx, 3.yy (xx > 0) are named -ldb or -ldb2. 
+*/
+
+/* Define if you have the db library header db.h version 1.x. */ 
+/* #undef USE_DB */
+
+/* Define if you have the db library header db_185.h version 2.x or 3.x. */ 
+/* #undef USE_DB_23 */
+
+/* Define if you have the db library header db_185.h version 4.x. */ 
+/* #undef USE_DB_41 */
+
+/* Define if you have the db library header db1/db.h version 1.x. */ 
+#define USE_DB_1 1
+
+/* Define if you have the db library header db2/db_185.h version 2.x. */ 
+/* #undef USE_DB_2 */
+
+/* Define if you have the db library header db3/db_185.h version 3.x. */ 
+/* #undef USE_DB_3 */
+
+/* Define if you have the db library header db4/db_185.h version 4.x. */ 
+/* #undef USE_DB_4 */
+
+/* Set library db version 1.85 compatibility feature on for versions >= 2.xx.  */
+/* #undef USE_DB_185_COMPATIBILITY  - no longer used */
+
+
+/* Enable file SYNC feature  */
+/* #undef USE_SYNC */
+
+
+/*  TinyCOBOL Compiler specific defaults */ 
+
+/* Set MF compatibility features on   */
+/* #undef USE_MF_COMPATABILITY */
+
+/* Set debugging feature in code generator.  */
+/* #undef DEBUG_COMPILER */
+
+/* Set debugging feature in scan.l.  */
+/* #undef DEBUG_SCANNER */
+
+/* Set debugging run time library feature.  */
+/* #undef DEBUG_RTS */
+
+/* Set debugging in run time library move routines feature. */
+/* #undef DEBUG_MOVE_RTS */
+
+/* Set debugging run time library feature.  */
+/* #undef PICTURE_TESTING */
+
+/* Set debugging run time library feature.  */
+/* #undef PICTURE_TESTING */
+
+/* Set debugging feature in pre-processor.  */
+/* #undef DEBUG_COBPP */
+
+/* Set the transformation character for DASH ('-'). */
+/* #define TCOB_STR_DASH_REDEFINE "tcob_str_dash_redefine" */
+#define TCOB_STR_DASH_REDEFINE "_2D"
+
+/* Define language option for commnad line help */
+#define TCOB_LANGUAGE_@tcob_lang@   1
+/* #undef TCOB_LANGUAGE_en */
+/* #undef TCOB_LANGUAGE_es */
+/* #undef TCOB_LANGUAGE_fr */
+/* #undef TCOB_LANGUAGE_it */
+/* #undef TCOB_LANGUAGE_pt_BR */
+
+/* Set the GCC command  */
+#define TCOB_CCX_CMD "gcc.exe"		
+
+/* Set the GAS command  */
+#define TCOB_ASX_CMD "as.exe"		
+
+/* Set the shared library (DLL) default extention */
+/* #define TCOB_SHLIB_EXT "tcob_shlib_ext" */
+#define TCOB_SHLIB_EXT ".dll"
+
+/* Define math library name - if required   */
+/* #define TCOB_LD_ARGS_MATH "tcob_ld_args_m" */
+#define TCOB_LD_ARGS_MATH ""
+
+/* Define DB library name (default -ldb) */
+/* #define TCOB_LD_ARGS_DB "tcob_ld_args_db@"  */   
+#define TCOB_LD_ARGS_DB "-ldb1"    
+
+/* Define the curses library name  */
+/* #define TCOB_LD_ARGS_CURSES "tcob_ld_args_curses" */
+#define TCOB_LD_ARGS_CURSES "-lpdcurses"
+
+/* Define the run time library loading library name - if required    */
+/* #define TCOB_LD_ARGS_DL "htg_ld_args_dl" */
+#define TCOB_LD_ARGS_DL ""
+
+/* Define the isam library name (default -lvbisam) */
+/* #define TCOB_LD_ARGS_ISAM "tcob_ld_args_isam" */
+#define TCOB_LD_ARGS_ISAM "-lvbisam"
+
+/* Define the readline library name */
+/* #define TCOB_LD_ARGS_READLINE "htg_ld_args_readline" */
+#define TCOB_LD_ARGS_READLINE ""
+
+/* Define the name of the TinyCOBOL Run-Time libraries. */
+/* #define TCOB_LD_ARGS_HTCOBOL "tcob_ld_args_htcobol" */
+#define TCOB_LD_ARGS_HTCOBOL "-lhtcobol"
+
+/* Default compile and run-time resource (options) directory */
+/* #define TCOB_DEFAULT_PATH "tcob_defaults_path" */
+#define TCOB_DEFAULTS_PATH "@tcob_defaults_path@"
+
+/* Default search lib paths  */
+/* #define TCOB_LD_PATHS_DEFAULT "tcob_ld_paths_default" */
+#define TCOB_LD_PATHS_DEFAULT "@tcob_ld_paths_default@"	
+
+/* Default linker args  */
+/* #define TCOB_LD_ARGS_DEFAULT "tcob_ld_args_default" */
+#define TCOB_LD_ARGS_DEFAULT "@tcob_ld_args_default@"
+
+/* Name of package */
+#define PACKAGE "TinyCOBOL"
+
+
+

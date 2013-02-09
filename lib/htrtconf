@@ -1,0 +1,95 @@
+#
+# TinyCOBOL run-time configuration file
+#
+#
+#  The KEY_XXXX field, define what the runtime does
+#  with the input of control keys.
+#
+#  The input is define as :
+#
+#	KEY_XXXX		EDIT_action	termination_value.
+#
+#  Suported edit values :
+#
+#	EDIT_TERMINATE		Terminate the input. Move termination 
+#				value to crt status.
+#
+#	EDIT_LAST_FIELD		Move cursor to the last field field.
+#	EDIT_FIRST_FIELD	Move cursor to the last field field.
+#	EDIT_UP_FIELD		Move cursor to previous field. If first field
+#				terminate edit.
+#	EDIT_DOWN_FIELD		Move cursor to next field. If last field
+#				terminate edit.
+#	EDIT_PREV_FIELD		Move cursor to previous field.At first field 
+#				rotate to last field
+#	EDIT_NEXT_FIELD		Move cursor to next field.At last field 
+#				rotate to first field
+#	
+#	EDIT_LEFT		Move cursor to left inside current field
+#	EDIT_RIGHT		Move cursor to right inside current field
+#	EDIT_HOME		Move cursor to the begining of current field	
+#	EDIT_END		Move cursor to end of current field
+#
+#	EDIT_INSERT		Insert a space in the current position
+#	EDIT_BACKSPACE		Delete the character previous to the cursor
+#	EDIT_DELETE		Delete the character on the cursor
+#
+#	EDIT_CLEAR		Clear the current field
+#	EDIT_CLEAR_TOEND	Clear from cursor to the end of field
+#
+#	EDIT_NOP		Define no action for a key.
+#
+#  Here is an example of a runtime config file. Appart from the keys defined 
+#  here there is also possible to define from KEY_CTRL_A to KEY_CTRL_Z.
+#
+KEY_ESCAPE 	EDIT_TERMINATE	27
+KEY_RETURN 	EDIT_TERMINATE	14
+KEY_ENTER  	EDIT_TERMINATE	14
+#KEY_RETURN 	EDIT_NEXT_FIELD	14
+#KEY_ENTER  	EDIT_NEXT_FIELD	14
+
+KEY_LEFT 	EDIT_LEFT
+KEY_RIGHT 	EDIT_RIGHT
+KEY_HOME 	EDIT_FIRST
+KEY_END 	EDIT_LAST
+
+KEY_UP		EDIT_TERMINATE	0259
+KEY_DOWN	EDIT_TERMINATE 	0367
+#KEY_UP		EDIT_CLEAR 	0259
+#KEY_DOWN	EDIT_CLEAR 	0367
+#KEY_UP		EDIT_CLEAR
+#KEY_DOWN	EDIT_CLEAR
+#KEY_UP 	EDIT_UP_FIELD
+#KEY_DOWN 	EDIT_DOWN_FIELD
+
+KEY_TAB  	EDIT_NEXT_FIELD
+KEY_BTAB  	EDIT_PREV_FIEL
+KEY_CTRL_N	EDIT_NEXT_FIELD	14
+KEY_CTRL_P	EDIT_PREV_FIELD	16
+
+KEY_CTRL_F 	EDIT_FIRST_FIELD 6
+KEY_CTRL_L	EDIT_LAST_FIELD	12
+
+KEY_CTRL_D	EDIT_CLEAR	12
+
+KEY_DELETE 	EDIT_DELETE
+KEY_INSERT	EDIT_INSERT
+KEY_BACKSPACE	EDIT_BACKSPACE
+
+KEY_PPAGE	EDIT_TERMINATE  0338
+KEY_NPAGE	EDIT_TERMINATE  0339
+
+KEY_F1		EDIT_TERMINATE 	0265
+#KEY_F1		EDIT_TERMINATE 	1
+KEY_F2		EDIT_TERMINATE	0266
+KEY_F3		EDIT_TERMINATE 	0267
+KEY_F4		EDIT_TERMINATE	0268
+KEY_F5		EDIT_TERMINATE	0269
+KEY_F6		EDIT_TERMINATE	0270
+KEY_F7		EDIT_TERMINATE	0271
+KEY_F8		EDIT_TERMINATE	0272
+KEY_F9		EDIT_TERMINATE	0273
+KEY_F10		EDIT_TERMINATE	0274
+KEY_F11		EDIT_TERMINATE	0275
+KEY_F12		EDIT_TERMINATE	0276
+

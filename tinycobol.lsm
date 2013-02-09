@@ -1,0 +1,24 @@
+Begin4
+Title:	        TinyCOBOL
+Version:	0.66
+Entered-date:   2010-08-22
+Description: 	TinyCOBOL is a COBOL 85 compiler. 
+	 	Generates GNU x86-32 assembler and requires
+		the GNU assembler and linker to create
+		an executable for the Linux, FreeBSD, Win32,
+		x86-32 platform.
+Keywords:       programming,language,compiler,COBOL,business
+Author:         Rildo Pragana <rpragana@users.sourceforge.net>
+Maintained-by:  David Essex <dessex@users.sourceforge.net>
+Primary-site:   http://tiny-cobol.sourceforge.net/
+		000,000 tinycobol-0.65.tar.bz2
+		974     tinycobol-0.65.lsm
+Alternate-site: http://www.ibiblio.org/pub/Linux/devel/lang/cobol/
+Platforms:      Built with GCC, FLEX, Bison (BYACC-1.9.3) on a Linux, 
+                FreeBSD, Win32 (MinGW Cygwin), x86-32 platforms.
+		Requires the following:
+		DB, version 1.85 or later, for SORT file I/O.
+		VB-ISAM, version 2 or later, for indexed file I/O.
+		Ncurses (PDcurses on Win32 w/MinGW) for screen I/O.
+Copying-policy: GPL
+End

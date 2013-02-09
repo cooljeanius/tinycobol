@@ -1,0 +1,64 @@
+#
+# 
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+
+SHELL=/bin/sh
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+CCXFLAGS=@CCXFLAGS@ -g -DDEBUG ${INCLUDES}
+LIBS=-L/usr/local/pgsql/lib -lpq @LIBS@
+#LIBS=${g_libraries} -L../../lib -L/usr/local/pgsql/lib -lhtcobol -ldb -lncurses -lm -lpq -ldl
+EXTRALIBS=
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+
+SRC01 = tdb03.cob 
+SRC02 = tdb03a.c
+SRC03 = cgi-util.c
+
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.c=.o)
+OBJ03 = $(SRC03:.c=.o)
+OBJS  = $(OBJ01) $(OBJ02) $(OBJ03)
+
+PROG01 = tdb03$(EXEEXT)
+PROGS = $(PROG01)
+
+#include ${prefix}/config/C.rules.in
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling .c sources
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+
+
+all: ${PROGS}
+
+${PROG01}: ${OBJS}
+	$(CCX) -g -o $@ ${OBJS} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+clean:
+	@${RM} $(PROGS) ${OBJS} *.lis *.s *.i *.exe core

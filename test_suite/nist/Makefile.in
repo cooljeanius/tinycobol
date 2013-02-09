@@ -1,0 +1,81 @@
+#
+# NIST test suite Makefile
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+#prefix=/usr/local/
+#exec_prefix=../../compiler
+#g_includes=-I/usr/local/include
+#g_libraries=-L/usr/local/lib
+#g_includes=@g_includes@
+#g_libraries=@g_libraries@
+
+#CCX=gcc
+CCX=@CC@
+#COB=@COB@
+COB=htcobol
+COBRUN=htcobrun.sh
+#ASM=@ASM@
+ASM=as
+RM=rm -fr
+
+#COPYBOOKS=@COPYBOOKS@
+#INCLUDES=@INCLUDES@
+#LIBS=@LIBS@
+include makeConfig.inc
+
+#LDFLAGS=@LDFLAGS@
+LDFLAGS=
+#COBFLAGS=@COBFLAGS@
+COBFLAGS=-c -v -P -F ${COPYBOOKS}
+#ASMFLAGS=@ASMFLAGS@
+ASMFLAGS=-D
+#CCXFLAGS=-g ${INCLUDES}
+CCXFLAGS=@CCXFLAGS@
+
+SRC01 = EXEC85.cob
+SRCS  = $(SRC01)
+
+OBJ01 = $(SRCS:.cob=.o)
+OBJS  = $(OBJ01)
+
+PROG01 = EXEC85
+PROGS  = $(PROG01)
+
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling .cob sources
+.SUFFIX: .cob .o
+
+%.o: %.cob
+	$(COB) $(COBFLAGS) $<
+#	$(ASM) $(ASMFLAGS) -o $*.o -a=$*.listing.0.txt $*.s
+#	@grep -v 'LISTING' $*.listing.0.txt | sed '/^$$/d' >$*.s.txt 
+#	@${RM} $*.listing.0.txt
+#
+#include ${prefix}/config/COB.build.tmpl.in
+
+all: ${PROGS}
+
+${PROG01}: ${OBJ01}
+	$(CCX) -o $@ ${OBJ01} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG01}.cob:
+	perl nc_exec85.pl newcob.val
+
+setup:	${PROG01}.cob ${PROG}
+	./${PROG01}
+	perl nc_extr.pl XXXXX002
+clean:
+	@${RM} ${OBJS} $(PROGS) core $(PROG)*lis ${PROG}*txt ${PROG}*s \
+	core copybooks XX CM DB IC IF IX NC OB RL RW SG SM SQ ST \
+	t
+
+cleanall allclean: clean
+	@${RM} core *run.err.trace.txt *run.trace.txt temp*cob \
+	XXXXX002 XXXXX055 EXEC85.cob logfile*txt
+
+programlist:
+	@echo ${PROG} ${PROGS}

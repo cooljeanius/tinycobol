@@ -1,0 +1,21 @@
+The source code modules in this directory are intended
+for checking the compiler's ability to parse the
+source, rather than to check for the proper execution
+of compiler output.  The test script compiles the source
+and checks the return code from the compiler.  The
+test.script file identifies which programs should
+return 0 or return non-zero.
+
+When adding tests to this directory, add an entry
+into the test.script with the program base name
+followed by a colon then T, F or W.  A 'T' indi-
+cates that the compiler should return a 0, a 'F'
+indicates a non-zero failure code, and a 'W'
+indicates that the compiler should return with
+compiler warnings.
+
+A sucessful test is a T that compiles clean, a F
+that fails to compile, or a W that returns an
+error status.
+
+Glen

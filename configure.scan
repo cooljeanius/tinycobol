@@ -1,0 +1,112 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.69])
+AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
+AC_CONFIG_SRCDIR([htconfig.h.in])
+AC_CONFIG_HEADERS([config.h])
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_AWK
+AC_PROG_YACC
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_LEX
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+# Checks for libraries.
+# FIXME: Replace `main' with a function in `-lX11':
+AC_CHECK_LIB([X11], [main])
+# FIXME: Replace `main' with a function in `-lcrypt':
+AC_CHECK_LIB([crypt], [main])
+# FIXME: Replace `main' with a function in `-lgds':
+AC_CHECK_LIB([gds], [main])
+# FIXME: Replace `main' with a function in `-lhtcobol':
+AC_CHECK_LIB([htcobol], [main])
+# FIXME: Replace `main' with a function in `-lpq':
+AC_CHECK_LIB([pq], [main])
+# FIXME: Replace `main' with a function in `-ltcl':
+AC_CHECK_LIB([tcl], [main])
+# FIXME: Replace `main' with a function in `-ltestz1':
+AC_CHECK_LIB([testz1], [main])
+# FIXME: Replace `main' with a function in `-ltestz2':
+AC_CHECK_LIB([testz2], [main])
+# FIXME: Replace `main' with a function in `-ltk':
+AC_CHECK_LIB([tk], [main])
+
+# Checks for header files.
+AC_CHECK_HEADERS([fcntl.h float.h libintl.h limits.h stdlib.h string.h strings.h sys/param.h sys/time.h termios.h unistd.h wchar.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_CHECK_HEADER_STDBOOL
+AC_C_INLINE
+AC_TYPE_SIZE_T
+
+# Checks for library functions.
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_MKTIME
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([atexit dup2 gettimeofday memmove memset pow putenv sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strrchr strspn strstr strtol])
+
+AC_CONFIG_FILES([Makefile
+                 cobrun/Makefile
+                 compiler/Makefile
+                 info/Makefile
+                 lib/Makefile
+                 test.code/Makefile
+                 test.code/ReportGen/Makefile
+                 test.code/cobrun/Makefile
+                 test.code/copybooks/Makefile
+                 test.code/esql/Makefile
+                 test.code/t00/Makefile
+                 test.code/t01/Makefile
+                 test.code/t02/Makefile
+                 test.code/t03/Makefile
+                 test.code/t04/Makefile
+                 test.code/t05/Makefile
+                 test.code/t06/Makefile
+                 test.code/t07/Makefile
+                 test.code/t08/Makefile
+                 test.code/t09/Makefile
+                 test.code/t10/Makefile
+                 test.code/t11/Makefile
+                 test.code/t12/Makefile
+                 test.code/t13/Makefile
+                 test.code/t14/Makefile
+                 test.code/t15/Makefile
+                 test.code/t16/Makefile
+                 test.code/t17/Makefile
+                 test.code/t18/Makefile
+                 test.code/t19/Makefile
+                 test.code/t20/Makefile
+                 test.code/t21/Makefile
+                 test.code/t22/Makefile
+                 test.code/t23/Makefile
+                 test.code/t24/Makefile
+                 test.code/t25/Makefile
+                 test.code/t26/Makefile
+                 test.code/t27/Makefile
+                 test.code/t28/Makefile
+                 test.code/t29/Makefile
+                 test.code/t30/Makefile
+                 test.code/t31/Makefile
+                 test.code/t32/Makefile
+                 test.code/t33/Makefile
+                 test.code/t34/Makefile
+                 test.code/t35/Makefile
+                 test.code/t36/Makefile
+                 test.code/tdb01/Makefile
+                 test.code/tdb02/Makefile
+                 test.code/tdb03/Makefile
+                 test.code/tgui01/Makefile
+                 test.code/tgui02/Makefile
+                 test_suite/Makefile
+                 test_suite/nist/Makefile
+                 utils/Makefile
+                 utils/cobf2f/Makefile])
+AC_OUTPUT

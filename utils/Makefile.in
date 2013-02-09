@@ -1,0 +1,55 @@
+SHELL=/bin/sh
+
+@SET_MAKE@
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+#subdirs= cobf2f 
+subdirs=@tcob_cobf2f_dir@ 
+
+RM=rm -f 
+
+INSTALL=@INSTALL@
+INSTALL_DIR=$(INSTALL) -d -m 755 
+INSTALL_PROGRAM=$(INSTALL) -s -m 755
+
+PROG1 = htcobdispcv.tcl
+PROG2 = htcobviscomp.tcl
+
+all:
+	@for i in ${subdirs}; do \
+		echo Making all in $$i ; \
+		(cd $$i; ${MAKE} all) ; \
+	done
+
+install:
+	@for i in ${subdirs}; do \
+		echo Installing in $$i ; \
+		(cd $$i; ${MAKE} install) ; \
+	done
+#	${INSTALL_PROGRAM} $(PROG1) $(DESTDIR)$(bindir)/$(PROG1)
+#	${INSTALL_PROGRAM} $(PROG2) $(DESTDIR)$(bindir)/$(PROG2)
+
+uninstall:
+	@for i in ${subdirs}; do \
+		echo Un-Installing in $$i ; \
+		(cd $$i; ${MAKE} uninstall) ; \
+	done
+#	$(RM) $(DESTDIR)$(bindir)/$(PROG1)
+#	$(RM) $(DESTDIR)$(bindir)/$(PROG2)
+
+cleanall allclean: 
+	@for i in ${subdirs}; do \
+		echo Cleaning in $$i ; \
+		(cd $$i; ${MAKE} cleanall) ; \
+	done
+clean:
+	@for i in ${subdirs}; do \
+		echo Cleaning in $$i ; \
+		(cd $$i; ${MAKE} clean) ; \
+	done
+
+distclean cleandist:
+	@for i in ${subdirs}; do \
+		(cd $$i; ${MAKE} clean; rm -f Makefile) ; \
+	done

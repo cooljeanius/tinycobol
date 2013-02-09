@@ -1,0 +1,103 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID.    SEQLS13.
+ ENVIRONMENT DIVISION.
+
+ CONFIGURATION SECTION. 
+ SPECIAL-NAMES.
+     DECIMAL-POINT IS COMMA.
+ INPUT-OUTPUT SECTION.
+ FILE-CONTROL.
+     SELECT GOZIN ASSIGN TO "lineseq11.dat" 
+            ORGANIZATION IS LINE SEQUENTIAL 
+            ACCESS MODE     SEQUENTIAL
+            FILE STATUS  IS FS.
+
+ DATA DIVISION.
+ FILE SECTION.
+
+ FD  GOZIN
+     LABEL RECORD IS STANDARD.
+ 01 GOZOUT-REC-1.
+     03 FILLER                        PIC  X(80).
+ 01 GOZOUT-REC-2.
+     03 FILLER                        PIC  X(120).
+ 01 GOZOUT-REC-3.
+     03 FILLER                        PIC  X(30).
+ 01 GOZOUT-REC-4                      PIC  X(50).
+      
+ WORKING-STORAGE SECTION.
+ 01 FS                               PIC  9(02).
+ 01 WS-GOZIN-REC-1.
+     03 WS-X-IND-1                   PIC  9(03).
+     03 WS-DESCRIPTION-1             PIC  X(10).
+     03 FILLER                       PIC  X(67).
+ 01 WS-GOZIN-REC-2.
+     03 WS-X-IND-2                   PIC  9(03).
+     03 WS-DESCRIPTION-2             PIC  X(10).
+     03 FILLER                       PIC  X(107).
+ 01 WS-GOZIN-REC-3.
+     03 WS-X-IND-3                   PIC  9(03).
+     03 WS-DESCRIPTION-3             PIC  X(10).
+     03 FILLER                       PIC  X(17).
+ 01 WS-GOZIN-REC-4.
+     03 WS-X-IND-4                   PIC  9(03).
+     03 WS-DESCRIPTION-4             PIC  X(10).
+     03 FILLER                       PIC  X(37).
+
+ PROCEDURE DIVISION.
+ 0000-PROGRAM-ENTRY.
+      PERFORM B000-INITIALIZE THRU B000-EXIT.
+      PERFORM C000-MAIN-LOGIC THRU C000-EXIT.
+      PERFORM D000-CLEANUP THRU D000-EXIT.
+      STOP RUN.
+
+ B000-INITIALIZE.
+      OPEN INPUT GOZIN.
+      DISPLAY "SO01:(" FS "):(00):"
+          "SEQUENTIAL VARIABLE INPUT OPEN STATUS".
+ B000-EXIT.
+     EXIT.
+
+ C000-MAIN-LOGIC.
+      READ GOZIN INTO WS-GOZIN-REC-1.
+      DISPLAY "SR02:(" FS "):(00):"
+          "SEQUENTIAL VARIABLE INPUT READ STATUS".
+      DISPLAY "SR03:(" WS-X-IND-1 "):(001):"
+          "DATA FROM READ".
+      DISPLAY "SR03:(" WS-DESCRIPTION-1 "):(AAAAAAAAAA):"
+          "DATA FROM READ".
+
+      READ GOZIN INTO WS-GOZIN-REC-2.
+      DISPLAY "SR02:(" FS "):(00):"
+          "SEQUENTIAL VARIABLE INPUT STATUS".
+      DISPLAY "SR03:(" WS-X-IND-2 "):(002):"
+          "DATA FROM READ".
+      DISPLAY "SR03:(" WS-DESCRIPTION-2 "):(BBBBBBBBBB):"
+          "DATA FROM READ".
+
+      READ GOZIN INTO WS-GOZIN-REC-3.
+      DISPLAY "SR02:(" FS "):(00):"
+          "SEQUENTIAL VARIABLE INPUT STATUS".
+      DISPLAY "SR03:(" WS-X-IND-3 "):(003):"
+          "DATA FROM READ".
+      DISPLAY "SR03:(" WS-DESCRIPTION-3 "):(CCCCCCCCCC):"
+          "DATA FROM READ".
+
+      READ GOZIN INTO WS-GOZIN-REC-4.
+      DISPLAY "SR02:(" FS "):(00):"
+          "SEQUENTIAL VARIABLE INPUT STATUS".
+      DISPLAY "SR03:(" WS-X-IND-4 "):(004):"
+          "DATA FROM READ".
+      DISPLAY "SR03:(" WS-DESCRIPTION-4 "):(DDDDDDDDDD):"
+          "DATA FROM READ".
+
+ C000-EXIT.
+      EXIT.
+
+ D000-CLEANUP.
+      CLOSE GOZIN.
+      DISPLAY "SR04:(" FS "):(00):"
+          "SEQUENTIAL I/O CLOSE STATUS".
+
+ D000-EXIT.
+     EXIT.  

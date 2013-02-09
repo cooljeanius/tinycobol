@@ -1,0 +1,102 @@
+Variable structure and pictures
+-------------------------------
+
+Let us examine an example of a compiled variable to see how it is represented
+internally.  Consider the following declaration in COBOL source:
+   
+	   01  TEST1  PIC  Z.Z(3).ZZ9,9(2).
+
+It generates the assembly code similar to:
+
+# Field: TEST1, Mem loc: $w_base0+59, Desc: c_base0+298
+        .long   12
+        .byte   'E',0,0,0
+        .long   c_base0+310     # c_base0+136(hex)
+        .byte   'Z',1
+        .byte   '.',1
+        .byte   'Z',3
+        .byte   '.',1
+        .byte   'Z',2
+        .byte   '9',1
+        .byte   ',',1
+        .byte   '9',2
+        .byte   0
+
+The first line is clearly just a comment with 2 properties: 'Mem loc' is the
+location where this variable's space is allocated, and 'Desc' is the address
+of the variable's descriptor.
+
+The variable descriptor has the corresponding C struct:
+
+struct fld_desc {
+	unsigned long int len; 
+	char type;         
+	unsigned char decimals;
+	char pscale;
+	unsigned int all:1;
+	unsigned int just_r:1;
+	unsigned int separate_sign:1;
+	unsigned int leading_sign:1;
+	unsigned int blank:1;
+	unsigned int reserved:3;
+	char *pic;
+};
+
+Where "len" is the full storage size for this variable in bytes,
+"type" describes what kind of variable it is (see table below),
+"decimals", where appropriate, tells how many digits exists
+     after the decimal point,
+"pscale", where appropriate, tells how many digits before or
+     after the decimal point are 'P' (placeholders),
+"all" if ALL,
+"just_r" if JUSTIFIED RIGHT,
+"separate_sign" if SIGN IS ... SEPARATE,
+"leading_sign" if SIGN IS LEADING,
+"blank" if BLANK WHEN ZERO,
+"pic" is a pointer to its (compressed format) picture.
+
+The compressed format of a picture is just a string of pairs of characters 
+and 8-bit unsigned counts like this:
+
+<picchar1> <count1> <picchar2> <count2> ...
+
+Note that the implementation is subject to change and the interface, as
+described in the library file pictures.c, should be used as opposed to
+accessing and manipulating compressed picture strings directly.
+
+Also found in pictures.c, there is a routine (tcob_picExpand) to expand this
+picture at runtime and return a char string. For the sample field above:
+
+         Z.ZZZ.ZZ9,99
+
+You can test this by recompiling the library with -DPICTURE_TESTING and
+compiling and linking test07.cob. It will print the string, instead of
+returning it.  When this functions is utilized, the string must be free'd
+after use to prevent a memory leak.
+
+
+Table:
+Picture characters and fld_desc->type
+-------------------------------------
+pic   description              type
+-------------------------------------
+9     numeric                   9
+V     implied decimal point     9
+S     sign                      9
+P     placeholder (scaling)     9
+A     alphabetic                A
+X     alphanumeric              X
+Z \
+0  |  
+B  |
+/  |
+.  |
+,  |  editted                   E
++  |
+-  |
+*  |
+$ /
+-------------------------------------
+
+Rildo Pragana
+

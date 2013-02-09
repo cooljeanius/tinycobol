@@ -1,0 +1,26 @@
+Hi fellow hacker!
+ 
+This is not a full-featured product, but rather historic sources of my own tool: 
+a COBOL compiler I have done from scratch and found it floating around my 
+"spare parts" box.  It may be useful as a skeleton for a new project, or just a 
+grab bag of ideas for your own work.
+
+This is supposed to work with my "HandTerm" and "MT-100" micro-terminals, some
+hardware projects I used to manufacture some years ago¸ but it's not produced
+anymore.
+
+I wouldn't even try to compile this sources again, because it's so dependent on
+the environment (micro-terminal, msdos, and specific C compiler) and I don't
+remember how to make all things go smooth. Please don't ask me how to remake
+this.
+
+Included there is a full compiler (almost ANSI 76 compliant, if I remember
+well), the runtime library, and a nice source-level debugger written mostly in
+prolog.  When compiled and linked, the object is a TSR (Terminate and Stay
+Resident) program for msdos.
+
+This is released as GPL/LGPL licensed. Please see the enclose files COPYING COPYING.LIB.
+
+I hope you enjoy.
+
+Rildo Pragana

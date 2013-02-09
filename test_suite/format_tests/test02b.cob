@@ -1,0 +1,132 @@
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. TEST1_FORMATS.
+ AUTHOR.  GLEN COLBERT.
+
+ ENVIRONMENT DIVISION.
+* INPUT-OUTPUT SECTION.
+* FILE-CONTROL.
+ DATA DIVISION.
+ FILE SECTION.
+
+ WORKING-STORAGE SECTION.
+ 01  WS-ALPHA-FIELDS.
+     05 WS-ALPHA-6                   PIC A(06).
+     05 WS-ALPHA-5                   PIC A(05).
+     05 WS-ALPHA-2                   PIC A(02).
+
+ 01  WS-ALPHANUM-FIELDS.
+     05 WS-ALPHANUM-2                PIC X(02).
+     05 WS-ALPHANUM-4                PIC X(04).
+     05 WS-ALPHANUM-6                PIC X(06).
+     05 WS-AB-5                      PIC XXBXXX.
+     05 WS-AB-3                      PIC XBXX.
+     05 WS-AS-5                      PIC XX/XXX.
+     05 WS-AS-3                      PIC X/XX.
+
+ 01  WS-NUMERIC-FIELDS.
+     05 WS-DISPLAY-NUM-1             PIC 9.
+     05 WS-DISPLAY-NUM-4             PIC 9(4).
+     05 WS-DISPLAY-NUM-V5            PIC 9(3)V99.
+     05 WS-DISPLAY-NUM-R5 REDEFINES WS-DISPLAY-NUM-V5  PIC X(5).
+
+ 01  WS-NUMERIC-EDITED-FIELDS.
+     05 WS-NE-1                      PIC 99.99.
+     05 WS-NE-2                      PIC 9,999.
+     05 WS-NE-3                      PIC 9,999.99.
+     05 WS-NE-4                      PIC $$$9.
+
+ PROCEDURE DIVISION.
+ 0000-PROGRAM-ENTRY-POINT.
+     DISPLAY "TEST02b FORMATS program entry."
+
+     PERFORM A000-ALPHANUMERIC-TESTS THRU A000-EXIT.
+
+     STOP RUN.
+
+ A000-ALPHANUMERIC-TESTS.
+     MOVE "23"                TO WS-ALPHANUM-2.
+     MOVE "1984"              TO WS-ALPHANUM-4.
+     MOVE "1965"              TO WS-ALPHANUM-6.
+
+ AA01-TEST.
+     MOVE WS-ALPHANUM-4       TO WS-DISPLAY-NUM-4.
+     DISPLAY "AA01:(" WS-DISPLAY-NUM-4 "):(1984):"
+             "ALPHANUMERIC MOVE TEST MOVE X(4) TO 9(4)".
+
+     MOVE WS-ALPHANUM-4       TO WS-NE-1.
+     DISPLAY "AA02:(" WS-NE-1 "):(84.00):"
+             "ALPHANUMERIC MOVE TEST MOVE X(4) TO 99.99".
+
+     MOVE WS-ALPHANUM-4       TO WS-NE-2.
+     DISPLAY "AA03:(" WS-NE-2 "):(1,984):"
+             "ALPHANUMERIC MOVE TEST MOVE X(4) TO 9,999".
+
+     MOVE WS-ALPHANUM-4       TO WS-NE-3.
+     DISPLAY "AA04:(" WS-NE-3 "):(1,984.00):"
+             "ALPHANUMERIC MOVE TEST MOVE X(4) TO 9,999.99".
+
+     MOVE WS-ALPHANUM-4       TO WS-NE-4.
+     DISPLAY "AA05:(" WS-NE-4 "):($984):"
+             "ALPHANUMERIC MOVE TEST MOVE X(4) TO $$$9".
+
+     MOVE WS-ALPHANUM-4       TO WS-DISPLAY-NUM-V5.
+     DISPLAY "AA06:(" WS-DISPLAY-NUM-R5 "):(98400):"
+             "ALPHANUMERIC MOVE TEST MOVE X(4) TO 9(3)V99".
+
+
+     MOVE WS-ALPHANUM-2       TO WS-DISPLAY-NUM-4.
+     DISPLAY "AA10:(" WS-DISPLAY-NUM-4 "):(0023):"
+             "ALPHANUMERIC MOVE TEST MOVE X(2) TO 9(4)".
+
+     MOVE WS-ALPHANUM-2       TO WS-NE-1.
+     DISPLAY "AA11:(" WS-NE-1 "):(23.00):"
+             "ALPHANUMERIC MOVE TEST MOVE X(2) TO 99.99".
+
+     MOVE WS-ALPHANUM-2       TO WS-NE-2.
+     DISPLAY "AA12:(" WS-NE-2 "):(0,023):"
+             "ALPHANUMERIC MOVE TEST MOVE X(2) TO 9,999".
+
+     MOVE WS-ALPHANUM-2       TO WS-NE-3.
+     DISPLAY "AA13:(" WS-NE-3 "):(0,023.00):"
+             "ALPHANUMERIC MOVE TEST MOVE X(2) TO 9,999.99".
+
+     MOVE WS-ALPHANUM-2       TO WS-NE-4.
+     DISPLAY "AA14:(" WS-NE-4 "):( $23):"
+             "ALPHANUMERIC MOVE TEST MOVE X(2) TO $$$9".
+
+     MOVE WS-ALPHANUM-2       TO WS-DISPLAY-NUM-V5.
+     DISPLAY "AA15:(" WS-DISPLAY-NUM-R5 "):(02300):"
+             "ALPHANUMERIC MOVE TEST MOVE X(2) TO 9(3)V99".
+
+
+     MOVE WS-ALPHANUM-6       TO WS-DISPLAY-NUM-4.
+     DISPLAY "AA01:(" WS-DISPLAY-NUM-4 "):(1965):"
+             "ALPHANUMERIC MOVE TEST MOVE X(6) TO 9(4)".
+
+     MOVE WS-ALPHANUM-6       TO WS-NE-1.
+     DISPLAY "AA02:(" WS-NE-1 "):(65.00):"
+             "ALPHANUMERIC MOVE TEST MOVE X(6) TO 99.99".
+
+     MOVE WS-ALPHANUM-6       TO WS-NE-2.
+     DISPLAY "AA03:(" WS-NE-2 "):(1,965):"
+             "ALPHANUMERIC MOVE TEST MOVE X(6) TO 9,999".
+
+     MOVE WS-ALPHANUM-6       TO WS-NE-3.
+     DISPLAY "AA04:(" WS-NE-3 "):(1,965.00):"
+             "ALPHANUMERIC MOVE TEST MOVE X(6) TO 9,999.99".
+
+     MOVE WS-ALPHANUM-6       TO WS-NE-4.
+     DISPLAY "AA05:(" WS-NE-4 "):($965):"
+             "ALPHANUMERIC MOVE TEST MOVE X(6) TO $$$9".
+
+     MOVE WS-ALPHANUM-6       TO WS-DISPLAY-NUM-V5.
+     DISPLAY "AA06:(" WS-DISPLAY-NUM-R5 "):(96500):"
+             "ALPHANUMERIC MOVE TEST MOVE X(6) TO 9(3)V99".
+
+
+     MOVE WS-ALPHANUM-2       TO WS-AB-5.
+     DISPLAY "AB01:(" WS-AB-5 "):(23    ):"
+             "ALPHANUMERIC MOVE TEST MOVE X(2) TO XXBXXX".
+
+ A000-EXIT.
+     EXIT.

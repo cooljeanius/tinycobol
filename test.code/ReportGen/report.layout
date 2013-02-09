@@ -1,0 +1,90 @@
+*
+*	This defines the layout of the report 
+*
+*	We have to include totals fields, because tcl have no idea 
+*	on how to operate with cobol pictures (cobol move statement).
+*	Furthermore, all fields here are displayable. The cobol program
+*	must first do the moves to convert to these edited formats.
+*
+*	05     vendor-name-dsp      pic X(20). 
+*	05     value-dsp            pic ZZZ,ZZ9.
+*	05     number-dsp           pic X(13).
+*	05     type-dsp	            pic X.
+*	05     vendor-region-dsp    pic X(17).
+*	05     vendor-city-dsp      pic X(20).
+*	05     comments-dsp         pic X(60).
+*	05     vendor-total-dsp    	pic Z,ZZZ,ZZ9.
+*	05     city-total-dsp      	pic Z,ZZZ,ZZ9.
+*	05     region-total-dsp    	pic Z,ZZZ,ZZ9.
+*	05     grand-total-dsp    	pic Z,ZZZ,ZZ9.
+
+Copy displayable.cpy
+
+*
+* Units may be "in" (inch), "mm" (millimeters), "pt" (points), "pc" (picas)
+*
+Unit   in
+*
+* Config
+*
+* Config -web 1 -page_height 11.3 -page_width 8.2
+* Config -test_only 1 -page_height 11.3 -page_width 8.2
+Config -test_only 1 -page_height 10.5 -page_width 8.2
+*
+* This is the page header (for all pages)
+*
+Header PAGE -before 0.2 -offset 0.3 -width 2.5 -font RomanNineBold \
+	-align left -text "State of Pernambuco" 
+Header PAGE -after 0.001 -offset 5 -width 3 -font RomanNine -align right \
+	-text "page @@pageno@@"
+Header PAGE -align left -width 1 -offset 0.3 -image bird.epsf
+Header PAGE -font SansserifSeventeen -after 0.1 -align left \
+	-offset 1.0 -width 5 -color Maroon \
+	-text {Sample Report}
+*
+* Those are the headers and footers for each break field
+*
+Footer vendor-name-dsp -align left -offset 3.5 -before 0.07 \
+	-text "Total sales for vendor"
+Footer vendor-name-dsp -offset 5.0 -after 0.20 -align right \
+	-width 1.5 -text @@vendor-total-dsp@@
+*
+Header vendor-city-dsp -after 0.1 -align left -offset 7.8 \
+	-text "Sales in the city of @@vendor-city-dsp@@" \
+	-rotate 90
+
+Footer vendor-city-dsp -offset 5.05 -align right -width 1.5 \
+	-hrule 0.02 -after 0.01
+Footer vendor-city-dsp -offset 3.5 -align left -text "Total sales for city"
+Footer vendor-city-dsp -offset 5.0 -align right -width 1.5 \
+	-text @@city-total-dsp@@
+*
+Header vendor-region-dsp -align center -eject 1 \
+	-after 0.1 -before 0.1 \
+	-font TypewriterXL -text "Regional Sales @@vendor-region-dsp@@"
+
+Footer vendor-region-dsp -before 0.1 -offset 6.20 -width 1.05 \
+	-color BrickRed -hrule 0.04 -after 0.01
+Footer vendor-region-dsp -offset 1.0 -font RomanTwelveBold \
+	-color BrickRed -text "Total sales for region"
+Footer vendor-region-dsp -offset 6.20 -width 1.0  -font RomanTwelveBold \
+	-align right -color BrickRed -text @@region-total-dsp@@
+*
+Header FINAL -before 0.3 -after 0.3 -offset 0 -width 8 \
+	-font UltraCondL -align center -text "General Sales Report"
+Footer FINAL -before 0.5 -offset 1 -width 3 -font UltraCondL -align left \
+	-color Brown -text "Grand Total @@grand-total-dsp@@"
+*
+* Detail line
+* 
+* To enter barcodes you need the program GNU Barcode installed in the path
+*
+Detail -offset 1.0 -width 1.7 -font SansserifNine -text "@@vendor-name-dsp@@"
+Detail -offset 2.8 -width 1.3 -font SansserifNine -text "@@vendor-city-dsp@@"
+Detail -offset 4.2 -width 1.2 -height 0.45 -align left -barcode @@number-dsp@@
+Detail -offset 5.9 -width 0.8 -align left -font SansserifTenBold \
+	-color Brown -text {R$}
+Detail -offset 5.9 -width 0.8 -align right -font RomanFibEight \
+ 	-color Brown -text @@value-dsp@@
+Detail -offset 1.7 -width 5.0 -align left -font TypewriterTen \
+	-nextline 1 -text @@comments-dsp@@

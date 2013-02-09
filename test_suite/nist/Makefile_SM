@@ -1,0 +1,7 @@
+#
+# Makefile for SM NIST Module
+#
+include ../Makefile_head.h
+MODULE=SM
+include ../${MODULE}.idx
+include ../Makefile_trail.h

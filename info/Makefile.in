@@ -1,0 +1,171 @@
+#
+# Makefile.in for the TinyCOBOL compiler 'info' directory
+#
+SHELL=/bin/sh
+
+@SET_MAKE@
+
+RM= rm -f
+CP= cp -f
+MKDIR=mkdir -p
+GZIP=gzip -f
+
+prefix=@prefix@
+drive_prefix=@drive_prefix@
+exec_prefix=@exec_prefix@
+bindir = ${exec_prefix}/bin
+#datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+pkgdatadir = ${datarootdir}/htcobol
+mandir = $(prefix)/man/man1
+
+#tcob_docdir=@tcob_docdir@
+tcob_docdir=${prefix}/doc/@tcob_docdir@
+
+#DESTDIR=${drive_prefix}
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+#INSTALL_DATA=$(INSTALL) -d -m 755
+#INSTALL_DIR=$(INSTALL) -d -m 755 
+INSTALL_PROGRAM=$(INSTALL) -s -m 755
+
+#mandir=@mandir@
+#docdir=@docdir@
+#tcob_docdir=${prefix}/doc
+#tcob_docdir=@tcob_docdir@
+
+#INSTMAN1=${prefix}/share/man/man1
+#INSTMAN1=${prefix}/man/man1
+INSTMAN1=${mandir}/man1
+INSTHTML1=${tcob_docdir}
+INSTTEXT1=${tcob_docdir}
+
+MANLFILE1=htcobol_@tcob_lang@.man
+MANLFILE2=htcobrun_@tcob_lang@.man
+MANLFILE3=htcobf2f_@tcob_lang@.man
+
+MANFILE1=htcobol.1
+MANFILE2=htcobrun.1
+MANFILE3=htcobf2f.1
+MANZFILE1=htcobol.1.gz
+MANZFILE2=htcobrun.1.gz
+MANZFILE3=htcobf2f.1.gz
+
+HTMLLFILE1=htcobol_@tcob_lang@.html
+HTMLLFILE2=htcobrun_@tcob_lang@.html
+HTMLLFILE3=htcobf2f_@tcob_lang@.html
+
+HTMLFILE1=htcobol.html
+HTMLFILE2=htcobrun.html
+HTMLFILE3=htcobf2f.html
+
+TEXTLFILE1=htcobol_@tcob_lang@.txt
+TEXTLFILE2=htcobrun_@tcob_lang@.txt
+TEXTLFILE3=htcobf2f_@tcob_lang@.txt
+
+TEXTFILE1=htcobol.txt
+TEXTFILE2=htcobrun.txt
+TEXTFILE3=htcobf2f.txt
+
+MANFILES=$(MANFILE1) $(MANFILE2) $(MANFILE3)
+MANZFILES=$(MANZFILE1) $(MANZFILE2) $(MANZFILE3)
+HTMLFILES=$(HTMLFILE1) $(HTMLFILE2) $(HTMLFILE3)
+TEXTFILES=$(TEXTFILE1) $(TEXTFILE2) $(TEXTFILE3)
+
+#all: manfiles
+all: @tcob_manfiles@ @tcob_htmlfiles@ @tcob_textfiles@
+
+manfiles: manfile1 manfile2 @tcob_cobf2f_man@
+
+htmlfiles: htmlfile1 htmlfile2 @tcob_cobf2f_html@
+
+textfiles: textfile1 textfile2 @tcob_cobf2f_text@
+
+manfile1:
+	@$(CP) $(MANLFILE1) $(MANFILE1)
+	@$(GZIP) $(MANFILE1)
+
+manfile2:
+	@$(CP) $(MANLFILE2) $(MANFILE2)
+	@$(GZIP) $(MANFILE2)
+
+manfile3:
+	@$(CP) $(MANLFILE3) $(MANFILE3)
+	@$(GZIP) $(MANFILE3)
+
+htmlfile1:
+	@$(CP) $(HTMLLFILE1) $(HTMLFILE1)
+
+htmlfile2:
+	@$(CP) $(HTMLLFILE2) $(HTMLFILE2)
+
+htmlfile3:
+	@$(CP) $(HTMLLFILE3) $(HTMLFILE3)
+
+textfile1:
+	@$(CP) $(TEXTLFILE1) $(TEXTFILE1)
+
+textfile2:
+	@$(CP) $(TEXTLFILE2) $(TEXTFILE2)
+
+textfile3:
+	@$(CP) $(TEXTLFILE3) $(TEXTFILE3)
+
+cleanall allclean: clean
+clean:
+	@$(RM) $(MANFILES) $(MANZFILES) $(HTMLFILES) $(TEXTFILES)
+
+install: @tcob_intman@ @tcob_inthtml@ @tcob_inttext@
+
+install-manfiles: manfiles install-manfile1 install-manfile2 @tcob_cobf2f_intman@
+install-manfile1: 
+	${INSTALL_DATA} $(MANZFILE1) $(DESTDIR)$(mandir)/$(MANZFILE1)
+install-manfile2: 
+	${INSTALL_DATA} $(MANZFILE2) $(DESTDIR)$(mandir)/$(MANZFILE2)
+install-manfile3: 
+	${INSTALL_DATA} $(MANZFILE3) $(DESTDIR)$(mandir)/$(MANZFILE3)
+
+install-htmlfiles: htmlfiles install-htmlfile1 install-htmlfile2 @tcob_cobf2f_inthtml@
+install-htmlfile1: 
+	${INSTALL_DATA} $(HTMLFILE1) $(DESTDIR)$(tcob_docdir)/$(HTMLFILE1)
+install-htmlfile2: 
+	${INSTALL_DATA} $(HTMLFILE2) $(DESTDIR)$(tcob_docdir)/$(HTMLFILE2)
+install-htmlfile3: 
+	${INSTALL_DATA} $(HTMLFILE3) $(DESTDIR)$(tcob_docdir)/$(HTMLFILE3)
+
+install-textfiles: textfiles install-textfile1 install-textfile2 @tcob_cobf2f_inttext@
+install-textfile1: 
+	${INSTALL_DATA} $(TEXTFILE1) $(DESTDIR)$(tcob_docdir)/$(TEXTFILE1)
+install-textfile2: 
+	${INSTALL_DATA} $(TEXTFILE2) $(DESTDIR)$(tcob_docdir)/$(TEXTFILE2)
+install-textfile3: 
+	${INSTALL_DATA} $(TEXTFILE3) $(DESTDIR)$(tcob_docdir)/$(TEXTFILE3)
+
+uninstall: uninstall-manfiles uninstall-htmlfiles uninstall-textfiles
+
+#uninstall-manfiles: 
+#uninstall-manfiles: uninstall-manfile1 uninstall-manfile2 @tcob_cobf2f_uintman@
+uninstall-manfiles: uninstall-manfile1 uninstall-manfile2 uninstall-manfile3
+uninstall-manfile1: 
+	${RM} $(DESTDIR)$(mandir)/$(MANZFILE1)
+uninstall-manfile2: 
+	${RM} $(DESTDIR)$(mandir)/$(MANZFILE2)
+uninstall-manfile3: 
+	${RM} $(DESTDIR)$(mandir)/$(MANZFILE3)
+
+uninstall-htmlfiles: uninstall-htmlfile1 uninstall-htmlfile2 uninstall-htmlfile3
+uninstall-htmlfile1: 
+	${RM} $(DESTDIR)$(tcob_docdir)/$(HTMLFILE1)
+uninstall-htmlfile2: 
+	${RM} $(DESTDIR)$(tcob_docdir)/$(HTMLFILE2)
+uninstall-htmlfile3: 
+	${RM} $(DESTDIR)$(tcob_docdir)/$(HTMLFILE3)
+
+uninstall-textfiles: uninstall-textfile1 uninstall-textfile2 uninstall-textfile3
+uninstall-textfile1: 
+	${RM} $(DESTDIR)$(tcob_docdir)/$(TEXTFILE1)
+uninstall-textfile2: 
+	${RM} $(DESTDIR)$(tcob_docdir)/$(TEXTFILE2)
+uninstall-textfile3: 
+	${RM} $(DESTDIR)$(tcob_docdir)/$(TEXTFILE3)

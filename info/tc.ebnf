@@ -1,0 +1,1442 @@
+program_sequence                       ::= program
+                                         | nested_program
+                                         | nested_program program
+			.
+nested_program                         ::= ( program | program nested_program |
+                                           nested_program program ) end_program
+			.
+end_program                            ::= "END" "PROGRAM" "idstring"
+			.
+program                                ::= identification_division
+                                           environment_division_opt
+                                           data_division_opt
+                                           procedure_division_opt
+			.
+identification_division                ::= "IDENTIFICATION" "DIVISION" "."
+                                           "PROGRAM-ID" "." "idstring"
+                                           programid_opts_opt "."
+                                           identification_division_options_opt
+			.
+programid_opts_opt                     ::= [ opt_is ( "INITIAL" "PROGRAM" |
+                                           "COMMON" "PROGRAM" ) ]
+			.
+identification_division_options_opt    ::= { identification_division_option }
+			.
+identification_division_option         ::= ( "AUTHOR" | "DATE-WRITTEN" |
+                                           "DATE-COMPILED" | "INSTALLATION" |
+                                           "SECURITY" ) "."
+			.
+environment_division_opt               ::= [ "ENVIRONMENT" "DIVISION" "."
+                                           opt_configuration opt_input_output ]
+			.
+opt_configuration                      ::= [ "CONFIGURATION" "SECTION" "."
+                                           configuration_section ]
+			.
+configuration_section                  ::= { configuration_option }
+			.
+configuration_option                   ::= "SOURCE-COMPUTER" "." "string"
+                                           opt_debug_mode "."
+                                         | "OBJECT-COMPUTER" "." "string"
+                                           opt_collating "."
+                                         | "SPECIAL-NAMES" "."
+                                           special_names_opt
+			.
+opt_collating                          ::= [ "PROGRAM" collating_sequence ]
+			.
+collating_sequence                     ::= "COLLATING" "SEQUENCE" opt_is
+                                           "string"
+			.
+opt_debug_mode                         ::= [ opt_with "DEBUGGING" "MODE" ]
+			.
+special_names_opt                      ::= [ special_names "." ]
+			.
+special_names                          ::= { special_name }
+			.
+special_name                           ::= switches_details_list
+                                         | alphabet_details
+                                         | currency_details
+                                         | decimal_point_details
+                                         | screen_status_details
+                                         | cursor_details
+                                         | special_name_class
+			.
+currency_details                       ::= "CURRENCY" opt_sign opt_is
+                                           "alphanumeric-literal"
+			.
+opt_sign                               ::= [ "SIGN" ]
+			.
+special_name_class                     ::= "CLASS" "string" opt_is
+                                           special_name_class_item_list
+			.
+special_name_class_item_list           ::= { special_name_class_item }
+                                           special_name_class_item
+			.
+special_name_class_item                ::= "alphanumeric-literal" [ "THRU"
+                                           "alphanumeric-literal" ]
+			.
+decimal_point_details                  ::= "DECIMAL-POINT" opt_is "COMMA"
+			.
+screen_status_details                  ::= "CRT" "STATUS" opt_is "string"
+			.
+cursor_details                         ::= "CURSOR" opt_is "string"
+			.
+switches_details_list                  ::= { switches_details }
+			.
+switches_details                       ::= "string" opt_is "string"
+                                           switch_on_opt switch_off_opt
+			.
+switch_on_opt                          ::= [ "ON" opt_status opt_is "string" ]
+			.
+switch_off_opt                         ::= [ "OFF" opt_status opt_is "string" ]
+			.
+opt_status                             ::= [ "STATUS" ]
+			.
+alphabet_details                       ::= "ALPHABET" "string" opt_is
+                                           alphabet_type
+			.
+alphabet_type                          ::= "NATIVE"
+                                         | "STANDARD-1"
+                                         | "STANDARD-2"
+                                         | alphabet_literal_list
+			.
+alphabet_literal_list                  ::= { alphabet_literal_item }
+                                           alphabet_literal_item
+			.
+alphabet_literal_item                  ::= without_all_literal [ "THRU"
+                                           without_all_literal |
+                                           alphabet_also_list ]
+			.
+alphabet_also_list                     ::= { "ALSO" without_all_literal }
+                                           "ALSO" without_all_literal
+			.
+opt_input_output                       ::= [ "INPUT-OUTPUT" "SECTION" "."
+                                           input_output_section ]
+			.
+input_output_section                   ::= file_control_paragraph
+                                           i_o_control_paragraph
+			.
+file_control_paragraph                 ::= "FILE-CONTROL" "." file_control
+			.
+i_o_control_paragraph                  ::= [ "I-O-CONTROL" "." i_o_control_opt
+                                           ]
+			.
+file_control                           ::= { file_select } file_select
+			.
+file_select                            ::= "SELECT" opt_optional def_name
+                                           select_clauses "."
+			.
+select_clauses                         ::= { select_clause }
+			.
+select_clause                          ::= opt_organization opt_is
+                                           organization_options
+                                         | "ASSIGN" opt_to assign_clause
+                                         | "ACCESS" opt_mode opt_is
+                                           access_options
+                                         | opt_file "STATUS" opt_is "string"
+                                         | "RECORD" opt_key opt_is "string"
+                                         | "RELATIVE" opt_key opt_is "string"
+                                         | "ALTERNATE" "RECORD" opt_key opt_is
+                                           "string" with_duplicates
+                                         | "RESERVE" "numeric-literal"
+                                           opt_areas
+			.
+opt_file                               ::= [ "FILE" ]
+			.
+opt_organization                       ::= [ "ORGANIZATION" ]
+			.
+assign_clause                          ::= "portnum"
+                                         | filename
+                                         | "portnum" filename
+                                         | "EXTERNAL" filename
+			.
+with_duplicates                        ::= [ opt_with "DUPLICATES" ]
+			.
+opt_optional                           ::= [ "OPTIONAL" ]
+			.
+opt_areas                              ::= [ "AREA" | "AREAS" ]
+			.
+opt_is                                 ::= [ "IS" ]
+			.
+opt_are                                ::= [ "ARE" ]
+			.
+opt_mode                               ::= [ "MODE" ]
+			.
+organization_options                   ::= "INDEXED"
+                                         | "SEQUENTIAL"
+                                         | "RELATIVE"
+                                         | "LINE" "SEQUENTIAL"
+                                         | anystring
+			.
+access_options                         ::= "SEQUENTIAL"
+                                         | "DYNAMIC"
+                                         | "RANDOM"
+                                         | anystring
+			.
+i_o_control_opt                        ::= [ i_o_control_list "." ]
+			.
+i_o_control_list                       ::= { i_o_control_clause }
+                                           i_o_control_clause
+			.
+i_o_control_clause                     ::= i_o_control_same_clause
+                                         |
+                                           i_o_control_multiple_file_tape_clause
+			.
+i_o_control_same_clause                ::= "SAME" same_clause_options opt_area
+                                           opt_for string_list
+			.
+same_clause_options                    ::= [ "RECORD" | "SORT" | "SORT-MERGE" ]
+			.
+i_o_control_multiple_file_tape_clause  ::= "MULTIPLE" "FILE" opt_tape
+                                           opt_contains
+                                           i_o_control_multiple_file_list
+			.
+i_o_control_multiple_file_list         ::= { i_o_control_multiple_file }
+                                           i_o_control_multiple_file
+			.
+i_o_control_multiple_file              ::= "string"
+                                           i_o_control_multiple_file_position_opt
+			.
+i_o_control_multiple_file_position_opt ::= [ "POSITION" integer ]
+			.
+opt_tape                               ::= [ "TAPE" ]
+			.
+opt_area                               ::= [ "AREA" ]
+			.
+opt_for                                ::= [ "FOR" ]
+			.
+string_list                            ::= { "string" } "string"
+			.
+name_list                              ::= { variable } variable
+			.
+data_division_opt                      ::= [ "DATA" "DIVISION" "."
+                                           opt_file_section opt_working_storage
+                                           opt_linkage_section
+                                           opt_report_section
+                                           opt_screen_section ]
+			.
+opt_file_section                       ::= [ "FILE" "SECTION" "." file_section
+                                           ]
+			.
+opt_working_storage                    ::= [ "WORKING-STORAGE" "SECTION" "."
+                                           working_storage_section ]
+			.
+opt_linkage_section                    ::= [ "LINKAGE" "SECTION" "."
+                                           linkage_section ]
+			.
+opt_report_section                     ::= [ "REPORT" "SECTION" "."
+                                           report_section ]
+			.
+report_section                         ::= { "RD" "string" report_controls "."
+                                           report_description }
+			.
+report_controls                        ::= [ report_controls_control
+                                           report_controls_page |
+                                           report_controls_page
+                                           report_controls_control ]
+			.
+report_controls_control                ::= control_is_are opt_final
+                                           report_break_list
+			.
+report_controls_page                   ::= "PAGE" opt_limit_is_are integer
+                                           opt_line_lines opt_heading
+                                           opt_first_detail opt_last_detail
+                                           opt_footing
+			.
+opt_heading                            ::= [ "HEADING" opt_is integer ]
+			.
+opt_line_lines                         ::= opt_lines
+                                         | "LINE"
+			.
+opt_lines                              ::= [ "LINES" ]
+			.
+control_is_are                         ::= "CONTROL" opt_is
+                                         | "CONTROLS" opt_are
+			.
+opt_limit_is_are                       ::= [ "LIMIT" "IS" | "LIMITS" "ARE" ]
+			.
+opt_footing                            ::= [ "FOOTING" opt_is integer ]
+			.
+opt_last_detail                        ::= [ "LAST" "DETAIL" opt_is integer ]
+			.
+opt_first_detail                       ::= [ "FIRST" "DETAIL" opt_is integer ]
+			.
+opt_final                              ::= [ "FINAL" ]
+			.
+report_break_list                      ::= { name }
+			.
+report_description                     ::= { report_item } report_item
+			.
+report_item                            ::= integer opt_def_name report_clauses
+                                           "."
+			.
+report_clauses                         ::= { report_clause } report_clause
+			.
+report_clause                          ::= report_clause_line_number
+                                         | report_clause_next_group
+                                         | report_clause_type
+                                         | report_clause_usage_display
+                                         | report_clause_picture
+                                         | report_clause_signis
+                                         | report_clause_justified
+                                         | report_clause_blank_zero
+                                         | report_clause_column_number
+                                         | report_clause_svs
+                                         | report_clause_group_indicate
+			.
+report_clause_type                     ::= "TYPE" opt_is report_clause_type2
+			.
+report_clause_type2                    ::= "REPORT" "HEADING"
+                                         | "PAGE" "HEADING"
+                                         | "CONTROL" "HEADING" opt_name_final
+                                         | "DETAIL"
+                                         | "CONTROL" "FOOTING" opt_name_final
+                                         | "PAGE" "FOOTING"
+                                         | "REPORT" "FOOTING"
+                                         | "RH"
+                                         | "PH"
+                                         | "CH" opt_name_final
+                                         | "DE"
+                                         | "CF" opt_name_final
+                                         | "PF"
+                                         | "RF"
+			.
+report_clause_signis                   ::= [ "SIGN" opt_is ] leading_trailing
+                                           "SEPARATE" opt_character
+			.
+report_clause_picture                  ::= "PICTURE" opt_is picture
+			.
+report_clause_usage_display            ::= [ "USAGE" opt_is ] "DISPLAY"
+			.
+report_clause_justified                ::= "JUSTIFIED" opt_right
+			.
+report_clause_next_group               ::= "NEXT" "GROUP" opt_is
+                                           integer_on_next_page
+			.
+report_clause_line_number              ::= "LINE" opt_number opt_is ( integer
+                                           "ON" "NEXT" "PAGE" | integer "NEXT"
+                                           "PAGE" | integer | "PLUS" integer )
+			.
+report_clause_column_number            ::= "COLUMN" opt_number opt_is integer
+			.
+report_clause_svs                      ::= "SOURCE" opt_is gname_page_counter
+                                         | "VALUE" opt_is literal
+                                         | "SUM" gname_list opt_upon opt_reset
+			.
+gname_page_counter                     ::= gname
+                                         | "PAGE-COUNTER"
+			.
+report_clause_group_indicate           ::= [ "GROUP" opt_indicate ]
+			.
+report_clause_blank_zero               ::= "BLANK" opt_when "ZEROS"
+			.
+opt_indicate                           ::= [ "INDICATE" ]
+			.
+opt_upon                               ::= [ "UPON" gname_list ]
+			.
+opt_reset                              ::= [ "RESET" ( gname | "FINAL" ) ]
+			.
+opt_number                             ::= [ "NUMBER" ]
+			.
+leading_trailing                       ::= "LEADING"
+                                         | "TRAILING"
+			.
+opt_right                              ::= [ "RIGHT" ]
+			.
+opt_name_final                         ::= gname
+                                         | "FINAL"
+			.
+integer_on_next_page                   ::= integer
+                                         | "PLUS" integer
+                                         | "NEXT" "PAGE"
+			.
+opt_of                                 ::= [ "OF" ]
+			.
+opt_screen_section                     ::= [ "SCREEN" "SECTION" "."
+                                           screen_section ]
+			.
+screen_section                         ::= { screen_item }
+			.
+screen_item                            ::= integer opt_def_name screen_clauses
+                                           "."
+			.
+screen_clauses                         ::= { ( "LINE" opt_number_is
+                                           opt_plus_minus name_or_lit |
+                                           "COLUMN" opt_number_is
+                                           opt_plus_minus name_or_lit |
+                                           screen_attrib | "FOREGROUND-COLOR"
+                                           name_or_lit | "BACKGROUND-COLOR"
+                                           name_or_lit | "COLOR" name_or_lit |
+                                           screen_source_destination |
+                                           value_is_are gliteral | pictures |
+                                           "SIZE" name_or_lit ) }
+			.
+screen_source_destination              ::= "USING" name_or_lit
+                                         | "FROM" name_or_lit screen_to_name
+                                         | "TO" name
+			.
+screen_to_name                         ::= [ "TO" name ]
+			.
+screen_attrib                          ::= "BLANK" "SCREEN"
+                                         | "BLANK" "LINE"
+                                         | "ERASE" "EOL"
+                                         | "ERASE" "EOS"
+                                         | "ERASE"
+                                         | opt_with "BELL"
+                                         | sign_clause
+                                         | "FULL"
+                                         | "REQUIRED"
+                                         | "SECURE"
+                                         | "AUTO"
+                                         | "JUSTIFIED" "RIGHT"
+                                         | "JUSTIFIED" "LEFT"
+                                         | "BLINK"
+                                         | "REVERSE-VIDEO"
+                                         | "UNDERLINE"
+                                         | "LOWLIGHT"
+                                         | "HIGHLIGHT"
+                                         | "BLANK" opt_when "ZEROS"
+                                         | opt_with "NO-ECHO"
+                                         | opt_with "UPDATE"
+                                         | opt_with "NO" "ADVANCING"
+                                         | "UPPER"
+                                         | "LOWER"
+			.
+sign_clause                            ::= opt_sign_is ( "LEADING" opt_separate
+                                           | "TRAILING" opt_separate )
+			.
+opt_separate                           ::= [ "SEPARATE" opt_character ]
+			.
+opt_character                          ::= [ "CHARACTER" ]
+			.
+opt_sign_is                            ::= [ "SIGN" ] opt_is
+			.
+opt_plus_minus                         ::= [ "PLUS" | "+" | "MINUS" | "-" ]
+			.
+opt_number_is                          ::= [ "NUMBER" opt_is ]
+			.
+file_section                           ::= { ( "FD" "string"
+                                           file_description_fd_clauses "."
+                                           file_description | "SD" "string"
+                                           file_description_sd_clauses "."
+                                           file_description ) }
+			.
+file_description                       ::= { field_description }
+                                           field_description
+			.
+field_description                      ::= integer opt_def_name data_clauses
+                                           "."
+			.
+data_clauses                           ::= { ( data_clause | redefines_clause )
+                                           }
+			.
+redefines_clause                       ::= "REDEFINES" redefines_var
+			.
+redefines_var                          ::= "variable"
+                                         | "subscripted-variable"
+			.
+data_clause                            ::= array_options
+                                         | pictures
+                                         | usage_option
+                                         | sign_clause
+                                         | value_option
+                                         | "SYNCHRONIZED" sync_options
+                                         | "JUSTIFIED" sync_options
+                                         | opt_is "EXTERNAL"
+                                         | opt_is "GLOBAL"
+                                         | "BLANK" opt_when "ZEROS"
+                                         | "RENAMES" variable opt_thru_gname
+			.
+sync_options                           ::= [ "LEFT" | "RIGHT" ]
+			.
+opt_thru_gname                         ::= [ "THRU" variable ]
+			.
+array_options                          ::= "OCCURS" integer ( opt_TIMES
+                                           opt_indexed_by | "TO" integer
+                                           opt_TIMES "DEPENDING" opt_on gname
+                                           opt_indexed_by )
+			.
+opt_key_is                             ::= [ "DESCENDING" opt_key opt_is
+                                           "string" ]
+			.
+opt_indexed_by                         ::= [ opt_key_is "INDEXED" opt_by
+                                           index_name_list ]
+			.
+index_name_list                        ::= { def_name } def_name
+			.
+usage_option                           ::= opt_USAGE opt_is usage
+			.
+usage                                  ::= "usage-type"
+                                         | "DISPLAY"
+                                         | "POINTER"
+			.
+value_option                           ::= value_is_are value_list
+			.
+value_is_are                           ::= "VALUE" opt_is
+                                         | "VALUES" opt_are
+			.
+value_list                             ::= { value opt_comma } value
+			.
+value                                  ::= gliteral [ "THRU" gliteral ]
+			.
+pictures                               ::= "PICTURE" opt_is picture
+			.
+picture                                ::= { pic_elem }
+			.
+pic_elem                               ::= "picture-char" opt_multiplier
+			.
+opt_multiplier                         ::= [ "numeric-literal" ]
+			.
+file_description_fd_clauses            ::= { file_description_fd_clause }
+			.
+file_description_sd_clauses            ::= { file_description_sd_clause }
+			.
+file_description_fd_clause             ::= opt_is "EXTERNAL"
+                                         | opt_is "GLOBAL"
+                                         | file_description_clause_block
+                                         | file_description_clause_record
+                                         | file_description_clause_label
+                                         | file_description_clause_value
+                                         | file_description_clause_data
+                                         | file_description_clause_report
+                                         | file_description_clause_linage
+                                         | file_description_clause_code_set
+			.
+file_description_sd_clause             ::= file_description_clause_record
+                                         | file_description_clause_data
+			.
+file_description_clause_block          ::= "BLOCK" opt_contains integer
+                                           opt_to_integer opt_chars_or_recs
+			.
+file_description_clause_record         ::= "RECORD" ( opt_contains integer
+                                           to_rec_varying opt_characters |
+                                           opt_is "VARYING" opt_in opt_size
+                                           from_rec_varying to_rec_varying
+                                           opt_characters depend_rec_varying )
+			.
+file_description_clause_label          ::= "LABEL" record_is_are std_or_omitt
+			.
+file_description_clause_value          ::= "VALUE" "OF" "FILE-ID" opt_is
+                                           filename
+			.
+file_description_clause_data           ::= "DATA" record_is_are var_strings
+			.
+file_description_clause_report         ::= report_is_are "string"
+			.
+file_description_clause_code_set       ::= "CODE-SET" opt_is "string"
+			.
+file_description_clause_linage         ::= "LINAGE" opt_is data_name opt_lines
+                                           file_description_clause_linage_footing
+                                           file_description_clause_linage_top
+                                           file_description_clause_linage_bottom
+			.
+file_description_clause_linage_footing ::= [ opt_with "FOOTING" opt_at
+                                           data_name opt_lines ]
+			.
+file_description_clause_linage_top     ::= [ opt_at "TOP" data_name opt_lines ]
+			.
+file_description_clause_linage_bottom  ::= [ opt_at "BOTTOM" data_name ]
+			.
+report_is_are                          ::= "REPORT" opt_is
+                                         | "REPORTS" opt_are
+			.
+var_strings                            ::= { "string" } "string"
+			.
+opt_chars_or_recs                      ::= [ "CHARACTERS" | "RECORDS" ]
+			.
+opt_to_integer                         ::= [ "TO" integer ]
+			.
+depend_rec_varying                     ::= [ "DEPENDING" opt_on "string" ]
+			.
+from_rec_varying                       ::= [ opt_from nliteral ]
+			.
+opt_from                               ::= [ "FROM" ]
+			.
+to_rec_varying                         ::= [ "TO" nliteral ]
+			.
+record_is_are                          ::= "RECORD" opt_is
+                                         | "RECORDS" opt_are
+			.
+std_or_omitt                           ::= "STANDARD"
+                                         | "OMITTED"
+			.
+opt_USAGE                              ::= [ "USAGE" ]
+			.
+opt_TIMES                              ::= [ "TIMES" ]
+			.
+opt_when                               ::= [ "WHEN" ]
+			.
+opt_contains                           ::= [ "CONTAINS" ]
+			.
+opt_characters                         ::= [ "CHARACTERS" ]
+			.
+opt_order                              ::= [ "ORDER" ]
+			.
+working_storage_section                ::= { field_description }
+			.
+linkage_section                        ::= { field_description }
+			.
+procedure_division_opt                 ::= [ "PROCEDURE" "DIVISION"
+                                           using_parameters "."
+                                           declaratives_opt procedure_division
+                                           ]
+			.
+procedure_division                     ::= { procedure_decl }
+			.
+procedure_decl                         ::= procedure_section
+                                         | paragraph
+                                         | statements "."
+                                         | "."
+			.
+declaratives_opt                       ::= [ "DECLARATIVES" "."
+                                           declaratives_procedure
+                                           declaratives_division "END"
+                                           "DECLARATIVES" "." ]
+			.
+declaratives_division                  ::= { declaratives_decl }
+			.
+declaratives_decl                      ::= declaratives_procedure
+                                         | paragraph
+                                         | statements "."
+			.
+declaratives_procedure                 ::= procedure_section use_phrase
+			.
+use_phrase                             ::= "USE" "AFTER"
+                                           use_phrase_exception_error
+                                           "PROCEDURE" opt_on use_phrase_option
+                                           "."
+			.
+use_phrase_exception_error             ::= "EXCEPTION"
+                                         | "ERROR"
+                                         | "STANDARD" "EXCEPTION"
+                                         | "STANDARD" "ERROR"
+			.
+use_phrase_option                      ::= gname_list
+                                         | open_mode
+			.
+procedure_section                      ::= "paragraph-name" "SECTION" "."
+			.
+paragraph                              ::= "paragraph-name" dot_or_eos
+			.
+dot_or_eos                             ::= "."
+                                         | "."
+			.
+statement_list                         ::= statements
+			.
+statements                             ::= { statement } statement
+			.
+statement                              ::= move_statement
+                                         | initialize_statement
+                                         | compute_statement
+                                         | add_statement
+                                         | subtract_statement
+                                         | multiply_statement
+                                         | divide_statement
+                                         | accept_statement
+                                         | display_statement
+                                         | open_statement
+                                         | close_statement
+                                         | read_statement
+                                         | return_statement
+                                         | release_statement
+                                         | write_statement
+                                         | rewrite_statement
+                                         | delete_statement
+                                         | start_statement
+                                         | perform_statement
+                                         | goto_statement
+                                         | exit_statement
+                                         | stoprun_statement
+                                         | call_statement
+                                         | chain_statement
+                                         | set_statement
+                                         | sort_statement
+                                         | merge_statement
+                                         | inspect_statement
+                                         | string_statement
+                                         | unstring_statement
+                                         | initiate_statement
+                                         | generate_statement
+                                         | terminate_statement
+                                         | proto_statement
+                                         | trace_statement
+                                         | goback_statement
+                                         | cancel_statement
+                                         | unlock_statement
+                                         | if_statement
+                                         | evaluate_statement
+                                         | search_statement
+			.
+perform_statement                      ::= "PERFORM" perform_options
+			.
+if_statement                           ::= if_part ( opt_end_if | "ELSE"
+                                           conditional_statement opt_end_if )
+			.
+search_statement                       ::= "SEARCH" ( search opt_end_search |
+                                           "ALL" search_all opt_end_search )
+			.
+evaluate_statement                     ::= "EVALUATE" selection_subject_set
+                                           when_case_list end_evaluate_or_eos
+			.
+end_evaluate_or_eos                    ::= "END-EVALUATE"
+                                         | "."
+			.
+selection_subject_set                  ::= { selection_subject "ALSO" }
+                                           selection_subject
+			.
+selection_subject                      ::= expr
+                                         | condition
+                                         | "TRUE"
+                                         | "FALSE"
+			.
+when_case_list                         ::= [ when_case_list ] "WHEN" when_case
+                                           sentence_or_nothing
+			.
+when_case                              ::= selection_object
+                                         | when_case "ALSO" selection_object
+                                         | "OTHER"
+			.
+selection_object                       ::= "ANY"
+                                         | "TRUE"
+                                         | "FALSE"
+                                         | opt_not expr
+                                         | opt_not expr "THRU" expr
+                                         | opt_not cond_name
+			.
+sentence_or_nothing                    ::= [ conditional_statement ]
+			.
+if_part                                ::= "IF" condition opt_end_then
+                                           conditional_statement
+			.
+conditional_statement                  ::= statement_list
+                                         | "NEXT" "SENTENCE"
+                                         | "CONTINUE"
+			.
+opt_not                                ::= [ "NOT" ]
+			.
+opt_end_if                             ::= [ "END-IF" ]
+			.
+opt_end_then                           ::= [ "THEN" ]
+			.
+search                                 ::= variable_indexed search_opt_varying
+                                           search_opt_at_end search_when_list
+			.
+search_all                             ::= variable_indexed search_opt_at_end
+                                           search_all_when_list
+			.
+search_opt_varying                     ::= [ "VARYING" variable ]
+			.
+search_opt_at_end                      ::= [ opt_at "END" statement_list ]
+			.
+search_when_list                       ::= { search_when } search_when
+			.
+search_when                            ::= "WHEN" search_when_conditional
+                                           search_when_statement
+			.
+search_when_statement                  ::= statement_list
+                                         | "NEXT" "SENTENCE"
+                                         | "CONTINUE"
+			.
+search_when_conditional                ::= name_or_lit extended_cond_op
+                                           name_or_lit
+			.
+search_all_when_list                   ::= { search_all_when } search_all_when
+			.
+search_all_when                        ::= "WHEN" search_all_when_conditional
+                                           search_all_when_statement
+			.
+search_all_when_statement              ::= statement_list
+                                         | "NEXT" "SENTENCE"
+                                         | "CONTINUE"
+			.
+search_all_when_conditional            ::= variable opt_is "condition-name"
+                                           opt_to variable
+                                         | variable opt_is "condition-name"
+                                           opt_to literal
+                                         | search_all_when_conditional "AND"
+                                           search_all_when_conditional
+			.
+opt_end_search                         ::= [ "END-SEARCH" ]
+			.
+unlock_statement                       ::= "UNLOCK" name
+			.
+proto_statement                        ::= ( "TCOB-PROTOTYPE1" |
+                                           "TCOB-PROTOTYPE2" gname ) gname
+			.
+trace_statement                        ::= ( "READY" | "RESET" ) "TRACE"
+			.
+initiate_statement                     ::= "INITIATE" name
+			.
+generate_statement                     ::= "GENERATE" name
+			.
+terminate_statement                    ::= "TERMINATE" name
+			.
+cancel_statement                       ::= "CANCEL" ( gname | "ALL" )
+			.
+sort_statement                         ::= "SORT" name sort_keys
+                                           sort_duplicates_opt
+                                           sort_collating_opt sort_input
+                                           sort_output
+			.
+sort_duplicates_opt                    ::= [ opt_with "DUPLICATES" opt_in
+                                           opt_order ]
+			.
+sort_collating_opt                     ::= [ collating_sequence ]
+			.
+merge_statement                        ::= "MERGE" name sort_keys
+                                           sort_collating_opt merge_using
+                                           sort_output
+			.
+merge_using                            ::= [ "USING" sort_file_list ]
+			.
+move_statement                         ::= "MOVE" [ gname "TO" var_list |
+                                           "CORRESPONDING" gname "TO" gname |
+                                           "LENGTH" "OF" gname "TO" name ]
+			.
+initialize_statement                   ::= "INITIALIZE" [ var_list ]
+			.
+compute_statement                      ::= "COMPUTE" [ compute_body
+                                           opt_end_compute ]
+			.
+compute_body                           ::= var_list_name "condition-name" expr
+                                           [ opt_on_size_error ]
+			.
+opt_end_compute                        ::= [ "END-COMPUTE" ]
+			.
+add_statement                          ::= "ADD" [ add_body opt_end_add ]
+			.
+add_body                               ::= var_list_gname "TO" var_list_name
+                                           opt_on_size_error
+                                         | var_list_gname opt_add_to "GIVING"
+                                           var_list_name opt_on_size_error
+                                         | var_list_gname "TO" var_list_name
+                                         | var_list_gname opt_add_to "GIVING"
+                                           var_list_name
+                                         | "CORRESPONDING" var_list_gname "TO"
+                                           var_list_name opt_rounded
+                                           opt_on_size_error
+                                         | "CORRESPONDING" var_list_gname "TO"
+                                           var_list_name opt_rounded
+			.
+opt_add_to                             ::= [ "TO" gname ]
+			.
+opt_end_add                            ::= [ "END-ADD" ]
+			.
+subtract_statement                     ::= "SUBTRACT" [ subtract_body
+                                           opt_end_subtract ]
+			.
+subtract_body                          ::= var_list_gname "FROM" var_list_name
+                                         | var_list_gname "FROM" gname "GIVING"
+                                           var_list_name
+                                         | var_list_gname "FROM" var_list_name
+                                           opt_on_size_error
+                                         | var_list_gname "FROM" gname "GIVING"
+                                           var_list_name opt_on_size_error
+                                         | "CORRESPONDING" var_list_gname
+                                           "FROM" var_list_name opt_rounded
+                                           opt_on_size_error
+                                         | "CORRESPONDING" var_list_gname
+                                           "FROM" var_list_name opt_rounded
+			.
+opt_end_subtract                       ::= [ "END-SUBTRACT" ]
+			.
+multiply_statement                     ::= "MULTIPLY" [ multiply_body
+                                           opt_end_multiply ]
+			.
+multiply_body                          ::= gname "BY" ( gname "GIVING"
+                                           var_list_name | var_list_name |
+                                           gname "GIVING" var_list_name
+                                           opt_on_size_error | var_list_name
+                                           opt_on_size_error )
+			.
+opt_end_multiply                       ::= [ "END-MULTIPLY" ]
+			.
+divide_statement                       ::= "DIVIDE" [ divide_body
+                                           opt_end_divide ]
+			.
+divide_body                            ::= gname ( "BY" gname "GIVING"
+                                           var_list_name | "BY" gname "GIVING"
+                                           name opt_rounded "REMAINDER" name |
+                                           "INTO" gname "GIVING" name
+                                           opt_rounded "REMAINDER" name |
+                                           "INTO" gname "GIVING" var_list_name
+                                           | "INTO" var_list_name | "BY" gname
+                                           "GIVING" var_list_name
+                                           opt_on_size_error | "BY" gname
+                                           "GIVING" name opt_rounded
+                                           "REMAINDER" name opt_on_size_error |
+                                           "INTO" gname "GIVING" name
+                                           opt_rounded "REMAINDER" name
+                                           opt_on_size_error | "INTO" gname
+                                           "GIVING" var_list_name
+                                           opt_on_size_error | "INTO"
+                                           var_list_name opt_on_size_error )
+			.
+opt_end_divide                         ::= [ "END-DIVIDE" ]
+			.
+accept_statement                       ::= accept_hardware
+                                         | accept_chronological
+                                         | accept_screen
+                                         | "ACCEPT"
+			.
+accept_hardware                        ::= "ACCEPT" name "FROM" ( "INKEY"
+                                           opt_end_accept | "INPUT" "STATUS"
+                                           opt_end_accept | "COMMAND-LINE"
+                                           opt_end_accept |
+                                           "ENVIRONMENT-VARIABLE"
+                                           "alphanumeric-literal"
+                                           opt_end_accept )
+			.
+accept_chronological                   ::= "ACCEPT" name "FROM" "TIME"
+                                           opt_end_accept
+			.
+accept_screen                          ::= "ACCEPT" name accept_display_options
+                                           ( opt_end_accept | opt_on
+                                           "EXCEPTION" variable statement_list
+                                           opt_end_accept )
+			.
+opt_end_accept                         ::= [ "END-ACCEPT" ]
+			.
+display_statement                      ::= display_line
+                                         | display_screen
+                                         | "DISPLAY"
+			.
+display_line                           ::= "DISPLAY" display_varlist
+                                           display_upon display_line_options
+                                           opt_end_display
+			.
+display_screen                         ::= "DISPLAY" display_varlist
+                                           accept_display_options
+                                           opt_end_display
+			.
+display_varlist                        ::= { gname opt_sep } gname
+			.
+display_upon                           ::= "UPON" ( "CONSOLE" | "STD-OUTPUT" |
+                                           "STD-ERROR" )
+			.
+display_line_options                   ::= { ( opt_with "NO" "ADVANCING" |
+                                           "ERASE" | "ERASE" "EOS" | "ERASE"
+                                           "EOL" | "ERASE" "SCREEN" ) }
+			.
+opt_end_display                        ::= [ "END-DISPLAY" ]
+			.
+scr_line                               ::= "LINE" expr
+			.
+scr_position                           ::= ( "COLUMN" | "POSITION" ) expr
+			.
+scr_line_position                      ::= "AT" "numeric-literal"
+			.
+accept_display_options                 ::= { accept_display_option }
+			.
+accept_display_option                  ::= screen_attrib
+                                         | scr_line
+                                         | scr_position
+                                         | scr_line_position
+			.
+open_statement                         ::= "OPEN" [ open_options ]
+			.
+open_options                           ::= { open_mode open_varlist } open_mode
+                                           open_varlist
+			.
+open_mode                              ::= "INPUT"
+                                         | "I-O"
+                                         | "OUTPUT"
+                                         | "EXTEND"
+			.
+open_varlist                           ::= { name opt_sep } name
+			.
+close_statement                        ::= "CLOSE" [ close_files ]
+			.
+close_files                            ::= { close_file opt_sep } close_file
+			.
+close_file                             ::= name close_options_opt
+			.
+close_options_opt                      ::= close_options
+                                         | opt_with_lock
+			.
+close_options                          ::= opt_with "NO" "REWIND"
+                                         | "REEL"
+                                         | "UNIT"
+                                         | "REEL" opt_for "REMOVAL"
+                                         | "UNIT" opt_for "REMOVAL"
+			.
+opt_with_lock                          ::= [ opt_with ( "LOCK" | "IGNORE"
+                                           "LOCK" ) ]
+			.
+return_statement                       ::= "RETURN" [ return_body
+                                           opt_end_return ]
+			.
+return_body                            ::= name opt_record opt_read_into [
+                                           opt_read_at_end ]
+			.
+read_statement                         ::= "READ" [ read_body opt_end_read ]
+			.
+read_body                              ::= name opt_read_next opt_record
+                                           opt_read_into opt_with_lock
+                                           opt_read_key [ opt_read_at_end |
+                                           opt_read_invalid_key ]
+			.
+opt_read_next                          ::= [ "NEXT" | "PREVIOUS" ]
+			.
+opt_read_into                          ::= [ "INTO" name ]
+			.
+opt_read_key                           ::= [ "KEY" opt_is name ]
+			.
+opt_read_at_end                        ::= [ "NOT" opt_at | "AT" | "AT" on_end
+                                           "NOT" opt_at | on_end "NOT" opt_at ]
+                                           on_end
+			.
+on_end                                 ::= "END" statement_list
+			.
+opt_read_invalid_key                   ::= read_invalid_key
+                                         | read_not_invalid_key
+                                         | read_invalid_key
+                                           read_not_invalid_key
+			.
+read_invalid_key                       ::= "INVALID" opt_key statement_list
+			.
+read_not_invalid_key                   ::= "NOT" "INVALID" opt_key
+                                           statement_list
+			.
+opt_end_read                           ::= [ "END-READ" ]
+			.
+opt_end_return                         ::= [ "END-RETURN" ]
+			.
+release_statement                      ::= "RELEASE" name opt_release_from
+			.
+opt_release_from                       ::= [ "FROM" gname ]
+			.
+write_statement                        ::= "WRITE" name opt_write_from
+                                           write_options opt_invalid_key
+                                           opt_end_write
+			.
+opt_write_from                         ::= [ "FROM" gname ]
+			.
+write_options                          ::= [ before_after opt_advancing ( gname
+                                           opt_line_lines | "PAGE" ) ]
+			.
+opt_end_write                          ::= [ "END-WRITE" ]
+			.
+rewrite_statement                      ::= "REWRITE" name opt_write_from
+                                           opt_invalid_key opt_end_rewrite
+			.
+opt_end_rewrite                        ::= [ "END-REWRITE" ]
+			.
+delete_statement                       ::= "DELETE" name opt_record
+                                           opt_invalid_key opt_end_delete
+			.
+opt_end_delete                         ::= [ "END-DELETE" ]
+			.
+start_statement                        ::= "START" start_body opt_invalid_key
+                                           opt_end_start
+			.
+start_body                             ::= name [ "KEY" opt_is cond_op name ]
+			.
+opt_end_start                          ::= [ "END-START" ]
+			.
+goto_statement                         ::= "GO" opt_to goto_label_list
+                                           opt_goto_depending_on
+			.
+goto_label_list                        ::= { label [ "," ] } label
+			.
+opt_goto_depending_on                  ::= [ "DEPENDING" opt_on variable ]
+			.
+call_statement                         ::= "CALL" [ gname using_options
+                                           returning_options
+                                           on_exception_or_overflow
+                                           on_not_exception opt_end_call ]
+			.
+chain_statement                        ::= "CHAIN" [ gname using_options
+                                           on_exception_or_overflow
+                                           opt_end_chain ]
+			.
+exit_statement                         ::= "EXIT" [ "PROGRAM" ]
+			.
+stoprun_statement                      ::= "STOP" "RUN"
+			.
+goback_statement                       ::= "GOBACK"
+			.
+var_list_name                          ::= [ var_list_name ] name opt_rounded
+                                           opt_sep
+			.
+var_list_gname                         ::= { gname opt_sep } gname opt_sep
+			.
+opt_rounded                            ::= [ "ROUNDED" ]
+			.
+opt_on_size_error                      ::= [ [ opt_on "SIZE" on_size_error ]
+                                           "NOT" ] opt_on "SIZE" on_size_error
+			.
+on_size_error                          ::= "ERROR" statement_list
+			.
+opt_size                               ::= [ "SIZE" ]
+			.
+opt_end_call                           ::= [ "END-CALL" ]
+			.
+opt_end_chain                          ::= [ "END-CHAIN" ]
+			.
+sort_input                             ::= "INPUT" "PROCEDURE" opt_is
+                                           perform_range
+                                         | "USING" sort_file_list
+			.
+sort_output                            ::= "OUTPUT" "PROCEDURE" opt_is
+                                           perform_range
+                                         | "GIVING" sort_file_list
+			.
+sort_file_list                         ::= { name } name
+			.
+set_statement                          ::= "SET" set_list
+			.
+set_list                               ::= set_target "TO" opt_address_of
+                                           set_variable_or_nlit
+                                         | set_target "UP" "BY" var_or_nliteral
+                                         | set_target "DOWN" "BY"
+                                           var_or_nliteral
+                                         | opt_address_of variable "TO"
+                                           opt_address_of set_variable
+			.
+set_target                             ::= name_list
+                                         | cond_name
+			.
+set_variable                           ::= variable
+                                         | "NULL"
+			.
+set_variable_or_nlit                   ::= name_or_lit
+                                         | "ON"
+                                         | "OFF"
+                                         | "NULL"
+                                         | "TRUE"
+			.
+opt_address_of                         ::= [ "ADDRESS" opt_of ]
+			.
+string_statement                       ::= "STRING" string_from_list "INTO"
+                                           name string_with_pointer
+                                           opt_on_overflow opt_end_stringcmd
+			.
+unstring_statement                     ::= "UNSTRING" name unstring_delimited
+                                           "INTO" unstring_destinations
+                                           string_with_pointer
+                                           unstring_tallying opt_on_overflow
+                                           opt_end_unstring
+			.
+unstring_delimited                     ::= [ "DELIMITED" opt_by
+                                           unstring_delimited_vars ]
+			.
+unstring_delimited_vars                ::= { opt_all gname "OR" } opt_all gname
+			.
+unstring_destinations                  ::= { unstring_dest_var opt_sep }
+                                           unstring_dest_var
+			.
+unstring_dest_var                      ::= name opt_unstring_delim
+                                           opt_unstring_count
+			.
+opt_unstring_delim                     ::= [ "DELIMITER" opt_in name ]
+			.
+opt_unstring_count                     ::= [ "COUNT" opt_in name ]
+			.
+unstring_tallying                      ::= [ "TALLYING" opt_in name ]
+			.
+opt_all                                ::= [ "ALL" ]
+			.
+opt_on_overflow                        ::= on_overflow on_not_overflow
+			.
+on_exception_or_overflow               ::= [ opt_on exception_or_overflow
+                                           statement_list ]
+			.
+exception_or_overflow                  ::= "EXCEPTION"
+                                         | "OVERFLOW"
+			.
+on_not_exception                       ::= [ "NOT" opt_on "EXCEPTION"
+                                           statement_list ]
+			.
+on_overflow                            ::= [ opt_on "OVERFLOW" statement_list ]
+			.
+on_not_overflow                        ::= [ not_excep opt_on "OVERFLOW"
+                                           statement_list ]
+			.
+opt_invalid_key                        ::= [ opt_invalid_key_sentence |
+                                           opt_not_invalid_key_sentence |
+                                           opt_invalid_key_sentence
+                                           opt_not_invalid_key_sentence ]
+			.
+opt_invalid_key_sentence               ::= "INVALID" opt_key statement_list
+			.
+opt_not_invalid_key_sentence           ::= not_excep "INVALID" opt_key
+                                           statement_list
+			.
+not_excep                              ::= NOTEXCEP
+                                         | "NOT"
+			.
+string_with_pointer                    ::= [ opt_with "POINTER" name ]
+			.
+string_from_list                       ::= { string_from opt_sep } string_from
+			.
+string_from                            ::= gname [ "DELIMITED" opt_by
+                                           delimited_by ]
+			.
+delimited_by                           ::= gname
+                                         | "SIZE"
+			.
+opt_end_stringcmd                      ::= [ "END-STRING" ]
+			.
+opt_end_unstring                       ::= [ "END-UNSTRING" ]
+			.
+inspect_statement                      ::= "INSPECT" name ( tallying_clause
+                                           replacing_clause | converting_clause
+                                           )
+			.
+converting_clause                      ::= "CONVERTING" noallname "TO"
+                                           noallname inspect_before_after
+			.
+tallying_clause                        ::= [ "TALLYING" tallying_list ]
+			.
+tallying_list                          ::= { name "FOR" tallying_for_list }
+			.
+tallying_for_list                      ::= { ( "CHARACTERS"
+                                           inspect_before_after | "ALL"
+                                           noallname inspect_before_after |
+                                           "LEADING" noallname
+                                           inspect_before_after ) }
+			.
+replacing_clause                       ::= [ "REPLACING" replacing_list ]
+			.
+replacing_list                         ::= { ( "CHARACTERS" "BY" noallname
+                                           inspect_before_after |
+                                           replacing_kind replacing_by_list ) }
+			.
+replacing_by_list                      ::= { noallname "BY" noallname
+                                           inspect_before_after }
+			.
+replacing_kind                         ::= "ALL"
+                                         | "LEADING"
+                                         | "TRAILING"
+                                         | "FIRST"
+			.
+inspect_before_after                   ::= { ( "BEFORE" opt_initial noallname |
+                                           "AFTER" opt_initial noallname ) }
+			.
+opt_initial                            ::= [ "INITIAL" ]
+			.
+sort_keys                              ::= { opt_on "DESCENDING" opt_key
+                                           sort_keys_names }
+			.
+sort_keys_names                        ::= { name } name
+			.
+expr                                   ::= gname
+                                         | expr "*" expr
+                                         | expr "/" expr
+                                         | expr "+" expr
+                                         | expr "-" expr
+                                         | expr "**" expr
+                                         | "(" expr ")"
+			.
+opt_expr                               ::= [ expr ]
+			.
+using_options                          ::= [ "USING" dummy parm_list ]
+			.
+returning_options                      ::= [ ( "RETURNING" | "GIVING" )
+                                           variable ]
+			.
+dummy                                  ::=
+			.
+using_parameters                       ::= [ ( "USING" | "CHAINING" ) var_list
+                                           ]
+			.
+var_list                               ::= { gname opt_sep } gname
+			.
+parm_list                              ::= { parameter opt_sep } parameter
+			.
+parameter                              ::= [ opt_by parm_type ] gname
+			.
+parm_type                              ::= "REFERENCE"
+                                         | "VALUE"
+                                         | "CONTENT"
+			.
+intrinsic_parm_list                    ::= { intrinsic_parm opt_sep }
+                                           intrinsic_parm
+			.
+intrinsic_parm                         ::= gname
+			.
+perform_range                          ::= label opt_perform_thru
+			.
+perform_options                        ::= perform_statements "END-PERFORM"
+                                         | gname "TIMES" perform_statements
+                                           "END-PERFORM"
+                                         | opt_with_test "UNTIL" condition
+                                           perform_statements "END-PERFORM"
+                                         | opt_with_test "VARYING" name "FROM"
+                                           gname opt_by gname "UNTIL" condition
+                                           opt_perform_after perform_statements
+                                           "END-PERFORM"
+                                         | label opt_perform_thru
+                                         | label opt_perform_thru opt_with_test
+                                           "UNTIL" condition
+                                         | label opt_perform_thru gname "TIMES"
+                                         | label opt_perform_thru opt_with_test
+                                           "VARYING" name "FROM" gname opt_by
+                                           gname "UNTIL" condition
+                                           opt_perform_after
+			.
+opt_perform_thru                       ::= [ "THRU" label ]
+			.
+opt_with_test                          ::= [ opt_with "TEST" before_after ]
+			.
+opt_perform_after                      ::= [ "AFTER" perform_after [ "AFTER"
+                                           perform_after [ "AFTER"
+                                           perform_after [ "AFTER"
+                                           perform_after [ "AFTER"
+                                           perform_after [ "AFTER"
+                                           perform_after ] ] ] ] ] ]
+			.
+perform_after                          ::= name "FROM" gname opt_by gname
+                                           "UNTIL" condition
+			.
+perform_statements                     ::= statement_list
+                                         | "CONTINUE"
+			.
+before_after                           ::= "BEFORE"
+                                         | "AFTER"
+			.
+condition                              ::= expr extended_cond_op opt_expr
+                                         | "NOT" condition
+                                         | condition "AND" implied_op_condition
+                                         | condition "OR" implied_op_condition
+                                         | "(" condition ")"
+                                         | cond_name
+			.
+implied_op_condition                   ::= condition
+                                         | cond_op expr
+                                         | expr
+			.
+sign_condition                         ::= "POSITIVE"
+                                         | "NEGATIVE"
+                                         | "ZEROS"
+			.
+class_condition                        ::= "NUMERIC"
+                                         | "ALPHABETIC"
+                                         | "ALPHABETIC-LOWER"
+                                         | "ALPHABETIC-UPPER"
+			.
+extended_cond_op                       ::= [ "IS" | "IS" "NOT" | "IS" ext_cond
+                                           "OR" | "NOT" opt_is | ext_cond "OR"
+                                           ] ext_cond
+			.
+ext_cond                               ::= conditional
+                                         | class_condition
+                                         | sign_condition
+			.
+cond_op                                ::= [ "NOT" | conditional "OR" ]
+                                           conditional
+			.
+conditional                            ::= "condition-name" opt_than_to
+			.
+opt_comma                              ::= [ "," ]
+			.
+opt_sep                                ::= [ "," ]
+			.
+opt_key                                ::= [ "KEY" ]
+			.
+opt_advancing                          ::= [ "ADVANCING" ]
+			.
+opt_than_to                            ::= [ "TO" | "THAN" ]
+			.
+opt_record                             ::= [ "RECORD" ]
+			.
+opt_at                                 ::= [ "AT" ]
+			.
+opt_in                                 ::= [ "IN" ]
+			.
+in_of                                  ::= "IN"
+                                         | "OF"
+			.
+opt_by                                 ::= [ "BY" ]
+			.
+opt_with                               ::= [ "WITH" ]
+			.
+opt_on                                 ::= [ "ON" ]
+			.
+opt_gname                              ::= [ gname ]
+			.
+opt_to                                 ::= [ "TO" ]
+			.
+gname_list                             ::= { gname } gname
+			.
+gname                                  ::= name
+                                         | gliteral
+                                         | "FUNCTION" "paragraph-name" "("
+                                           intrinsic_parm_list ")"
+                                         | "FUNCTION" "paragraph-name"
+			.
+name_or_lit                            ::= name
+                                         | literal
+			.
+noallname                              ::= name
+                                         | without_all_literal
+			.
+gliteral                               ::= without_all_literal
+                                         | all_literal
+			.
+without_all_literal                    ::= literal
+                                         | special_literal
+			.
+all_literal                            ::= "ALL" ( literal | special_literal )
+			.
+special_literal                        ::= "SPACES"
+                                         | "ZEROS"
+                                         | "QUOTES"
+                                         | "HIGH-VALUES"
+                                         | "LOW-VALUES"
+			.
+var_or_nliteral                        ::= variable
+                                         | nliteral
+			.
+nliteral                               ::= signed_nliteral
+			.
+literal                                ::= signed_nliteral
+                                         | "alphanumeric-literal"
+			.
+signed_nliteral                        ::= [ "+" | "-" ] "numeric-literal"
+			.
+opt_def_name                           ::= [ def_name ]
+			.
+def_name                               ::= "string"
+                                         | "FILLER"
+			.
+variable_indexed                       ::= "subscripted-variable"
+			.
+filename                               ::= literal
+                                         | "string"
+			.
+data_name                              ::= literal
+                                         | "string"
+			.
+cond_name                              ::= "condition-variable" [ "("
+                                           subscripts ")" ]
+			.
+name                                   ::= variable [ "(" gname ":" opt_gname
+                                           ")" ]
+			.
+variable                               ::= qualified_var [ ")" subscripts ")" ]
+			.
+qualified_var                          ::= unqualified_var { in_of
+                                           unqualified_var }
+			.
+unqualified_var                        ::= "variable"
+                                         | "subscripted-variable"
+			.
+subscripts                             ::= { subscript opt_comma } subscript
+			.
+subscript                              ::= { gname ( "+" | "-" ) } gname
+			.
+integer                                ::= signed_nliteral
+			.
+label                                  ::= "paragraph-name" in_of
+                                           "paragraph-name"
+                                         | "paragraph-name"
+                                         | "numeric-literal"
+                                         | "numeric-literal" in_of
+                                           "numeric-literal"
+                                         | "numeric-literal" in_of
+                                           "paragraph-name"
+			.
+anystring                              ::= "string"
+                                         | "paragraph-name"
+			.

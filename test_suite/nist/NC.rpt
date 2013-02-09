@@ -1,0 +1,68 @@
+Module :  NC
+ Filename    Tot   OK  Fai  Del  Man
+ NC101A.PRT   93   93    0    0    0 OK
+ NC102A.PRT   42   42    0    0    0 OK
+ NC103A.PRT  102  102    0    0    0 OK
+ NC106A.PRT  126  121    5    0    0   
+ NC108M.PRT   14   14    0    0    0 OK
+ NC111A.PRT    7    7    0    0    0 OK
+ NC112A.PRT   32   32    0    0    0 OK
+ NC115A.PRT   31   31    0    0    0 OK
+ NC121M.PRT   41   39    0    0    2 OK
+ NC122A.PRT   24   24    0    0    0 OK
+ NC123A.PRT   34   34    0    0    0 OK
+ NC124A.PRT  169  167    2    0    0   
+ NC125A.PRT  110  110    0    0    0 OK
+ NC126A.PRT  145  145    0    0    0 OK
+ NC127A.PRT    2    2    0    0    0 OK
+ NC131A.PRT   10   10    0    0    0 OK
+ NC132A.PRT   25   25    0    0    0 OK
+ NC134A.PRT   20   20    0    0    0 OK
+ NC135A.PRT    8    7    0    0    1 OK
+ NC136A.PRT    8    8    0    0    0 OK
+ NC137A.PRT    8    8    0    0    0 OK
+ NC139A.PRT   41   41    0    0    0 OK
+ NC141A.PRT    9    9    0    0    0 OK
+ NC170A.PRT   96   93    3    0    0   
+ NC171A.PRT  108  107    1    0    0   
+ NC172A.PRT  101  101    0    0    0 OK
+ NC173A.PRT  102  102    0    0    0 OK
+ NC175A.PRT   97   92    5    0    0   
+ NC176A.PRT  124  121    3    0    0   
+ NC177A.PRT  108  104    4    0    0   
+ NC201A.PRT   59   56    3    0    0   
+ NC202A.PRT   77   74    3    0    0   
+ NC203A.PRT   58   47   11    0    0   
+ NC204M.PRT   15    0   15    0    0   
+ NC206A.PRT   53   53    0    0    0 OK
+ NC207A.PRT   85   85    0    0    0 OK
+ NC208A.PRT   24   24    0    0    0 OK
+ NC210A.PRT   85   85    0    0    0 OK
+ NC214M.PRT    0    0    0    0    0 OK
+ NC216A.PRT   57   55    2    0    0   
+ NC217A.PRT   81   80    0    1    0 OK
+ NC218A.PRT  125  125    0    0    0 OK
+ NC219A.PRT    9    7    2    0    0   
+ NC220M.PRT   25   23    0    0    2 OK
+ NC221A.PRT   17   17    0    0    0 OK
+ NC222A.PRT    8    8    0    0    0 OK
+ NC223A.PRT   94   42   52    0    0   
+ NC224A.PRT   14   10    0    4    0 OK
+ NC231A.PRT   24   16    8    0    0   
+ NC232A.PRT   17   17    0    0    0 OK
+ NC233A.PRT   14    7    7    0    0   
+ NC236A.PRT   10    5    5    0    0   
+ NC239A.PRT    8    8    0    0    0 OK
+ NC240A.PRT   11   11    0    0    0 OK
+ NC241A.PRT   11   11    0    0    0 OK
+ NC242A.PRT   12   12    0    0    0 OK
+ NC243A.PRT   16   16    0    0    0 OK
+ NC244A.PRT    6    6    0    0    0 OK
+ NC245A.PRT   28   28    0    0    0 OK
+ NC246A.PRT   49   33   16    0    0   
+ NC247A.PRT   21   10    9    2    0   
+ NC248A.PRT   11    8    3    0    0   
+ NC251A.PRT   60   51    9    0    0   
+ NC253A.PRT   61   48   13    0    0   
+ Total:     3082 2889  181    7    5   64   42 OK
+    Percentages: pgms ok: 65.625 %  Tests ok: 93.7378 %

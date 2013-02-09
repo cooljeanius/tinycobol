@@ -1,0 +1,106 @@
+#!/bin/sh
+
+CWD=`pwd`
+
+TMP=$PWD/tmp
+
+PKGNAME=tinycobol
+
+PKG=$TMP/$PKGNAME
+
+VERSION=@TCOB_VERSION@
+ARCH=i486
+BUILD=1
+
+export CFLAGS="-O2 -march=i486 -mcpu=i686"
+export CXXFLAGS="-O2 -march=i486 -mcpu=i686"
+
+#if ! [ -a $PKGNAME-$VERSION.tar.gz ] ; then 
+#  wget http://prdownloads.sf.net/tiny-cobol/$PKGNAME-$VERSION.tar.bz2
+#fi
+
+
+if [ -a $TMP/$PKGNAME-$VERSION ] ; then
+   rm -r $TMP/$PKGNAME-$VERSION
+fi
+
+if [ -a $TMP/$PKGNAME-$VERSION.tar.bz2 ] ; then
+   rm -r $TMP/$PKGNAME-$VERSION.tar.bz2
+fi
+
+if [ -a $TMP/$PKGNAME-$VERSION-$ARCH-$BUILD.tgz ] ; then
+   rm -r $TMP/$PKGNAME-$VERSION-$ARCH-$BUILD.tgz
+fi
+
+if [ -a $PKG  ] ; then
+   rm -r $PKG
+fi
+
+mkdir -p $PKG
+
+#cp $PKGNAME-$VERSION.tar.bz2 $TMP
+
+cd $TMP
+
+tar -vjxf $PKGNAME-$VERSION.tar.bz2
+
+#echo "PWD=$PWD; cd $PKGNAME-$VERSION"
+cd $PKGNAME-$VERSION
+
+./configure --prefix=/usr
+# Common options: 
+# --with-libdb=1    # use DB library version (1 2 3 4) 
+# --with-yacc=yacc193
+# --with-readline
+# --with-cobf2f
+make   
+#make install prefix=$PKG/usr
+make install DESTDIR=$PKG
+
+#strip -s $PKG/usr/bin/*
+#strip --strip-debug $PKG/usr/lib
+
+#chgrp -R bin $PKG/usr/bin
+
+#gzip $PKG/usr/man/man1/*
+
+#mkdir -p $PKG/usr/doc/$PKGNAME-$VERSION
+
+cd $TMP/$PKGNAME-$VERSION
+
+
+mkdir $PKG/install
+
+{ cat  > $PKG/install/slack-desc << END
+        |-----handy-ruler------------------------------------------------------|
+tinycobol: TinyCOBOL (COBOL compiler)
+tinycobol:
+tinycobol: TinyCOBOL is a COBOL (COmmon Business Oriented Language) ANSI-85 
+tinycobol: compiler for the x86 (IA32) architecture.
+tinycobol: 
+tinycobol: Depending on the options given, the compiler will read a COBOL 
+tinycobol: source file (fixed or free-form) and preprocess, compile, assemble 
+tinycobol: and link to generate an executable, object, shared or static library.
+tinycobol: 
+tinycobol: The compiler generate 32-bit GNU assembler as an intermediate code, 
+tinycobol: and uses the GCC tool chain (assembler and linker) to create 
+tinycobol: binaries.
+tinycobol: 
+END
+}
+
+mkdir -p $PKG/usr/src/slackbuilds/$PKGNAME
+
+cat $CWD/SlackBuild > $PKG/usr/src/slackbuilds/$PKGNAME/SlackBuild
+
+chmod 755 $PKG/usr/src/slackbuilds/$PKGNAME/SlackBuild
+
+cd $PKG
+#chown -R root:root . 
+#chmod 755 . 
+#requiredbuilder -v -y -s $CWD $PKG
+/sbin/makepkg -l y -c n $TMP/$PKGNAME-$VERSION-$ARCH-$BUILD.tgz
+
+rm -rf $TMP/$PKGNAME-$VERSION
+rm -rf $TMP/$PKGNAME-$VERSION.tar.bz2
+rm -rf $PKG

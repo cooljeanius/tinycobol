@@ -1,0 +1,78 @@
+
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. TEST01M.
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+* INPUT-OUTPUT SECTION.
+ DATA DIVISION.
+ FILE SECTION.
+
+WORKING-STORAGE SECTION.
+  
+ 01 W01-MULTIPLY.
+    05  W01-MUL          PIC 9(6).
+    05  W01-MUL1         PIC 9(6).
+    05  W01-MUL2         PIC 9(2).
+    05  W01-MULTI OCCURS 2 TIMES PIC 9(2)V99.
+
+PROCEDURE DIVISION.
+
+A-000.
+ PERFORM A-100.
+ STOP RUN.
+
+A-100.
+
+ DISPLAY "* ------ multiply statements tests begin  ------ *".
+
+ DISPLAY "* ------ test 1 begin ------ *".
+ MOVE 1 TO W01-MUL W01-MUL1 W01-MUL2.
+ MOVE 2 TO W01-MULTI (1) W01-MULTI (2).
+
+ DISPLAY "W01-MUL =" W01-MUL " W01-MUL1 =" W01-MUL1 " W01-MUL2 =" W01-MUL2.
+ MULTIPLY 15.5 BY 11 GIVING W01-MUL ROUNDED W01-MUL1 W01-MUL2
+        ON SIZE ERROR PERFORM E-100
+        NOT ON SIZE ERROR PERFORM D-100
+ END-MULTIPLY.
+ DISPLAY "multiply 15.5 BY 11 giving W01-MUL =" W01-MUL 
+         " rounded W01-MUL1 =" W01-MUL1 " W01-MUL2 =" W01-MUL2.
+
+ DISPLAY "* ------ test 2 begin ------ *".
+ MOVE 33 TO W01-MUL W01-MUL1 W01-MUL2.
+ DISPLAY "W01-MUL =" W01-MUL " W01-MUL1 =" W01-MUL1 " W01-MUL2 =" W01-MUL2.
+ MULTIPLY 3.5 BY W01-MUL ROUNDED W01-MUL1 W01-MUL2
+        NOT ON SIZE ERROR PERFORM D-100.
+ DISPLAY "multiply 3.5 BY W01-MUL =" W01-MUL 
+         " rounded W01-MUL1 =" W01-MUL1 " W01-MUL2 =" 
+         W01-MUL2.
+
+ DISPLAY "* ------ test 3 begin ------ *".
+ MOVE 2 TO W01-MULTI (1) W01-MULTI (2).
+ MOVE 3 TO W01-MUL.
+ MOVE 77 TO W01-MUL1.
+ DISPLAY "W01-MUL =" W01-MUL " W01-MUL1 =" W01-MUL1.
+ DISPLAY "W01-MULTI (1) =" W01-MULTI (1) " W01-MULTI (2) =" W01-MULTI (2). 
+ MULTIPLY W01-MUL BY W01-MUL1 GIVING W01-MULTI (1) ROUNDED 
+          W01-MULTI (2)
+          ON SIZE ERROR PERFORM E-100.
+ DISPLAY "multiply W01-MUL =" W01-MUL " BY W01-MUL1 =" W01-MUL1 
+         " giving W01-MULTI (1) =" W01-MULTI (1) 
+         " rounded W01-MULTI (2) =" W01-MULTI (2).
+
+ DISPLAY "* ------ test 4 begin ------ *".
+ MOVE 3 TO W01-MUL.
+ MOVE 5 TO W01-MUL1.
+ MULTIPLY W01-MUL BY W01-MUL1 GIVING W01-MULTI (1) ROUNDED 
+          W01-MULTI (2)
+          NOT ON SIZE ERROR PERFORM D-100.
+ DISPLAY "multiply W01-MUL =" W01-MUL " BY W01-MUL1 =" W01-MUL1 
+         " giving W01-MULTI (1) =" W01-MULTI (1) 
+         " rounded W01-MULTI (2) =" W01-MULTI (2).
+
+ DISPLAY "* ------ multiply statements tests end    ------ *".
+
+D-100.
+ DISPLAY "D-100: An multiply exception erorr has NOT occured" .
+
+E-100.
+ DISPLAY "E-100: An multiply exception erorr has occured" .

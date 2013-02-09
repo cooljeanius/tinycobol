@@ -1,0 +1,57 @@
+#
+#
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+EXEEXT=@exeext@
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+SRC01 = aaaa.cob
+SRC02 = bbbb.cob
+ 
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.cob=.o)
+OBJS =  $(OBJ01) $(OBJ02)
+
+PROG01 = aaaa
+PROG02 = bbbb
+PROGS =  $(PROG01) $(PROG02)
+
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling COBOL sources
+#
+.SUFFIXES: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#
+
+all: ${PROGS}
+
+${PROG01}: ${OBJ01}
+	$(CCX) -g -o $@ ${OBJ01} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+${PROG02}: ${OBJ02}
+	$(CCX) -g -o $@ ${OBJ02} $(LDFLAGS) $(LIBS)
+#	strip $@
+
+clean:
+	@${RM} $(PROGS) $(OBJS) *.lis *.listing.txt *.s *.i *.exe core

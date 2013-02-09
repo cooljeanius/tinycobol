@@ -1,0 +1,79 @@
+TinyCOBOL is a COBOL compiler being actively developed by members of the 
+free software community.
+
+The long term goal is to produce a COBOL compiler which is 'COBOL 85 standard'
+compliant, or at least as close as reasonably possible.
+
+TinyCOBOL supports the x86-32 (IA32) architecture and the following platforms.
+
+- Linux using the GNU compiler tool chain.
+- FreeBSD using the GNU compiler tool chain.
+- Win32 using the MinGW (Mingw32) GNU compiler tool chain.  
+- Win32 using the Cygwin GNU compiler tool chain and Cygwin POSIX emulation layer.
+
+-------------------------------------------------------------------------------
+How to install and build (and install from source) TinyCOBOL:
+
+See INSTALL for information on the Linux, BSD and many POSIX x86-32 platforms. 
+See 'Readme.mingw32.txt' for information on the MinGW (Mingw32) Win32 platforms.
+See 'Readme.cygwin.txt' for information on the Cygwin Win32 platforms.
+
+-------------------------------------------------------------------------------
+Release Notes:
+
+TinyCOBOL only supports x86-32 platforms. 
+There are no plans to support the x86-64 platforms.
+
+Record and file lock are not currently implemented.
+
+Berkeley's DB library (verions 1.85 - 4.6 using the 1.85 compatibility API) is 
+used for indexed file IO and the SORT run-time functions.
+As of version 0.64, the indexed file format has changed and is incompatable
+with previous TinyCOBOL indexed file format versions. 
+Also note that BDB database file formats can be incompatible between BDB versions.   
+
+-------------------------------------------------------------------------------
+How to download a source snapshot from CVS:
+
+If you have CVS installed on your system, TinyCOBOL's CVS version can be 
+checked out via the anonymous CVS (pserver) server, using the following commands.
+- cvs -d:pserver:anonymous@tiny-cobol.cvs.sourceforge.net:/cvsroot/tiny-cobol login
+- When prompted for a password for anonymous, simply press the Enter key.
+- cvs -d:pserver:anonymous@tiny-cobol.cvs.sourceforge.net:/cvsroot/tiny-cobol co development
+- The module you wish to check out must be specified as the module-name (development).
+
+-------------------------------------------------------------------------------
+Links:  
+
+Home pages:
+http://tiny-cobol.sourceforge.net/
+http://www.tinycobol.org/
+http://br.tinycobol.org/
+
+Download:
+http://tiny-cobol.sourceforge.net/download.html
+http://www.ibiblio.org/pub/Linux/devel/lang/cobol/
+http://br.tinycobol.org/download.html
+
+Mailing lists and archives:
+http://lists.sourceforge.net/mailman/listinfo/tiny-cobol-users
+
+Mailing lists and archives (pt_BR):
+http://listas.cipsga.org.br/cgi-bin/mailman/listinfo/cobol-br
+http://listas.cipsga.org.br/pipermail/cobol-br/
+
+Old mailing list archives:
+http://www.egroups.com/group/gnucobol/
+
+-------------------------------------------------------------------------------
+
+The term 'COBOL 85 standard', as used by TinyCOBOL, refers to the combination
+of the following.
+- ISO 1985.........: Programming Languages - COBOL.
+- ISO 1989-1.......: Programming Languages - Intrinsic Function Module - COBOL.
+- ANSI X3.23-1985..: Programming Languages - COBOL.
+- ANSI X3.23a-1989.: Programming Languages - Intrinsic Function Module - COBOL.
+- X/Open XPG3......: COBOL programming language extensions.
+
+Note that the 'COBOL 85 standard' is obsolete and has been replaced by the 
+'COBOL 2002 standard'.

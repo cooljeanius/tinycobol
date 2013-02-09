@@ -1,0 +1,14 @@
+        |-----handy-ruler------------------------------------------------------|
+tinycobol: TinyCOBOL (COBOL compiler)
+tinycobol:
+tinycobol: TinyCOBOL is a COBOL (COmmon Business Oriented Language) ANSI-85 
+tinycobol: compiler for the x86 (IA32) architecture.
+tinycobol: 
+tinycobol: Depending on the options given, the compiler will read a COBOL 
+tinycobol: source file (fixed or free-form) and preprocess, compile, assemble 
+tinycobol: and link to generate an executable, object, shared or static library.
+tinycobol: 
+tinycobol: The compiler generate 32-bit GNU assembler as an intermediate code, 
+tinycobol: and uses the GCC tool chain (assembler and linker) to create 
+tinycobol: binaries.
+tinycobol: 

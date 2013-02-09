@@ -1,0 +1,91 @@
+#
+# 
+#
+
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+g_includes=@g_includes@
+g_libraries=@g_libraries@
+
+CCX=@CCX@
+COB=@COB@
+ASM=@ASM@
+RM=rm -f
+
+COPYBOOKS=@COPYBOOKS@
+INCLUDES=@INCLUDES@
+LIBS=@LIBS@
+LDFLAGS=@LDFLAGS@ -rdynamic
+COBFLAGS=@COBFLAGS@
+ASMFLAGS=@ASMFLAGS@
+CCXFLAGS=@CCXFLAGS@
+
+lib_name2=subrot2
+lib_name3=subrot3
+lib_major=1
+lib_minor=0
+
+#SHARED_LIB2=lib${lib_name2}.so
+#SHARED_LIB3=lib${lib_name3}.so
+SHARED_LIB2=${lib_name2}.so
+SHARED_LIB3=${lib_name3}.so
+SHARED_LIBS=$(SHARED_LIB2) $(SHARED_LIB3)
+
+SRC01 = dyntest.cob 
+SRC02 = dyntest01.cob 
+SRC03 = subrots.cob
+
+OBJ01 = $(SRC01:.cob=.o)
+OBJ02 = $(SRC02:.cob=.o)
+OBJ03 = $(SRC03:.cob=.o)
+OBJS = $(OBJ01) $(OBJ02) $(OBJ03)
+
+PROG01 = dyntest
+#PROG2 = subrots
+PROGS = $(PROG01)
+
+#include ${prefix}/config/C.rules.in
+#
+# Rules for compiling .c sources
+#
+.SUFFIX: .c .o
+.c.o:
+	$(CCX) $(CCXFLAGS) -c $<
+
+#include ${prefix}/config/COB.rules.in
+#
+# Rules for compiling COBOL sources
+#
+.SUFFIX: .cob .cbl .o
+%.o: %.cob
+	$(COB) -c  $(COBFLAGS) $<
+#	$(COB) $(COBFLAGS) $<
+%.o: %.cbl
+	$(COB) -c $(COBFLAGS) $<
+#	$(COB) $(COBFLAGS) $<
+
+
+all: ${SHARED_LIB2} ${SHARED_LIB3} ${PROGS}
+
+${PROG01}: ${OBJ01}
+	$(CCX) -o $@ ${OBJ01} $(LDFLAGS) $(LIBS) 
+#	strip $@
+
+${SHARED_LIB2}: ${OBJ02}
+	gcc -shared -Wl,-soname,${SHARED_LIB2} -o ${SHARED_LIB2} ${OBJ02}
+#	gcc -shared -Wl,-soname,${SHARED_LIB2}.${lib_major}.${lib_minor} -o ${SHARED_LIB2}.${lib_major}.${lib_minor} ${OBJ02}
+#	ln -s ${SHARED_LIB2}.${lib_major}.${lib_minor} ${SHARED_LIB2}
+#	ln -s ${SHARED_LIB2}.${lib_major}.${lib_minor} ${SHARED_LIB2}.${lib_major}
+
+${SHARED_LIB3}: ${OBJ03}
+	gcc -shared -Wl,-soname,${SHARED_LIB3} -o ${SHARED_LIB3} ${OBJ03}
+#	gcc -shared -Wl,-soname,${SHARED_LIB3}.${lib_major}.${lib_minor} -o ${SHARED_LIB3}.${lib_major}.${lib_minor} ${OBJ03}
+#	ln -s ${SHARED_LIB3}.${lib_major}.${lib_minor} ${SHARED_LIB3}
+#	ln -s ${SHARED_LIB3}.${lib_major}.${lib_minor} ${SHARED_LIB3}.${lib_major}
+
+clean:
+	@${RM} $(PROGS) ${OBJS} $(SHARED_LIBS) *.lis *.listing.txt *.s *.i core 
+#	${SHARED_LIB2} ${SHARED_LIB2}.${lib_major} ${SHARED_LIB2}.${lib_major}.${lib_minor} 
+#	${SHARED_LIB3} ${SHARED_LIB3}.${lib_major} ${SHARED_LIB3}.${lib_major}.${lib_minor}

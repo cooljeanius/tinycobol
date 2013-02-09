@@ -1,0 +1,255 @@
+Note: This list is NOT up of date.
+
+November 29, 1999 (Andrew)
+Added code to fileio.c to return the correct ANSI 74 Error codes
+for files that are accessed but not open etc.
+
+November 25, 1999 (Andrew)
+Change fileio.c for write advancing.
+Change htcobgen.c for write advancing.
+
+November 25, 1999 (Rildo)
+Modified again the copy...replace list of replacements, so that all
+replacements are appended only when switching the input file. (scan.l)
+
+November 23, 1999 (Andrew)
+Fixed up rewrite for relative files.
+Added code for write advancing.
+
+November 24, 1999 (Rildo)
+Modified YY_INPUT and added several functions to do the preprocessing online
+for the "copy" statement. The source is now yyin to be better flex compatible.
+
+November 23, 1999 (Rildo)
+Fixed install and lookup functions for non-ASCII literals (high/low values).
+Update "move" at the library to cope with quoted literals \0 and \xXX.
+
+November 22, 1999 (Andrew)
+Change htcobgen.c (gen_rewrite) to handle relative rewrites.
+Change fileio.c to handle rewrite.
+
+November 21, 1999 (Rildo)
+Changes in picture processing (P assumes V).
+Introduction of a variable decimal_comma in compile-time and run-time
+to swap '.' and ',' interpretation.
+
+November 20, 1999 (Rildo)
+Applied changes at the "main" suggested by Glen, regarding file names.
+Implemented "ALL literal" at the parser,scanner,codegen and library (mcmove.c),
+with just small changes at this last, function "move". Also, high-values,
+low-values, quotes.
+
+November 19, 1999 (Andrew)
+Added routine for "rewrite" to fileio.c. Cleaned up the code to remove
+compile warnings.
+
+November 18, 1999 (Rildo)
+Added several functions to manage multi-subscripted variables, including
+relative references.
+
+November 15, 1999 (Rildo)
+Merged with Andrew's changes.
+Changed lookup_var (htcobgen.c) to make sure a field is fully qualified.
+
+November 15, 1999 (Andrew)
+Added code to fileio.c to allow read and write to handle line sequential io.
+
+November 15, 1999 (Rildo)
+Added "varying" clause to "perform".
+Corrected my mistake on the syntax of "perform".
+Changed "perform_range" to be better generalized (with/without "thru"). Now
+inherited attributes hold what kind of perform to do.
+
+November 14, 1999 (Andrew)
+Finished off the first version of the sort routines. These routines handle
+duplicate keys.  I have also added some of the code to the library for
+read next. All changes have been made to fileio.c.
+
+November 13, 1999 (Rildo)
+Changed "lookup_label" and added a forced-cloning option to "install".
+Update listing generator (htcobgen.c) for the cloned paragraphs,
+and also to accommodate the (compound) variable names.
+Added "perform var/literal times paragraph_range" to our syntax. Now we can see
+why we don't need to backtrack!
+Routines added to htcobgen.c: gen_push_int, gen_perform_times, merged with the
+previous semantics of perform.
+
+November 12, 1999 (Rildo)
+Added more states to the scanner for accounting to redefined variables and
+file variables (FD or SD). 
+Modified (again) "install" (htcobgen.c) to avoid cloning when not desired.
+
+November 12, 1999. (v991111): (David Essex)
+Moved termios.h header to basicio.c file, to avoid any potential ECHO 
+redefinition.
+Enhanced INSTALL instructions, and renamed Readme.txt file to README.
+Changed output of scanner(scan.l) very slightly to have \n at end.
+Changed Makefile so that htversion.h is created using directory name
+and current date, instead of Version.txt file.
+
+November 11, 1999 (v991111a): (Rildo)
+Added code (htcobgen.c) to take care of clones both for variables and
+paragraphs.
+Modified parsing to accept "var of parent of ...".
+Started implementing of "inspect".
+
+November 11, 1999. (v991111): (David Essex)
+Changed working storage fields parsing(htcobol.y), and added implicit
+variable index creation code(htcobgen.c), so that 'INDEXED BY index'
+clause will work.
+Added error counter(on yerror()) which is used by htcobgen.c to set
+the return code. This enables make to work properly.
+Added the ability to use a full name when calling the compiler. Now
+htcobol will try to open filename, then try filename.cob before aborting.
+
+
+November 06, 1999 (Rildo)
+Modified scan/parse to detect already defined variables (token VARIABLE). Now
+labels, literals and variables are separate entities.
+
+November 05, 1999 (Andrew)
+Modified the sort_release in fileio.c to handle a combination of Ascending
+and Descending sort keys.
+
+November 04, 1999 (Rildo)
+Modified hash() (htcobgen.c) to calculate the hashing with uppercased chars.
+Modified code for the lookup of reserved words, for not buffering and
+converting the string being tested (strcasecmp is used instead).
+Added states to scan.l to simplify the parsing of all commenting statements
+of the identification division. Now everything (except environment division
+decl) is ignored.
+The variable curr_division is used now in the parser to switch states of the
+lexer (parser feedback).
+
+November 04, 1999 (Rildo)
+Eliminated VALUES state (scan.l) and some general simplifying.
+Corrected a bug with LABELSTR recognizing (if use "-" should be followed by at
+least another char).
+
+November 03, 1999 (Rildo)
+All functions named XXX_from and XXX_into are similar with their suffix-less
+counterparts. Example cob_read_into == cob_read, cob_write_from == cob_write,
+and so on. In place of the record pointer, there will be a buffer pointer.
+
+November 02, 1999 (Rildo)
+Modified gen_cobwrite (htcobgen.c) so that for both "write" and "write from"
+the same "call cob_write" is output, changing only the arguments.
+Merged with last release of Andrew.
+
+November 02, 1999 (Andrew)
+Written the basic Sort Library (fileio.c)
+Provided test program t08 to test the sort library.
+Sort with Duplicates still needs to be completed.
+
+October 30, 1999 (Rildo)
+Moved file description generation to the end of data division, so we can
+use a variable as filename container. Only cob_open runtime was changed to
+accommodate such modification. Now there is a list (files_list) that accumulates
+all file variables.
+Eliminated old debug code and all o_deb references (htcobol.y, htcobgen.c),
+including all line_info() calls.
+Added stack frame cleaning (auto-magically) functions (htcobgen.c), and also
+push_eax and push_ebx to use instead of writing directly to o_src. This should
+make more error prone our code generation.
+
+October 30, 1999 (Andrew)
+Started sort routines (fileio.c)
+Modified htcobgen.c for sort commands. (?I think?)
+
+October 29, 1999 (Rildo)
+Eliminated struct var_fd and moved open_mode to struct file_desc.
+Now file functions receive a pointer to the record itself.
+Sequential files save the file handle into dbp (instead of a db pointer).
+All state information (only needed in indexed and relative files) are
+saved at the libdb structs now.
+
+October 28, 1999 (Rildo)
+Modified string recognizer in scan.l to allow 1-char strings.
+Eliminated call_list in htcobgen.c (used to gen externals).
+Corrected the syntax for filenames (now is in select statement, see t06).
+Added cob_read, cob_write for relative files.
+Fixed gen_write (htcobgen.c) for relative files.
+
+October 27, 1999. (v991027): (David Essex)
+Added fix for lower case input in lex scanner(scan.l).
+Added code for version number (Makefile htcobgen.c htversion.h).
+Moved basic I/O routines from general.c to basicio.c file.
+Added SP fix in gen_accept function (htcobgen.c). 
+Added function definitions and removed includes in (htcoblib.h).
+Added fix for USAGE IS in lex scanner(scan.l).
+Changed input file name and Makefile in directory test.code/tdb01. For some 
+reason, my version of GCC(2.7.2) refused to compile it with the file name main.c.
+
+
+October 26, 1999: (Rildo Pragana)
+Changed all file functions to "cob_", to avoid name clashes.
+Removed RUNNING-TERMINALS clause from both parser and scanner.
+Corrected wrong label at gen_not (htcobgen.c).
+Eliminated "short" expressions in "jmp short L%d" (htcobgen.c).
+
+October 24, 1999 (Rildo):
+Removed all debugging compilation, as this was for an old prolog-based debugger
+and the tracking of ip locations is hard to do now, because of .align
+instructions. Instead, we should use gdb with #line directives.
+Modified several miscalculated stack cleaning instructions (addl $n,%esp).
+Modified function calling: each parameter required is passed as two pointers,
+(1) the fld_desc of the parameter and (2) the parameter storage.
+Added file handling routines (yet unfinished): mc_open, mc_write, mc_close,
+save_status.
+Added a picture expand routine (mc_picexpand) in the library.
+
+October 23, 1999: 
+Added ACCEPT function in RTL(basicio.c).
+Added fix to remove comma as decimal delimiter in lex scanner(scan.l).
+
+October 22, 1999: 
+
+October 21, 1999: 
+Changed run header info in (htcobgen.c).
+Added cobpp program utility in util directory. It will convert from 
+fixed to/from free-form COBOL formats.
+Added new fix for program flow control at stop-run(htcobgen.c).
+Added Rildo Pragana's fix for program flow control(htcobgen.c mccntrl.s).
+Added fix for for period/comma in PIC and VALUE in lex scanner(scan.l).
+
+October 19, 1999: 
+Removed .fill and other junk at end. 
+Added id section. Removed prg-id as main label and replaced with main.
+Added Rildo Pragana's indexed file I/O source in test.code/t04 directory. 
+
+October 18, 1999: 
+Make some small changes in lex scanner(scan.l), while checking COPY code.
+
+
+October 13, 1999: 
+Merged David Essex's and Andrew Cameron's versions, using Andrew Cameron 
+October 12, 1999 release as a base.
+Added code(htcobgen.c) for return code. Program return code is stored in 
+register %eax. Since COBOL-74 does not support the statement RETURN-CODE, 
+the program return code is permanently set to zero.
+Added fix for for comment line (^"*".*$) in lex scanner(scan.l).
+
+October 12, 1999: 
+Andrew Cameron releases his latest version.
+Added math functions to lib. Started on file functions.
+
+October 11, 1999: 
+Andrew Cameron releases his latest version, based on Alan Cox's June 23, 1999 
+version. 
+Added new basic I/O functions in RTL. Removed ncurses as basic I/O.
+
+October 3, 1999: 
+David Essex begins new version.
+Changed COBOL generation to look like GCC assembler generation(htcobgen.c).
+Enhanced debugging information for assembler in COBOL generation(htcobgen.c).
+Added fix for for PIC with VALUE in lex scanner(scan.l).
+Started work on process control.
+
+September 23, 1999: 
+Alan Cox releases his latest version to David Essex.
+
+June 23, 1999: 
+Alan Cox, releases his changes. It now generates GNU GAS assembler.
+
+June 11, 1999: 
+Rildo Pragana, releases his COBOL compiler (for msdos) under the GPL.
