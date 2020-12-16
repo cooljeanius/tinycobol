@@ -3,3 +3,9 @@
 *.log
 *.cache
 *~
+confdefs.h
+conftest*
+*.status
+htconfig.h
+Makefile
+stamp-h*

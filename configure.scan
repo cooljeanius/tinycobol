@@ -1,9 +1,9 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.70])
 AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
-AC_CONFIG_SRCDIR([htconfig.h.in])
+AC_CONFIG_SRCDIR([mwindows.h])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
@@ -19,27 +19,27 @@ AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lX11':
+# FIXME: Replace 'main' with a function in '-lX11':
 AC_CHECK_LIB([X11], [main])
-# FIXME: Replace `main' with a function in `-lcrypt':
+# FIXME: Replace 'main' with a function in '-lcrypt':
 AC_CHECK_LIB([crypt], [main])
-# FIXME: Replace `main' with a function in `-lgds':
+# FIXME: Replace 'main' with a function in '-lgds':
 AC_CHECK_LIB([gds], [main])
-# FIXME: Replace `main' with a function in `-lhtcobol':
+# FIXME: Replace 'main' with a function in '-lhtcobol':
 AC_CHECK_LIB([htcobol], [main])
-# FIXME: Replace `main' with a function in `-lpq':
+# FIXME: Replace 'main' with a function in '-lpq':
 AC_CHECK_LIB([pq], [main])
-# FIXME: Replace `main' with a function in `-ltcl':
+# FIXME: Replace 'main' with a function in '-ltcl':
 AC_CHECK_LIB([tcl], [main])
-# FIXME: Replace `main' with a function in `-ltestz1':
+# FIXME: Replace 'main' with a function in '-ltestz1':
 AC_CHECK_LIB([testz1], [main])
-# FIXME: Replace `main' with a function in `-ltestz2':
+# FIXME: Replace 'main' with a function in '-ltestz2':
 AC_CHECK_LIB([testz2], [main])
-# FIXME: Replace `main' with a function in `-ltk':
+# FIXME: Replace 'main' with a function in '-ltk':
 AC_CHECK_LIB([tk], [main])
 
 # Checks for header files.
-AC_CHECK_HEADERS([fcntl.h float.h libintl.h limits.h stdlib.h string.h strings.h sys/param.h sys/time.h termios.h unistd.h wchar.h])
+AC_CHECK_HEADERS([fcntl.h libintl.h strings.h sys/param.h sys/time.h termios.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL

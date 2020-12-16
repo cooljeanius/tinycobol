@@ -5,10 +5,11 @@
 #
 
 # Minimum Autoconf version required.
-AC_PREREQ([2.10])
+AC_PREREQ([2.70])
 AC_INIT([TinyCOBOL],[0.63.109],[tiny-cobol-users@lists.sourceforge.net],[tinycobol-0.64.tar.gz])
 AC_CONFIG_SRCDIR([htconfig.h.in])
 AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_AUX_DIR([build-aux])dnl
 
 TCOB_MAJOR_VERSION=0
 TCOB_MINOR_VERSION=0
@@ -29,15 +30,12 @@ TCOBRUN_VERSION=$TCOBRUN_MAJOR_VERSION.$TCOBRUN_MINOR_VERSION.$TCOBRUN_PATCH_LEV
 TCOBRUN_RELEASE_DATE=$TCOB_RELEASE_DATE
 #
 
-AC_CONFIG_HEADER([htconfig.h])
+AC_CONFIG_HEADERS([htconfig.h])
 
 # 
 # Check for System OS name
-AC_CANONICAL_SYSTEM
-# Checks for host/OS name
-AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-AC_DEFINE_UNQUOTED(OS_TYPE, "$host_os")
+AC_DEFINE_UNQUOTED([OS_TYPE],["${host_os}"],[host_os])
 AC_EXEEXT
 AM_INIT_AUTOMAKE
 
@@ -104,15 +102,13 @@ AC_MSG_RESULT($TCOB_VERSION)
 AC_MSG_NOTICE(build version is $TCOB_VERSION)
 
 # Set the compiler language option
-#      [  --with-lang=[ARG]         set language [en/fr/it/pt_BR/es default=en]],
 # Option removed due to lack of translations
 tcob_lang=''
 tcob_lang='en'
-AC_ARG_WITH(with-lang,
-      [  --with-lang=[ARG]         set language [(en/pt_BR default=en)]],
-      ,
-      ,
-)
+AC_ARG_WITH([with-lang],
+      [AS_HELP_STRING([--with-lang=[ARG]],
+                      [set language [(en/pt_BR default=en)]])],
+      [],[],[])
 echo "debug 0a: with_lang=$with_lang, tcob_lang=$tcob_lang" 
 case "x$with_lang" in
      x) tcob_lang='en';;
@@ -128,13 +124,10 @@ echo "debug 0b: with_lang=$with_lang, tcob_lang=$tcob_lang"
 
 # Set the compiler 
 c_compiler="gcc"
-AC_ARG_WITH(with-C-compiler,
-      [  --with-C-compiler=[ARG]   use C compiler [(default=gcc)]],
-      ,
-      ,
-)
-#      c_compiler="gcc",
-#      c_compiler=$with_compiler
+AC_ARG_WITH([with-C-compiler],
+      [AS_HELP_STRING([--with-C-compiler=[ARG]],
+                      [use C compiler [(default=gcc)]])],
+      [],[],[])
 echo "debug 1: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}:" 
 if test "x$with_C_compiler" = "x"; then
       c_compiler="gcc"
@@ -182,19 +175,18 @@ AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_CHECK_PROG(RANLIB, ranlib, ranlib, ranlib)
 AC_CHECK_PROG(AR, ar, ar, ar)
-AC_PROG_LIBTOOL
-AC_LIBTOOL_WIN32_DLL
+LT_INIT([win32-dll])
+AM_MISSING_PROG([libtool])
 
 ranlibx_cmd="${RANLIB}"
 arx_cmd="${AR}"
 
-AC_PROG_LEX
+AM_PROG_LEX
+AM_MISSING_PROG([yywrap])
 lex_name="flex"
-AC_ARG_WITH(with-lex,
-      [  --with-lex=[ARG]          use LEX [(default=flex)]],
-      ,
-      ,
-)
+AC_ARG_WITH([with-lex],
+      [AS_HELP_STRING([--with-lex=[ARG]],[use LEX [(default=flex)]])],
+      [],[],[])
 if test "x$with_lex" != "x"; then
       lex_name=$with_lex
 fi
@@ -207,11 +199,9 @@ fi
 # 
 yacc_name="bison"
 yacc_prefix_compiler="htcobol"
-AC_ARG_WITH(with-yacc,
-      [  --with-yacc=[ARG]         use YACC [(default=bison)]],
-      ,
-      ,
-)
+AC_ARG_WITH([with-yacc],
+      [AS_HELP_STRING([--with-yacc=[ARG]],[use YACC [(default=bison)]])],
+      [],[],[])
 if test "x$with_yacc" = "x"; then
       yacc_name="bison"
 else
@@ -231,8 +221,7 @@ fi
 #
 
 # no longer used to expand tabs 
-AC_CHECK_PROG(EXPAND, expand, expand, no) 
-#   AC_MSG_ERROR(program not found required by pre-processor... aborting)
+AC_CHECK_PROG(EXPAND, expand, expand, no)
 AC_PATH_PROG(expand_cmd_path, expand, no) 
 if test "${expand_cmd_path}" = "no" ; then
    echo "warning: cobf2f utility may not work properly without tab expand utility"
@@ -262,7 +251,15 @@ AC_CHECK_LIB([testz2], [main])
 AC_CHECK_LIB([tk], [main])
 
 dnl Checks for header files.
-AC_HEADER_STDC
+dnl# autoupdate says:
+dnl# The preprocessor macro `STDC_HEADERS' is obsolete.
+dnl# Except in unusual embedded environments, you can safely include all
+dnl# ISO C90 headers unconditionally.
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+AC_HEADER_STDBOOL dnl# also "_CHECK"s it
 AC_CHECK_HEADERS([alloca.h ctype.h dlfcn.h errno.h fcntl.h float.h getopt.h libintl.h limits.h malloc.h stdio.h stdlib.h string.h strings.h sys/param.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h utime.h wchar.h])
 
 # Intialize for ltdl library tests.
@@ -273,7 +270,6 @@ ltdl_header="0"
 AC_CHECK_HEADERS(ltdl.h, ltdl_header="1")
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
 AC_C_INLINE
 AC_C_CONST
 AC_TYPE_OFF_T
@@ -292,138 +288,97 @@ AC_FUNC_ALLOCA
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit dup2 fcntl gettimeofday memmove memset pow putenv regcomp setlocale sqrt strerror strcasecmp strchr strrchr strcspn strdup strerror strncasecmp strspn strstr strtol])
 
-# Set Evaluate debugging options.
-#--enable-feature
-# 
-#feature_abc="0"
-#AC_ARG_ENABLE(abc,
-#	[  --enable-abc=ARG          set fature abc on or off ],
-##        debug_default="1"
-#        echo  "enable-abc=$enable_abc;"
-#)
-
 # Evaluate debugging options.
 
 # Set debug compile switches 
 debug_default="0"
-AC_ARG_ENABLE(debug,
-	[  --enable-debug          set C compiler debug option on [-g] ],
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug],
+	[AS_HELP_STRING([--enable-debug],
+                        [set C compiler debug option on [-g] ])],
+        [debug_default="1"])dnl
 
-AC_ARG_ENABLE(debug-all,
-	[  --enable-debug-all      enable all debug options],
-	AC_DEFINE(DEBUG_COMPILER)
-	AC_DEFINE(PICTURE_TESTING)
-	AC_DEFINE(DEBUG_SCANNER)
-	AC_DEFINE(DEBUG_RTS)
-	AC_DEFINE(DEBUG_MOVE_RTS)
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug-all],
+	[AS_HELP_STRING([--enable-debug-all],[enable all debug options])],
+	[AC_DEFINE([DEBUG_COMPILER],[1],[Define to 1 if debugging compiler])
+	 AC_DEFINE([PICTURE_TESTING],[1],[Define to 1 if testing picture])
+	 AC_DEFINE([DEBUG_SCANNER],[1],[Define to 1 if debugging scanner])
+	 AC_DEFINE([DEBUG_RTS],[1],[Define to 1 if debugging runtime])
+	 AC_DEFINE([DEBUG_MOVE_RTS],[1],[Define to 1 if debugging runtime])
+         debug_default="1"
+])dnl
 
 # Evaluate debugging options.
-AC_ARG_ENABLE(debug-comp,
-	[  --enable-debug-comp     enable compiler and scanner debug options],
-	AC_DEFINE(DEBUG_COMPILER)
-	AC_DEFINE(PICTURE_TESTING)
-	AC_DEFINE(DEBUG_SCANNER)
-	AC_DEFINE(DEBUG_RTS)
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug-comp],
+	[AS_HELP_STRING([--enable-debug-comp],
+                        [enable compiler and scanner debug options])],
+	[AC_DEFINE([DEBUG_COMPILER],[1],[Define to 1 if debugging compiler])
+	 AC_DEFINE([PICTURE_TESTING],[1],[Define to 1 if testing picture])
+	 AC_DEFINE([DEBUG_SCANNER],[1],[Define to 1 if debugging scanner])
+	 AC_DEFINE([DEBUG_RTS],[1],[Define to 1 if debugging runtime])
+         debug_default="1"
+])dnl
 
-AC_ARG_ENABLE(debug-compiler,
-	[  --enable-debug-compiler enable compiler debug option],
-	AC_DEFINE(DEBUG_COMPILER)
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug-compiler],
+	[AS_HELP_STRING([--enable-debug-compiler],
+                        [enable compiler debug option])],
+	[AC_DEFINE([DEBUG_COMPILER],[1],[Define to 1 if debugging compiler])
+         debug_default="1"
+])dnl
 
-AC_ARG_ENABLE(debug-scanner,
-	[  --enable-debug-scanner  enable scanner debug option],
-	AC_DEFINE(DEBUG_SCANNER)
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug-scanner],
+	[AS_HELP_STRING([--enable-debug-scanner],
+                        [enable scanner debug option])],
+	[AC_DEFINE([DEBUG_SCANNER],[1],[Define to 1 if debugging scanner])
+         debug_default="1"
+])dnl
 
-AC_ARG_ENABLE(debug-rts,
-	[  --enable-debug-rts      enable debug Run-Time option],
-	AC_DEFINE(DEBUG_RTS)
-	AC_DEFINE(DEBUG_MOVE_RTS)
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug-rts],
+	[AS_HELP_STRING([--enable-debug-rts],
+                        [enable debug Run-Time option])],
+	[AC_DEFINE([DEBUG_RTS],[1],[Define to 1 if debugging runtime])
+	 AC_DEFINE([DEBUG_MOVE_RTS],[1],[Define to 1 if debugging runtime])
+         debug_default="1"
+])dnl
 
-AC_ARG_ENABLE(debug-rts-move,
-	[  --enable-debug-rts-move enable debug Run-Time Move routines option],
-	AC_DEFINE(DEBUG_MOVE_RTS)
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug-rts-move],
+	[AS_HELP_STRING([--enable-debug-rts-move],
+                        [enable debug Run-Time Move routines option])],
+	[AC_DEFINE([DEBUG_MOVE_RTS],[1],[Define to 1 if debugging runtime])
+         debug_default="1"
+])dnl
 
-AC_ARG_ENABLE(debug-pp,
-	[  --enable-debug-pp       enable debug pre-processor option],
-	AC_DEFINE(DEBUG_COBPP)
-        debug_default="1"
-)
+AC_ARG_ENABLE([debug-pp],
+	[AS_HELP_STRING([--enable-debug-pp],
+                        [enable debug pre-processor option])],
+	[AC_DEFINE([DEBUG_COBPP],[1],[Define to 1 if debugging preprocessor])
+         debug_default="1"
+])dnl
 
 # Set MF compatibility features 
 #mf_compatibility="0"
-AC_ARG_ENABLE(mfcomp,
-	[  --enable-mfcomp         enable MF compatibility features  ],
-	AC_DEFINE(USE_MF_COMPATABILITY)
-)
-
-# Enable file LOCK server feature option  
-#
-#lockserv_default="0"
-# tcob_lockserv_make_file=''
-# tcob_lockserv_dir=''
-# tcob_use_lockserver_opt1=''
-# tcob_use_lockserver_opt2=''
-# AC_ARG_ENABLE(lockserv,
-# 	[  --enable-lockserv       enable file LOCK server feature  ],
-# 	AC_DEFINE(USE_LOCKSERVER)
-#         tcob_lockserv_make_file="lockserver/Makefile"
-#         tcob_lockserv_dir="lockserver"
-#         tcob_use_lockserver_opt1='$(SRC2:.c=.o)'
-#         tcob_use_lockserver_opt2='$(SRC2:.c=.lo)'
-# )
-
-
-# Enable file SYNC server feature option  
-#
-#lockserv_default="0"
-# AC_ARG_ENABLE(sync,
-# 	[  --enable-sync           enable file SYNC server feature  ],
-# 	AC_DEFINE(USE_SYNC)
-# )
+AC_ARG_ENABLE([mfcomp],
+	[AS_HELP_STRING([--enable-mfcomp],
+                        [enable MF compatibility features])],
+	[AC_DEFINE([USE_MF_COMPATABILITY],[1],[Define to 1 for MF compat])
+])dnl
 
 # Enable Test-mode and set compiler and RTL locations option  
 #
 tcob_test_mode_opt="false"
-AC_ARG_ENABLE(test-mode,
-	[  --enable-test-mode      enable Test Mode features  ],
-        tcob_test_mode_opt="true"
-)
-
-#AC_ARG_WITH(with-yacc,
-#      [  --with-yacc=[ARG]       use YACC [yacc193 default=bison]],
-#      ,
-#      ,
-#)
-#if test "x$with_yacc" = "x"; then
-#      yacc_name="bison"
-#else
-#      yacc_name=$with_yacc
-#fi
-#
-#
-#
+AC_ARG_ENABLE([test-mode],
+	[AS_HELP_STRING([--enable-test-mode],
+                        [enable Test Mode features])],
+        [tcob_test_mode_opt="true"])dnl
 
 if test "${debug_default}" = "1"; then 
   CCXFLAGS="-g"
   ACXFLAGS="-D -as"
 else
-#  CCXFLAGS="-O2"
+  CCXOPTFLAGS="-O2"
   CCXFLAGS=""
   ACXFLAGS="-as"
 fi
+AC_SUBST([CCXOPTFLAGS])dnl
 
 # Checks for libraries and lib includes.
 tcob_cobrun_name1_opt=''
@@ -550,56 +505,19 @@ if test "${define_dl}" = "no" ; then
                [define_libdl="yes" define_dl="yes"], 
   )
 fi
-if test "${define_libdl}" = "yes" ; then
+if test "x${define_libdl}" = "xyes"; then
 #   define_dl="yes" 
    tcob_ld_args_dl="-ldl"
-   AC_DEFINE(HAVE_LIBDL)
+   AC_DEFINE([HAVE_LIBDL],[1],[Define to 1 if we have libdl])
 fi
-#os_platform='Cygwin'
-#os_platform='MinGW'
-#if test x"$os_platform" = "x"; then
-#   if test "${define_dl}" = "no" ; then
 if test x"$os_platform" = "x" && test "${define_dl}" = "no"; then
    AC_MSG_ERROR(dynamic loader not found... aborting)
 fi
 
 # Check for ltdl library availability
 #
-# if test "${use_ltdl_lib}" = "0" ; then
-#    echo  "Setting RTS to use internal TC dynamic load routines "
-# fi
-# #
-# if test "${use_ltdl_lib}" = "1" && test "${ltdl_header}" = "0" ; then
-#      echo  "Header files for ltdl library not found... "
-#      echo  "Defaulting RTS ... "
-#      use_ltdl_lib="0"
-# fi
-# #
-# tcob_ld_args_ltdl=""
-# if test "${use_ltdl_lib}" = "1" ; then
-#    AC_CHECK_LIB(ltdl, lt_dlgetsearchpath,
-#              tcob_ld_args_ltdl="-lltdl",
-#              AC_MSG_ERROR(Dynamic load library ltdl not found... aborting),
-#              )
-# fi
-# Set use ltdl library option.
-#
-#AC_ARG_WITH(libltdl,
-#	[  --with-libltdl          use LTDL library for Run-Time dynamic load routines],
-#        ltdl_default="1" ,
-#        ,
-#        )
-#
-#AC_ARG_WITH(no-libltdl,
-#	[  --with-no-libltdl       use internal Run-Time dynamic load routines ],
-#        ltdl_default="0" ,
-#        ,
-#        )
-#
-#if test "${ltdl_default}" = "1" && test "${ltdl_header}" = "1" ; then
-#     use_ltdl_lib="1"
-#fi
-
+# (just borrow libtool's check here)
+# TODO
 
 
 # check for curses header and library 
@@ -607,18 +525,16 @@ fi
 
 define_with_curses="no"
 AC_CHECK_HEADERS(${curses_header},
-                 ,     
+                 [],     
                  [ AC_MSG_ERROR(header "${curses_header}" not found... aborting) ]
                  ) 
 AC_CHECK_LIB(${curses_library}, addch,  
              define_with_curses="yes",
-#             M_LIBS="$M_LIBS", 
              AC_MSG_ERROR(curses library is required by run-time... aborting)
             )
 
-if test "${define_with_curses}" = "yes" ; then
-#   M_LIBS="$M_LIBS" 
-   AC_DEFINE(HAVE_LIBCURSES) 
+if test "x${define_with_curses}" = "xyes"; then
+   AC_DEFINE([HAVE_LIBCURSES],[1],[Define to 1 if we have libcurses]) 
    tcob_ld_args_curses="-l${curses_library}"
 fi
 
@@ -627,35 +543,23 @@ curses_with_color_set="no"
 if test "${define_with_curses}" = "yes" ; then
   AC_MSG_CHECKING(for color_set in -l${curses_library})
   LIBS="-l${curses_library}"
-AC_TRY_LINK(#include <${curses_header}>
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <${curses_header}>
 short si1;
 void  *vp;
-,  color_set(si1, vp); ,
-            [ AC_MSG_RESULT(yes); curses_with_color_set="yes" ], 
-            [ AC_MSG_RESULT(no) ] 
-            ) 
+]], [[color_set(si1, vp); ]])],[ AC_MSG_RESULT(yes); curses_with_color_set="yes" ],[ AC_MSG_RESULT(no)  
+            ]) 
 fi
 #
-if test "${curses_with_color_set}" = "yes" ; then
-   AC_DEFINE(CURSES_HAS_COLOR_SET) 
+if test "x${curses_with_color_set}" = "xyes"; then
+   AC_DEFINE([CURSES_HAS_COLOR_SET],[1],[Define to 1 if curses has color_set]) 
 fi
 
-#LIBS="$LIBS_BK"
-#INCLUDES="$INCLUDES_BK"
-# check for header and library for readline
-#define_with_readline="no"
-#        [ define_with_readline="yes" ]
-#             "-lncurses")
-##        [ define_with_readline="$enableval" ]
-#        [ define_with_readline="$with_readline" ]
-AC_ARG_WITH(readline,
-	[  --with-readline         use readline library ],
-        , 
-        ,
-)
-#if test "${define_with_readline}" = "yes" ; then
-if test "${with_readline}" = "yes" ; then
-   AC_CHECK_HEADERS("readline/readline.h", 
+AC_ARG_WITH([readline],
+	[AS_HELP_STRING([--with-readline],[use readline library])],
+        [],[],[])dnl
+
+if test "x${with_readline}" = "xyes"; then
+   AC_CHECK_HEADERS([readline/readline.h], 
      [],
      [
       AC_MSG_ERROR(header readline.h for readline library not found... aborting)
@@ -669,38 +573,31 @@ if test "${with_readline}" = "yes" ; then
    )
    define_with_readline="$with_readline" 
    tcob_ld_args_readline="-lreadline"
-   AC_DEFINE(WITH_LIBREADLINE) 
-   AC_DEFINE(HAVE_LIBREADLINE) 
-   AC_DEFINE(WANT_READLINE)
+   AC_DEFINE([WITH_LIBREADLINE],[1],[Define to 1 with libreadline]) 
+   AC_DEFINE([HAVE_LIBREADLINE],[1],[Define to 1 if we have libreadline]) 
+   AC_DEFINE([WANT_READLINE],[1],[Define to 1 if we want readline])
 fi
 
 #  ISAM I/O (VB-ISAM) check
 # 
-AC_CHECK_HEADERS("vbisam.h", 
+AC_CHECK_HEADERS([vbisam.h], 
    [],
    [
      echo "header vbisam.h for VB-ISAM library vbisam not found..."
-#    AC_MSG_ERROR(header vbisam.h for VB-ISAM library vbisam not found... aborting)
    ]
 ) 
 AC_CHECK_LIB(vbisam, isopen,  
    [ 
     tcob_ld_args_isam="-lvbisam"
-    AC_DEFINE(HAVE_LIBVBISAM)  
+    AC_DEFINE([HAVE_LIBVBISAM],[1],[Define to 1 if we have libvbisam])  
    ],
    [
      echo "VB-ISAM library vbisam not found..."
-#    AC_MSG_ERROR(VB-ISAM library vbisam not found... aborting)
    ]
 )
 #
 
 echo  "DB library db_version state is ${db_version}"
-
-# DB_VERSION_MAJOR   2
-# DB_VERSION_MINOR   4
-# DB_VERSION_PATCH  14
-# DB_VERSION_STRING "PeePeeCat Software ..."
 
 # Step 1000: check for library db headers db.h or db_185.h
 echo  "debug: Beginning BDB library search sequence "
@@ -731,20 +628,20 @@ fi
 echo  "debug 1010: DB library header option with_libdb:$with_libdb:"
 if test "x$with_libdb" = "x1" -o "$db_version" = "0"
 then
-   AC_CHECK_HEADERS("db_185.h",
+   AC_CHECK_HEADERS([db_185.h],
 	[ db_header="101"  ], 
 	[ db_header="100"  ] 
    )
    if test "$db_header" = "100"
    then
-      AC_CHECK_HEADERS("db.h",
+      AC_CHECK_HEADERS([db.h],
 	[ db_header="100"  ], 
 	[ db_header="101"  ] 
       )
    fi
    if test "$db_header" = "101"
    then
-      AC_CHECK_HEADERS("db1/db.h", 
+      AC_CHECK_HEADERS([db1/db.h], 
            [db_header="101" ],
            [db_header="0" ]
       ) 
@@ -753,7 +650,6 @@ then
       test "$db_header" = "0" 
    then
 	echo "header for library db version 1.x not found..."
-#       AC_MSG_ERROR(header for library db version 1.x not found... aborting)
    fi
    if test "$db_header" = "100"
    then
@@ -761,7 +657,6 @@ then
          [dbopen],
          [db_version="1" db_lib_name="-ldb1"],
 	echo "header for library db version 1.x not found..."
-#       AC_MSG_ERROR(header for library db version 1.x not found... aborting)
       )
    fi
    if test "$db_header" = "101"
@@ -777,7 +672,6 @@ then
       test "$db_version" = "0"; 
    then
 	echo "header for library db version 1.x not found..."
-#       AC_MSG_ERROR(header for library db version 1.x not found... aborting)
    fi
 fi
 
@@ -788,7 +682,7 @@ then
 fi
 #
 if test "x$with_libdb" = "x2"; then
-   AC_CHECK_HEADERS("db2/db_185.h", 
+   AC_CHECK_HEADERS([db2/db_185.h], 
            [db_header="2" ],
             echo "header db2/db_185.h for library db version 2.x not found..."
 #           AC_MSG_ERROR(header db2/db_185.h for library db version 2.x not found... aborting)
@@ -796,18 +690,16 @@ if test "x$with_libdb" = "x2"; then
 fi
 #
 if test "x$with_libdb" = "x3"; then
-   AC_CHECK_HEADERS("db3/db_185.h", 
+   AC_CHECK_HEADERS([db3/db_185.h], 
            [db_header="3" ],
-#           AC_MSG_ERROR(header db3/db_185.h for library db version 3.x not found... aborting)
    ) 
 fi
 #
 if test "x$with_libdb" = "x4"; then
 echo  "Debug: Beginning DB library db4 header search sequence "
-   AC_CHECK_HEADERS("db4/db_185.h", 
+   AC_CHECK_HEADERS([db4/db_185.h], 
            [db_header="4"], 
            [], [],
-#           AC_MSG_ERROR(header db4/db_185.h for library db version 4.x not found... aborting)
    )
 fi
 #
@@ -815,10 +707,9 @@ if test "x$with_libdb" = "x4.1"; then
 echo  "Debug: Beginning DB library db4.1 header search sequence db_header=$db_header;"
     if test $db_header = "0"; then
         echo  "Debug: Start DB library db4.1 header search sequence "
-        AC_CHECK_HEADERS("db4.1/db_185.h", 
+        AC_CHECK_HEADERS([db4.1/db_185.h], 
            [db_header="41" ],
            [], [],
-#           AC_MSG_ERROR(header db4.1/db_185.h for library db version 4.1 not found... aborting)
     ) 
     fi
 fi
@@ -826,31 +717,28 @@ fi
 if test "x$with_libdb" = "x4.2"; then
 echo  "Debug: Beginning DB library db4.2 header search sequence db_header=$db_header;"
     if test $db_header = "0"; then
-        AC_CHECK_HEADERS("db4.2/db_185.h", 
+        AC_CHECK_HEADERS([db4.2/db_185.h], 
            [db_header="42" ],
-           [], [], 
-#           AC_MSG_ERROR(header db4.2/db_185.h for library db version 4.2 not found... aborting)
+           [], [],
     ) 
     fi
 fi
 #
 echo  "Debug: Beginning DB library db4.3 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.3"; then
-if test $db_header = "0"; then
-   AC_CHECK_HEADERS("db4.3/db_185.h", 
-           [db_header="43" ],
-           [], [],
-#           AC_MSG_ERROR(header db4.3/db_185.h for library db version 4.3 not found... aborting)
-   ) 
+if test "${db_header}" = "0"; then
+   AC_CHECK_HEADERS([db4.3/db_185.h], 
+           [db_header="43"],
+           [],[],[]) 
+fi
 fi
 #
 echo  "Debug: Beginning DB library db4.4 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.4"; then
     if test $db_header = "0"; then
-        AC_CHECK_HEADERS("db4.4/db_185.h", 
+        AC_CHECK_HEADERS([db4.4/db_185.h], 
            [db_header="44" ],
            [], [],
-#           AC_MSG_ERROR(header db4.4/db_185.h for library db version 4.5 not found... aborting)
     ) 
     fi
 fi
@@ -858,19 +746,18 @@ fi
 echo  "Debug: Beginning DB library db4.5 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.5"; then
 if test $db_header = "0"; then
-   AC_CHECK_HEADERS("db4.5/db_185.h", 
+   AC_CHECK_HEADERS([db4.5/db_185.h], 
            [db_header="45" ],
            [], [],
-#           AC_MSG_ERROR(header db4.5/db_185.h for library db version 4.5 not found... aborting)
    ) 
+fi
 fi
 echo  "Debug: Beginning DB library db4.6 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.6"; then
     if test $db_header = "0"; then
-        AC_CHECK_HEADERS("db46/db_185.h", 
+        AC_CHECK_HEADERS([db46/db_185.h], 
            [db_header="46" ],
            [], [],
-#           AC_MSG_ERROR(header db4.5/db_185.h for library db version 4.5 not found... aborting)
     ) 
     fi
     if test $db_header = "0"; then
@@ -882,85 +769,85 @@ echo  "debug 10.0: DB library header option with_libdb:$with_libdb:"
 if test "x$with_libdb" = "x"; then
 # Step 1: check for library db header db_185.h for version 2.x, 3.x, 4.x
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db_185.h",
+   AC_CHECK_HEADERS([db_185.h],
 	[ db_header="23"  ], 
-	)
+	[])
 fi
 
 # Step 10.234: if header db_185.h not found check for header db.h for version 1.x
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db.h", 
+   AC_CHECK_HEADERS([db.h], 
         [ db_header="10" ],
-        ) 
+        []) 
 fi
 
 #  Step 10.1: if header db.h not found check for header db1/db.h for version 1.x
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db1/db.h", 
+   AC_CHECK_HEADERS([db1/db.h], 
         [ db_header="1" ],
-        ) 
+        []) 
 fi
 
 # Step 2: if header "db1/db.h" not found check for header db2/db_185.h for version 2.x
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db2/db_185.h", 
-                   [db_header="2" ],
-                   ) 
+   AC_CHECK_HEADERS([db2/db_185.h], 
+                    [db_header="2" ],
+                    []) 
 fi
 
 # Step 3.0: if header "db2/db_185.h" not found check for header db3/db_185.h for version 3.x
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db3/db_185.h", 
-                   [db_header="3" ],
-                   ) 
+   AC_CHECK_HEADERS([db3/db_185.h], 
+                    [db_header="3"],
+                    []) 
 fi
 # Step 4.0: if header "db3/db_185.h" not found check for header db4/db_185.h for version 4
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db4/db_185.h", 
+   AC_CHECK_HEADERS([db4/db_185.h], 
         [db_header="4" ],
-        ) 
+        []) 
 fi
 
 # Step 4.1: if header "db4/db.h" not found check for header db4.1/db_185.h for version 4.1
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db4.1/db_185.h", 
+   AC_CHECK_HEADERS([db4.1/db_185.h], 
         [db_header="41" ],
-        ) 
+        []) 
 fi
 
 # Step 4.2: if header "db4.1/db.h" not found check for header db4.2/db_185.h for version 4.2
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db4.2/db_185.h", 
-                   [db_header="42" ],
-                   ) 
+   AC_CHECK_HEADERS([db4.2/db_185.h], 
+                    [db_header="42"],
+                    []) 
 fi
 
 # Step 4.3: if header "db4.2/db.h" not found check for header db4.3/db_185.h for version 4.3
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db4.3/db_185.h", 
-                   [db_header="43" ],
-                   ) 
+   AC_CHECK_HEADERS([db4.3/db_185.h], 
+                    [db_header="43"],
+                    []) 
 fi
 
 # Step 4.4: if header "db4.3/db.h" not found check for header db4.4/db_185.h for version 4.4
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db4.4/db_185.h", 
-                   [db_header="44" ],
-                   ) 
+   AC_CHECK_HEADERS([db4.4/db_185.h], 
+                    [db_header="44"],
+                    []) 
 fi
 
 # Step 4.5: if header "db4.4/db.h" not found check for header db4.5/db_185.h for version 4.5
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db4.5/db_185.h", 
-                   [db_header="45" ],
-                   ) 
+   AC_CHECK_HEADERS([db4.5/db_185.h], 
+                    [db_header="45"],
+                    []) 
 fi
 
 # Step 4.6: if header "db4.5/db.h" not found check for header db46/db_185.h for version 4.6
 if test "${db_header}" = "0" ; then
-   AC_CHECK_HEADERS("db46/db_185.h", 
-                   [db_header="46" ],
-                   ) 
+   AC_CHECK_HEADERS([db46/db_185.h], 
+                    [db_header="46"],
+                    []) 
 fi
 
 # Step 10: if no DB headers found abort
@@ -1011,17 +898,15 @@ if test "${db_header}" = "2" ; then
   printf "checking for -ldb2 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb2 with 1.85 API compatibility)
   LIBS="-ldb2"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db2/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="2" ], 
-            [ AC_MSG_RESULT(no);  db_header="21" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="2" ],[ AC_MSG_RESULT(no);  db_header="21"  
+            ]) 
 fi
 
 # Step 19a: If header db_185.h found check library db is version 3.x
@@ -1029,57 +914,44 @@ if test "${db_header}" = "3" ; then
 printf "checking for -ldb-3 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-3 with 1.85 API compatibility)
   LIBS="-ldb-3"
-#  LIBS="$LIBS_BK -ldb-3"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db3/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="3" ], 
-            [ AC_MSG_RESULT(no);  db_header="32" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="3" ],[ AC_MSG_RESULT(no);  db_header="32"  
+            ]) 
 fi
 if test "${db_header}" = "32" ; then
 printf "checking for -ldb3 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb3 with 1.85 API compatibility)
   LIBS="-ldb3"
-#  LIBS="$LIBS_BK -ldb3"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db3/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="3" ], 
-            [ AC_MSG_RESULT(no);  db_header="31" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="3" ],[ AC_MSG_RESULT(no);  db_header="31"  
+            ]) 
 fi
 
 # Step 19b: If header 'db4/db_185.h' found check library db is version 4.x
 if test "${db_header}" = "4" ; then
-#  echo -n "checking for -ldb-4 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4 with 1.85 API compatibility)
   LIBS="-ldb-4"
-#  LIBS="$LIBS_BK -ldb-4"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="4" ], 
-            [ AC_MSG_RESULT(no);  db_header="41" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="4" ],[ AC_MSG_RESULT(no);  db_header="41"  
+            ]) 
 fi
 
 # Step 19b: If header 'db4.1/db_185.h' found check library db is version 4.x
@@ -1087,19 +959,15 @@ if test "${db_header}" = "41" ; then
 printf "checking for -ldb-4.1 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4.1 with 1.85 API compatibility)
   LIBS="-ldb-4.1"
-#  LIBS="$LIBS_BK -ldb-4.1"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.1/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="41" ], 
-            [ AC_MSG_RESULT(no);  db_header="42" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="41" ],[ AC_MSG_RESULT(no);  db_header="42"  
+            ]) 
 fi
 
 # Step 19b: If header 'db4.2/db_185.h' found check library db is version 4.x
@@ -1107,19 +975,15 @@ if test "${db_header}" = "42" ; then
 printf "checking for -ldb-4.2 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4.2 with 1.85 API compatibility)
   LIBS="-ldb-4.2"
-#  LIBS="$LIBS_BK -ldb-4.2"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.2/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="42" ], 
-            [ AC_MSG_RESULT(no);  db_header="43" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="42" ],[ AC_MSG_RESULT(no);  db_header="43"  
+            ]) 
 fi
 
 # Step 19b: If header 'db4.3/db_185.h' found check library db is version 4.x
@@ -1127,19 +991,15 @@ if test "${db_header}" = "43" ; then
 printf "checking for -ldb-4.3 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4.3 with 1.85 API compatibility)
   LIBS="-ldb-4.3"
-#  LIBS="$LIBS_BK -ldb-4.3"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.3/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="43" ], 
-            [ AC_MSG_RESULT(no);  db_header="44" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="43" ],[ AC_MSG_RESULT(no);  db_header="44"  
+            ]) 
 fi
 
 # Step 19b: If header 'db4/db_185.h' found check library db is version 4.x
@@ -1147,39 +1007,30 @@ if test "${db_header}" = "44" ; then
 printf "checking for -ldb-4.4 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4.4 with 1.85 API compatibility)
   LIBS="-ldb-4.4"
-#  LIBS="$LIBS_BK -ldb-4.4"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.4/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="44" ], 
-            [ AC_MSG_RESULT(no);  db_header="45" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="44" ],[ AC_MSG_RESULT(no);  db_header="45"  
+            ]) 
 fi
 
 # Step 19b: If header 'db4.5/db_185.h' found check library db is version 4.x
 if test "${db_header}" = "45" ; then
-#  echo -n "checking for -ldb-4.5 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4.5 with 1.85 API compatibility)
   LIBS="-ldb-4.5"
-#  LIBS="$LIBS_BK -ldb-4.5"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.5/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="45" ], 
-            [ AC_MSG_RESULT(no);  db_header="46" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="45" ],[ AC_MSG_RESULT(no);  db_header="46"  
+            ]) 
 fi
 
 # Step 19b: If header 'db46/db_185.h' found check library db is version 4.x
@@ -1187,19 +1038,15 @@ if test "${db_header}" = "46" ; then
 printf "checking for -ldb-4.6 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4.6 with 1.85 API compatibility)
   LIBS="-ldb-4.6"
-#  LIBS="$LIBS_BK -ldb-4.6"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db46/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="46" ], 
-            [ AC_MSG_RESULT(no);  db_header="41" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="46" ],[ AC_MSG_RESULT(no);  db_header="41"  
+            ]) 
 fi
 
 # Step 10: If header db_185.h found check if library db is version 2.x
@@ -1207,39 +1054,30 @@ if test "${db_header}" = "23" ; then
 printf "checking for -ldb (versions 2.x 3.x 4.x with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb versions 2.x 3.x 4.x with 1.85 API compatibility)
   LIBS="-ldb"
-#  LIBS="$LIBS_BK -ldb"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="23" ], 
-            [ AC_MSG_RESULT(no);  db_header="41" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="23" ],[ AC_MSG_RESULT(no);  db_header="41"  
+            ]) 
 fi
 
 # Step 10a: If header db_185.h found check if library db is version 4.x
 if test "${db_header}" = "41" ; then
-#  echo -n "checking for -ldb-4 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb-4 with 1.85 API compatibility)
   LIBS="-ldb-4"
-#  LIBS="$LIBS_BK -ldb-4"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="41" ], 
-            [ AC_MSG_RESULT(no);  db_header="32" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="41" ],[ AC_MSG_RESULT(no);  db_header="32"  
+            ]) 
 fi
 
 # Step 10b: If header db_185.h found check if library db is version 3.x
@@ -1247,19 +1085,15 @@ if test "${db_header}" = "32" ; then
 printf "checking for -ldb3 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb3 with 1.85 API compatibility)
   LIBS="-ldb3"
-#  LIBS="$LIBS_BK -ldb3"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="32" ], 
-            [ AC_MSG_RESULT(no);  db_header="123" ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="32" ],[ AC_MSG_RESULT(no);  db_header="123"  
+            ]) 
 fi
 
 # Step 10c: If header db_185.h found check if library db is version 2.x or 3.x called db1
@@ -1267,39 +1101,30 @@ if test "${db_header}" = "123" ; then
 printf "checking for -ldb2 (with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb2 with 1.85 API compatibility)
   LIBS="-ldb2"
-#  LIBS="$LIBS_BK -ldb2"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="123" ], 
-            [ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db3 or db2 and/or compatibility API to version 1.85 not found... aborting) ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="123" ],[ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db3 or db2 and/or compatibility API to version 1.85 not found... aborting)  
+            ]) 
 fi
 
 # Step 11: If header db_185.h found check if library db is version 3.x
 if test "${db_header}" = "31" ; then
-#  echo -n "checking for -ldb (version 3.x with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb version 3.x with 1.85 API compatibility)
   LIBS="-ldb"
-#  LIBS="$LIBS_BK -ldb"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db3/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="31" ], 
-            [ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db and/or compatibility API to version 1.85 not found... aborting) ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="31" ],[ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db and/or compatibility API to version 1.85 not found... aborting)  
+            ]) 
 fi
 
 # Step 12: If header db_185.h found check if library db is version 3.x
@@ -1307,40 +1132,36 @@ if test "${db_header}" = "21" ; then
 printf "checking for -ldb (version 2.x with 1.85 API compatibility)..."
   AC_MSG_CHECKING(for -ldb version 2.x with 1.85 API compatibility)
   LIBS="-ldb"
-#  LIBS="$LIBS_BK -ldb"
-#  INCLUDES="$INCLUDES_BK"
-AC_TRY_LINK(#define DB_LIBRARY_COMPATIBILITY_API 1
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db2/db_185.h>
 const char *c1;
 int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-,  dbopen(c1, i1, i2, dbv1, vv); ,
-            [ AC_MSG_RESULT(yes); db_version="21" ], 
-            [ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db and/or compatibility API to version 1.85 not found... aborting) ] 
-            ) 
+]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="21" ],[ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db and/or compatibility API to version 1.85 not found... aborting)  
+            ]) 
 fi
 
 # Step 13: Define which header to use 
 echo  "DB library db_version state is ${db_version}"
 if test "${db_version}" = "1" ; then
-  AC_DEFINE(USE_DB_1) 
+  AC_DEFINE([USE_DB_1],[1],[Define to 1 to use libdb1]) 
   tcob_ld_args_db="-ldb1"
 fi
 
 if test "${db_version}" = "2" ; then
-  AC_DEFINE(USE_DB_2) 
+  AC_DEFINE([USE_DB_2],[1],[Define to 1 to use libdb2]) 
   tcob_ld_args_db="-ldb2"
 fi
 
 if test "${db_version}" = "23" ; then
-  AC_DEFINE(USE_DB_23) 
+  AC_DEFINE([USE_DB_23],[1],[Define to 1 to use libdb (2.3?)]) 
   tcob_ld_args_db="-ldb"
 fi
 
 if test "${db_version}" = "3x" ; then
-  AC_DEFINE(USE_DB_3) 
+  AC_DEFINE([USE_DB_3],[1],[Define to 1 to use libdb3]) 
   tcob_ld_args_db="$db_lib_name"
 fi
 
@@ -1350,73 +1171,64 @@ if test "${db_version}" = "3" ; then
 fi
 
 if test "${db_version}" = "4" ; then
-  AC_DEFINE(USE_DB_4) 
+  AC_DEFINE([USE_DB_4],[1],[Define to 1 to use libdb4]) 
   tcob_ld_args_db="-ldb-4"
 fi
 
 if test "${db_version}" = "32" ; then
-  AC_DEFINE(USE_DB_23) 
+  AC_DEFINE([USE_DB_23],[1],[Define to 1 to use libdb (3?)]) 
   tcob_ld_args_db="-ldb3"
 fi
 
 if test "${db_version}" = "10" ; then
-  AC_DEFINE(USE_DB) 
+  AC_DEFINE([USE_DB],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
 if test "${db_version}" = "123" ; then
-  AC_DEFINE(USE_DB_234) 
+  AC_DEFINE([USE_DB_234],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
 if test "${db_version}" = "21" ; then
-  AC_DEFINE(USE_DB_2) 
+  AC_DEFINE([USE_DB_2],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
 if test "${db_version}" = "31" ; then
-  AC_DEFINE(USE_DB_3) 
+  AC_DEFINE([USE_DB_3],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
 if test "${db_version}" = "41" ; then
-  AC_DEFINE(USE_DB_41) 
+  AC_DEFINE([USE_DB_41],[1],[Define to 1 to use libdb-4.1]) 
   tcob_ld_args_db="-ldb-4.1"
 fi
 
 if test "${db_version}" = "42" ; then
-  AC_DEFINE(USE_DB_42) 
+  AC_DEFINE([USE_DB_42],[1],[Define to 1 to use libdb-4.2]) 
   tcob_ld_args_db="-ldb-4.2"
 fi
 
 if test "${db_version}" = "43" ; then
-  AC_DEFINE(USE_DB_43) 
+  AC_DEFINE([USE_DB_43],[1],[Define to 1 to use libdb-4.3]) 
   tcob_ld_args_db="-ldb-4.3"
 fi
 
 if test "${db_version}" = "44" ; then
-  AC_DEFINE(USE_DB_44) 
-  tcob_ld_args_db="-ldb-4.3"
+  AC_DEFINE([USE_DB_44],[1],[Define to 1 to use libdb-4.4]) 
+  tcob_ld_args_db="-ldb-4.4"
 fi
 
 if test "${db_version}" = "45" ; then
-  AC_DEFINE(USE_DB_45) 
+  AC_DEFINE([USE_DB_45],[1],[Define to 1 to use libdb-4.5]) 
   tcob_ld_args_db="-ldb-4.5"
 fi
 
 if test "${db_version}" = "46" ; then
-  AC_DEFINE(USE_DB_46) 
+  AC_DEFINE([USE_DB_46],[1],[Define to 1 to use libdb-4.6]) 
   tcob_ld_args_db="-ldb-4.6"
 fi
-
-#
-# Build using experimental math RT using fixlib - disabled
-#tcob_math_functions='mcmath.c'
-#AC_ARG_WITH(fixlib,
-#	[  --with-fixlib           build experimental math RT using fixlib    ],
-#        [tcob_math_functions='fixnumeric.c imath.c' ],
-#        ,
-#)
 
 #
 # Build fixed/free format conversion utility.
@@ -1516,141 +1328,130 @@ tcob_ld_args_defaults="${tcob_ld_args_defaults}"
 #
 CCX=$CC
 #
-AC_DEFINE(HAVE_LIBM) 
-AC_SUBST(LEX)
-AC_SUBST(YACC)
-AC_SUBST(CCX)
-AC_SUBST(COB)
-AC_SUBST(INCLUDES)
-AC_SUBST(CCXFLAGS)
-AC_SUBST(ACXFLAGS)
-AC_SUBST(exeext)
-AC_SUBST(tcob_default)
-AC_SUBST(cobcpy_default)
-AC_SUBST(yacc_prefix_compiler)
-AC_SUBST(copybook_path)
-AC_SUBST(tcob_docdir)
-mandir = @mandir@
-os_platform= @os_platform@
-AC_SUBST(os_platform)
+AC_DEFINE([HAVE_LIBM],[1],[Compatability define; always defined to 1]) 
+AC_SUBST([LEX])dnl
+AC_SUBST([YACC])dnl
+AC_SUBST([CCX])dnl
+AC_SUBST([COB])dnl
+AC_SUBST([INCLUDES])dnl
+AC_SUBST([CCXFLAGS])dnl
+AC_SUBST([ACXFLAGS])dnl
+AC_SUBST([exeext])dnl
+AC_SUBST([tcob_default])dnl
+AC_SUBST([cobcpy_default])dnl
+AC_SUBST([yacc_prefix_compiler])dnl
+AC_SUBST([copybook_path])dnl
+AC_SUBST([tcob_docdir])dnl
+mandir="@mandir@"
+os_platform="@os_platform@"
+AC_SUBST([os_platform])dnl
 
-AC_SUBST(TCOB_MAJOR_VERSION)
-AC_SUBST(TCOB_MINOR_VERSION)
-AC_SUBST(TCOB_PATCH_LEVEL)
-AC_SUBST(TCOB_VERSION)
-AC_SUBST(TCOB_RELEASE_DATE)
-AC_SUBST(tcob_version)
-AC_SUBST(host_os)
+AC_SUBST([TCOB_MAJOR_VERSION])dnl
+AC_SUBST([TCOB_MINOR_VERSION])dnl
+AC_SUBST([TCOB_PATCH_LEVEL])dnl
+AC_SUBST([TCOB_VERSION])dnl
+AC_SUBST([TCOB_RELEASE_DATE])dnl
+AC_SUBST([tcob_version])dnl
+AC_SUBST([host_os])dnl
 
-AC_SUBST(prefix_local)
-AC_SUBST(drive_prefix)
+AC_SUBST([prefix_local])dnl
+AC_SUBST([drive_prefix])dnl
 
-AC_SUBST(TCOBRUN_MAJOR_VERSION)
-AC_SUBST(TCOBRUN_MINOR_VERSION)
-AC_SUBST(TCOBRUN_PATCH_LEVEL)
-AC_SUBST(TCOBRUN_VERSION)
-AC_SUBST(TCOBRUN_RELEASE_DATE)
+AC_SUBST([TCOBRUN_MAJOR_VERSION])dnl
+AC_SUBST([TCOBRUN_MINOR_VERSION])dnl
+AC_SUBST([TCOBRUN_PATCH_LEVEL])dnl
+AC_SUBST([TCOBRUN_VERSION])dnl
+AC_SUBST([TCOBRUN_RELEASE_DATE])dnl
 
 # shared-libs
 # Build Run-Time as a shared library, change make file in 'lib' directory
 # define_with_shared_lib="no"
-AC_SUBST(tcob_libs_opt)
-AC_SUBST(tcob_libs_install_opt)
-AC_SUBST(tcob_libs_uninstall_opt)
-AC_SUBST(tcob_cobrun_build_opt)
-AC_SUBST(tcob_cobrun_name1_opt)
-AC_SUBST(tcob_cobrun_name2_opt)
+AC_SUBST([tcob_libs_opt])dnl
+AC_SUBST([tcob_libs_install_opt])dnl
+AC_SUBST([tcob_libs_uninstall_opt])dnl
+AC_SUBST([tcob_cobrun_build_opt])dnl
+AC_SUBST([tcob_cobrun_name1_opt])dnl
+AC_SUBST([tcob_cobrun_name2_opt])dnl
 
-AC_SUBST(tcob_manfiles)
-AC_SUBST(tcob_htmlfiles)
-AC_SUBST(tcob_textfiles)
-AC_SUBST(tcob_intman)
-AC_SUBST(tcob_inthtml)
-AC_SUBST(tcob_inttext)
+AC_SUBST([tcob_manfiles])dnl
+AC_SUBST([tcob_htmlfiles])dnl
+AC_SUBST([tcob_textfiles])dnl
+AC_SUBST([tcob_intman])dnl
+AC_SUBST([tcob_inthtml])dnl
+AC_SUBST([tcob_inttext])dnl
 
-AC_SUBST(tcob_cobf2f_dir)
-AC_SUBST(tcob_cobf2f_dir1)
-AC_SUBST(tcob_cobf2f_man)
-AC_SUBST(tcob_cobf2f_html)
-AC_SUBST(tcob_cobf2f_text)
-AC_SUBST(tcob_cobf2f_intman)
-AC_SUBST(tcob_cobf2f_inthtml)
-AC_SUBST(tcob_cobf2f_inttext)
+AC_SUBST([tcob_cobf2f_dir])dnl
+AC_SUBST([tcob_cobf2f_dir1])dnl
+AC_SUBST([tcob_cobf2f_man])dnl
+AC_SUBST([tcob_cobf2f_html])dnl
+AC_SUBST([tcob_cobf2f_text])dnl
+AC_SUBST([tcob_cobf2f_intman])dnl
+AC_SUBST([tcob_cobf2f_inthtml])dnl
+AC_SUBST([tcob_cobf2f_inttext])dnl
 
-AC_SUBST(tcob_math_functions)
+AC_SUBST([tcob_math_functions])dnl
 
-AC_SUBST(tcob_lockserv_dir)
-AC_SUBST(tcob_use_lockserver_opt1)
-AC_SUBST(tcob_use_lockserver_opt2)
+AC_SUBST([tcob_lockserv_dir])dnl
+AC_SUBST([tcob_use_lockserver_opt1])dnl
+AC_SUBST([tcob_use_lockserver_opt2])dnl
 
-AC_SUBST(tcob_ld_args_htcobol)
-AC_SUBST(tcob_ld_args_m)
-AC_SUBST(tcob_ld_args_db)
-AC_SUBST(tcob_ld_args_isam)
-AC_SUBST(tcob_ld_args_ltdl)
-AC_SUBST(tcob_ld_args_dl)
-AC_SUBST(tcob_ld_args_curses)
-AC_SUBST(tcob_ld_args_readline)
-AC_SUBST(tcob_ld_paths_default)
-AC_SUBST(tcob_ld_args_default)
-AC_SUBST(tcob_ld_args_defaults)
+AC_SUBST([tcob_ld_args_htcobol])dnl
+AC_SUBST([tcob_ld_args_m])dnl
+AC_SUBST([tcob_ld_args_db])dnl
+AC_SUBST([tcob_ld_args_isam])dnl
+AC_SUBST([tcob_ld_args_ltdl])dnl
+AC_SUBST([tcob_ld_args_dl])dnl
+AC_SUBST([tcob_ld_args_curses])dnl
+AC_SUBST([tcob_ld_args_readline])dnl
+AC_SUBST([tcob_ld_paths_default])dnl
+AC_SUBST([tcob_ld_args_default])dnl
+AC_SUBST([tcob_ld_args_defaults])dnl
 
-AC_SUBST(asx_cmd)
-AC_SUBST(ccx_cmd)
-AC_SUBST(ranlibx_cmd)
-AC_SUBST(arx_cmd)
+AC_SUBST([asx_cmd])dnl
+AC_SUBST([ccx_cmd])dnl
+AC_SUBST([ranlibx_cmd])dnl
+AC_SUBST([arx_cmd])dnl
 
-#echo "debug 10a: with_lang=$with_lang, tcob_lang=$tcob_lang" 
-AC_SUBST(tcob_lang)
-AC_DEFINE(TCOB_LANGUAGE_en)
-# case "x$tcob_lang" in
-#      xen) AC_DEFINE(TCOB_LANGUAGE_en)
-#          ;;
-#      xfr) AC_DEFINE(TCOB_LANGUAGE_fr) 
-#          ;;
-#      xit) AC_DEFINE(TCOB_LANGUAGE_it) 
-#          ;;
-#      xpt_BR) AC_DEFINE(TCOB_LANGUAGE_pt_BR) 
-#          ;;
-#      xes) AC_DEFINE(TCOB_LANGUAGE_es) 
-#          ;;
-# esac
+AC_SUBST([tcob_lang])dnl
+AC_DEFINE([TCOB_LANGUAGE_en],[1],[Define to 1 for English])
 echo "debug 10b: with_lang=$with_lang, tcob_lang=$tcob_lang" 
 
-AC_DEFINE_UNQUOTED(TCOB_STR_DASH_REDEFINE, "${tcob_str_dash_redefine}")
+AC_DEFINE_UNQUOTED([TCOB_STR_DASH_REDEFINE],["${tcob_str_dash_redefine}"],[OK])
 
-AC_DEFINE_UNQUOTED(TCOB_CCX_CMD, "${CC}")
-AC_DEFINE_UNQUOTED(TCOB_ASX_CMD, "${AS}")
-AC_DEFINE_UNQUOTED(TCOB_COB_CMD, "${COB}")
+AC_DEFINE_UNQUOTED([TCOB_CCX_CMD],["${CC}"],[CC])
+AC_DEFINE_UNQUOTED([TCOB_ASX_CMD],["${AS}"],[AS])
+AC_DEFINE_UNQUOTED([TCOB_COB_CMD],["${COB}"],[COB])
 
-AC_DEFINE_UNQUOTED(TCOB_DEFAULTS_PATH, "${tcob_default_config}")
-AC_DEFINE_UNQUOTED(OPTFILE_DEFAULT, "${optfile_default}")
-AC_DEFINE_UNQUOTED(RTOPTFILE_DEFAULT, "${rtoptfile_default}")
+AC_DEFINE_UNQUOTED([TCOB_DEFAULTS_PATH],["${tcob_default_config}"],[OK])
+AC_DEFINE_UNQUOTED([OPTFILE_DEFAULT],["${optfile_default}"],[OK])
+AC_DEFINE_UNQUOTED([RTOPTFILE_DEFAULT],["${rtoptfile_default}"],[OK])
 
-AC_DEFINE_UNQUOTED(TCOB_LD_PATHS_DEFAULT, "${tcob_ld_paths_default}")
+AC_DEFINE_UNQUOTED([TCOB_LD_PATHS_DEFAULT],["${tcob_ld_paths_default}"],[OK])
 
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_MATH, "$tcob_ld_args_m")
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_HTCOBOL, "$tcob_ld_args_htcobol")
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_DB, "$tcob_ld_args_db")
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_ISAM, "$tcob_ld_args_isam")
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_CURSES, "$tcob_ld_args_curses")
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_READLINE, "$tcob_ld_args_readline")
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_DL, "$tcob_ld_args_dl")
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_MATH],["${tcob_ld_args_m}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_HTCOBOL],["${tcob_ld_args_htcobol}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DB],["${tcob_ld_args_db}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_ISAM],["${tcob_ld_args_isam}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_CURSES],["${tcob_ld_args_curses}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_READLINE],["${tcob_ld_args_readline}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DL],["${tcob_ld_args_dl}"],[OK])
 
-AC_DEFINE_UNQUOTED(TCOB_SHLIB_EXT, "$shared_lib_extension")
+AC_DEFINE_UNQUOTED([TCOB_SHLIB_EXT],["${shared_lib_extension}"],[OK])
 
-if test "${need_underscode}" = "yes" ; then
-   AC_DEFINE(NEED_USCORE)
+# This typo is consistent everywhere it's used, so leave it as is:
+if test "x${need_underscode}" = "xyes"; then
+   AC_DEFINE([NEED_USCORE],[1],[Define to 1 if we need an underscore])
 fi
 
-if test "${use_ltdl_lib}" = "1" ; then
-    AC_DEFINE(USE_LTDL_LIB)
-    AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_LTDL, "$tcob_ld_args_ltdl")
+if test "${use_ltdl_lib}" = "1"; then
+    AC_DEFINE([USE_LTDL_LIB],[1],[Define to 1 to use libltdl])
+    AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_LTDL],["${tcob_ld_args_ltdl}"],[OK])
 fi
 
-AC_DEFINE_UNQUOTED(TCOB_LD_ARGS_DEFAULT, "$tcob_ld_args_default")
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DEFAULT],["${tcob_ld_args_default}"],[OK])
 
-AC_OUTPUT(Makefile compiler/Makefile compiler/htversion.h \
+# Final output.
+AC_CONFIG_FILES([Makefile compiler/Makefile compiler/htversion.h \
 	compiler/htcobolrc lib/Makefile \
 	cobrun/Makefile cobrun/tcrunversion.h \
 	utils/Makefile utils/cobf2f/Makefile \
@@ -1658,9 +1459,6 @@ AC_OUTPUT(Makefile compiler/Makefile compiler/htversion.h \
 	info/Makefile info/slackware/SlackBuild \
         test_suite/Makefile test_suite/coboltest.inc \
         test_suite/nist/makeConfig.inc test_suite/nist/Makefile \
-        lib/htcobolrt.rc )
+        lib/htcobolrt.rc ])
+AC_OUTPUT
 
-#        $tcob_lockserv_make_file test_suite/coboltest.inc test.code/mconfig.inc 
-#	test.code/copybooks/Makefile info/Makefile lockserver/Makefile)
-#	cobpp/Makefile cobpp/tcppversion.h 
-#	cobrun/Makefile cobrun/tcrunversion.h cobrun/test.code/Makefile 

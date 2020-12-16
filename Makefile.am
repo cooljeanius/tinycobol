@@ -39,18 +39,15 @@ TEXTFILE10=Readme.cygwin.txt
 
 subdirs=compiler lib cobrun info utils 
 subdirs1=compiler lib cobrun info utils @tcob_cobf2f_dir1@ test_suite test_suite/nist test.code
-#subdirs=compiler lib cobrun test.code/copybooks info utils 
-##subdirs1=compiler lib cobrun cobrun/test.code test.code/copybooks info utils @tcob_cobf2f_dir1@
-#subdirs1=compiler lib cobrun test.code/copybooks info utils @tcob_cobf2f_dir1@
-#subdirs2=test.code
 
-all:
+all-subdirs:
 	@for i in ${subdirs}; do \
 		echo Making all in $$i ; \
 		(cd $$i; ${MAKE} all) ; \
 	done
+.PHONY: all-subdirs
 
-install: all
+install-data-local: all
 	${INSTALL_DIR} $(DESTDIR)$(bindir)
 	${INSTALL_DIR} $(DESTDIR)$(lib_dir)
 	${INSTALL_DIR} $(DESTDIR)$(mandir)
@@ -71,31 +68,21 @@ install: all
 	${INSTALL_DATA} $(TEXTFILE09) $(DESTDIR)${tcob_docdir}/$(TEXTFILE09)
 	${INSTALL_DATA} $(TEXTFILE10) $(DESTDIR)${tcob_docdir}/$(TEXTFILE10)
 
-uninstall:
+uninstall-local:
 	@for i in ${subdirs}; do \
 		echo Un-Installing in $$i ; \
 		(cd $$i; ${MAKE} uninstall) ; \
 	done
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE01)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE02)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE03)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE04)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE05)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE06)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE07)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE08)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE09)
-#	${RM} $(DESTDIR)${tcob_docdir}/$(TEXTFILE10)
 	${RM} $(DESTDIR)$(pkgdatadir)
 	${RM} $(DESTDIR)$(tcob_docdir)
 
-clean:
+clean-local:
 	@for i in ${subdirs}; do \
 		echo Cleaning in $$i ; \
 		(cd $$i; ${MAKE} clean) ; \
 	done
 
-distclean cleandist: 
+distclean-local cleandist: 
 	@for i in ${subdirs}; do \
 		(cd $$i; ${MAKE} clean; ${RM} Makefile) ; \
 	done
