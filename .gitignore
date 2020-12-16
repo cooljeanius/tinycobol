@@ -9,3 +9,12 @@ conftest*
 htconfig.h
 Makefile
 stamp-h*
+cobrun/tcrunversion.h
+compiler/htcobolrc
+compiler/htversion.h
+info/slackware/SlackBuild
+lib/htcobolrt.rc
+libtool
+test.code/mconfig.inc
+test_suite/coboltest.inc
+test_suite/nist/makeConfig.inc
