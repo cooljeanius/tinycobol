@@ -1,4 +1,4 @@
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 --install
 
 SHELL=/bin/sh
 
@@ -40,6 +40,7 @@ TEXTFILE10=Readme.cygwin.txt
 subdirs=compiler lib cobrun info utils 
 subdirs1=compiler lib cobrun info utils @tcob_cobf2f_dir1@ test_suite test_suite/nist test.code
 
+all: all-subdirs
 all-subdirs:
 	@for i in ${subdirs}; do \
 		echo Making all in $$i ; \
@@ -99,4 +100,7 @@ cleanall allclean:
 		echo Cleaning all in $$i ; \
 		(cd $$i; ${MAKE} cleanall) ; \
 	done
-	@${RM} config.cache config.status config.log 
+	@${RM} config.cache config.status config.log
+
+# These are not actual targets, just workarounds for a bug:
+.PHONY: -c -m 644

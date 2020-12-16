@@ -14,20 +14,32 @@ AC_CONFIG_AUX_DIR([build-aux])dnl
 TCOB_MAJOR_VERSION=0
 TCOB_MINOR_VERSION=0
 TCOB_PATCH_LEVEL=0
-TCOB_MAJOR_VERSION=`grep '^TCOB_MAJOR_VERSION' version.txt | cut -f2 -d'='`
-TCOB_MINOR_VERSION=`grep  '^TCOB_MINOR_VERSION' version.txt | cut -f2 -d'='`
-TCOB_PATCH_LEVEL=`grep  '^TCOB_PATCH_LEVEL' version.txt | cut -f2 -d'='`
+
+AC_DEFUN([AC_REQUIRE_GREPS],[
+  AC_REQUIRE([AC_PROG_GREP])dnl
+  AC_REQUIRE([AC_PROG_EGREP])dnl
+  AC_REQUIRE([AC_PROG_FGREP])dnl
+])dnl
+AC_REQUIRE_GREPS
+
+if test "x${GREP}" = "x"; then
+  test -z "${GREP}" && AC_MSG_ERROR([grep is required to configure])
+fi
+
+TCOB_MAJOR_VERSION=`${GREP} '^TCOB_MAJOR_VERSION' version.txt | cut -f2 -d'='`
+TCOB_MINOR_VERSION=`${GREP} '^TCOB_MINOR_VERSION' version.txt | cut -f2 -d'='`
+TCOB_PATCH_LEVEL=`${GREP} '^TCOB_PATCH_LEVEL' version.txt | cut -f2 -d'='`
 #
-TCOB_VERSION=$TCOB_MAJOR_VERSION.$TCOB_MINOR_VERSION.$TCOB_PATCH_LEVEL
+TCOB_VERSION=${TCOB_MAJOR_VERSION}.${TCOB_MINOR_VERSION}.${TCOB_PATCH_LEVEL}
 TCOB_RELEASE_DATE=2003/09/11
 TCOB_RELEASE_DATE=`date +%Y/%m/%d`
-tcob_version=$TCOB_VERSION
+tcob_version=${TCOB_VERSION}
 #
-TCOBRUN_MAJOR_VERSION=`grep '^TCOBRUN_MAJOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
-TCOBRUN_MINOR_VERSION=`grep  '^TCOBRUN_MINOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
-TCOBRUN_PATCH_LEVEL=`grep  '^TCOBRUN_PATCH_LEVEL' cobrun/tcrunversion.txt | cut -f2 -d'='`
-TCOBRUN_VERSION=$TCOBRUN_MAJOR_VERSION.$TCOBRUN_MINOR_VERSION.$TCOBRUN_PATCH_LEVEL
-TCOBRUN_RELEASE_DATE=$TCOB_RELEASE_DATE
+TCOBRUN_MAJOR_VERSION=`${GREP} '^TCOBRUN_MAJOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
+TCOBRUN_MINOR_VERSION=`${GREP} '^TCOBRUN_MINOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
+TCOBRUN_PATCH_LEVEL=`${GREP} '^TCOBRUN_PATCH_LEVEL' cobrun/tcrunversion.txt | cut -f2 -d'='`
+TCOBRUN_VERSION=${TCOBRUN_MAJOR_VERSION}.${TCOBRUN_MINOR_VERSION}.${TCOBRUN_PATCH_LEVEL}
+TCOBRUN_RELEASE_DATE=${TCOB_RELEASE_DATE}
 #
 
 AC_CONFIG_HEADERS([htconfig.h])
@@ -152,7 +164,10 @@ fi
 
 # Checks for required programs
 #
-AC_PROG_AWK
+AC_DEFUN([AC_REQUIRE_AWK],[
+  AC_REQUIRE([AC_PROG_AWK])dnl
+])dnl
+AC_REQUIRE_AWK
 AC_PROG_CC
 AC_CHECK_PROG(CC, "$c_compiler", "$c_compiler", no)
 echo "debug 3a: compiler c_compiler:${c_compiler}: ccx:$ccx: CC:$CC:" 
@@ -163,20 +178,20 @@ echo "debug 3b: compiler c_compiler:${c_compiler}: ccx:$ccx: CC:$CC:"
 AC_PROG_CXX
 # 
 AM_PROG_AS
-AC_CHECK_PROG(AS, as, as, as)
+AC_CHECK_PROG([AS],[as],[as],[as])dnl
 
 asx_cmd="${AS}"
 ccx_cmd="${CC}"
 
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_PROG_MAKE_SET
 
 AC_PROG_RANLIB
-AC_CHECK_PROG(RANLIB, ranlib, ranlib, ranlib)
-AC_CHECK_PROG(AR, ar, ar, ar)
-LT_INIT([win32-dll])
-AM_MISSING_PROG([libtool])
+AC_CHECK_PROG([RANLIB],[ranlib],[ranlib],[ranlib])
+AC_CHECK_PROG([AR],[ar],[ar],[ar])
+AM_PROG_AR
+LT_INIT([win32-dll dlopen])
+AM_MISSING_PROG([libtool])dnl
 
 ranlibx_cmd="${RANLIB}"
 arx_cmd="${AR}"
@@ -191,7 +206,11 @@ if test "x$with_lex" != "x"; then
       lex_name=$with_lex
 fi
 AC_CHECK_PROG(FLEX, flex, flex, no)
-AC_CHECK_PROG(LEX, "$lex_name", "$lex_name", no)
+if test "x${lex_name}" != "xflex"; then
+   AC_CHECK_PROG(LEX, "$lex_name", "$lex_name", no)
+else
+   test -z "${LEX}" && test -n "${FLEX}" && export LEX="${FLEX}"
+fi
 if test "${LEX}" = "no" ; then
    AC_MSG_ERROR(required program not found... aborting)
 fi
@@ -229,26 +248,27 @@ fi
 
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lX11':
-AC_CHECK_LIB([X11], [main])
+AC_CHECK_LIB([X11],[main])
 AC_PATH_X
 # FIXME: Replace `main' with a function in `-lcrypt':
-AC_CHECK_LIB([crypt], [main])
+AC_CHECK_LIB([crypt],[main])
 # FIXME: Replace `main' with a function in `-lgds':
-AC_CHECK_LIB([gds], [main])
+AC_CHECK_LIB([gds],[main])
 # FIXME: Replace `main' with a function in `-lhtcobol':
-AC_CHECK_LIB([htcobol], [main])
+AC_CHECK_LIB([htcobol],[main])
 # FIXME: Replace `main' with a function in `-lpq':
-AC_CHECK_LIB([pq], [main])
+AC_CHECK_LIB([pq],[main])
 # FIXME: Replace `main' with a function in `-ltcl':
-AC_CHECK_LIB([tcl], [main])
+AC_CHECK_LIB([tcl],[main])
 # AX_* macros require the autoconf-archive package
 AX_PROG_TCL
 # FIXME: Replace `main' with a function in `-ltestz1':
-AC_CHECK_LIB([testz1], [main])
+AC_CHECK_LIB([testz1],[main])
 # FIXME: Replace `main' with a function in `-ltestz2':
-AC_CHECK_LIB([testz2], [main])
+AC_CHECK_LIB([testz2],[main])
 # FIXME: Replace `main' with a function in `-ltk':
-AC_CHECK_LIB([tk], [main])
+AC_CHECK_LIB([tk],[main])
+LT_LIB_M
 
 dnl Checks for header files.
 dnl# autoupdate says:
@@ -258,9 +278,21 @@ dnl# ISO C90 headers unconditionally.
 # Autoupdate added the next two lines to ensure that your configure
 # script's behavior did not change.  They are probably safe to remove.
 AC_CHECK_INCLUDES_DEFAULT
-AC_PROG_EGREP
 AC_HEADER_STDBOOL dnl# also "_CHECK"s it
-AC_CHECK_HEADERS([alloca.h ctype.h dlfcn.h errno.h fcntl.h float.h getopt.h libintl.h limits.h malloc.h stdio.h stdlib.h string.h strings.h sys/param.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h utime.h wchar.h])
+AC_CHECK_HEADERS([alloca.h ctype.h errno.h fcntl.h float.h getopt.h libintl.h \
+                  limits.h malloc.h malloc/malloc.h sys/param.h termios.h \
+                  utime.h wchar.h])
+if test "x${ac_cv_header_strings_h}" = "x"; then
+  test -z "${ac_cv_header_strings_h}" && AC_CHECK_HEADERS([strings.h])
+fi
+if test "x${ac_cv_header_sys_time_h}" = "x"; then
+  test -z "${ac_cv_header_sys_time_h}" && AC_CHECK_HEADERS([sys/time.h])
+fi
+if test "x${ac_cv_header_unistd_h}" = "x"; then
+  test -z "${ac_cv_header_unistd_h}" && AC_CHECK_HEADERS([unistd.h])
+fi
+AC_CHECK_HEADERS_ONCE([dlfcn.h stdio.h stdlib.h string.h sys/stat.h \
+                       sys/types.h])dnl
 
 # Intialize for ltdl library tests.
 use_ltdl_lib="0"
@@ -286,7 +318,9 @@ AC_FUNC_REALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_ALLOCA
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([atexit dup2 fcntl gettimeofday memmove memset pow putenv regcomp setlocale sqrt strerror strcasecmp strchr strrchr strcspn strdup strerror strncasecmp strspn strstr strtol])
+AC_CHECK_FUNCS([atexit dup2 fcntl gettimeofday memmove memset pow putenv \
+                regcomp setlocale sqrt strerror strcasecmp strchr strrchr \
+                strcspn strdup strncasecmp strspn strstr strtol])dnl
 
 # Evaluate debugging options.
 
@@ -494,19 +528,16 @@ tcob_ld_args_isam=""
 
 # check for dynamic loading functionality and library dl  
 # 
-#
 define_dl="no"
 define_libdl="no"
-AC_CHECK_LIB(c, dlopen, 
-             define_dl="yes",          
-)
+AC_CHECK_LIB([c],[dlopen], 
+             [define_dl="yes"],[])
 if test "${define_dl}" = "no" ; then
-  AC_CHECK_LIB(dl, dlopen, 
-               [define_libdl="yes" define_dl="yes"], 
-  )
+  AC_CHECK_LIB([dl],[dlopen], 
+               [define_libdl="yes" define_dl="yes"],
+  [])
 fi
 if test "x${define_libdl}" = "xyes"; then
-#   define_dl="yes" 
    tcob_ld_args_dl="-ldl"
    AC_DEFINE([HAVE_LIBDL],[1],[Define to 1 if we have libdl])
 fi

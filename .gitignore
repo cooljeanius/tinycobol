@@ -18,3 +18,8 @@ libtool
 test.code/mconfig.inc
 test_suite/coboltest.inc
 test_suite/nist/makeConfig.inc
+lex.yy.c
+info/htcobol.html
+info/htcobol.txt
+info/htcobrun.html
+info/htcobrun.txt

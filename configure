@@ -182,6 +182,7 @@ test -x / || exit 1"
   as_lineno_2=";as_suggested=$as_suggested$LINENO;as_suggested=$as_suggested" as_lineno_2a=\$LINENO
   eval 'test \"x\$as_lineno_1'\$as_run'\" != \"x\$as_lineno_2'\$as_run'\" &&
   test \"x\`expr \$as_lineno_1'\$as_run' + 1\`\" = \"x\$as_lineno_2'\$as_run'\"' || exit 1
+test \$(( 1 + 1 )) = 2 || exit 1
 
   test -n \"\${ZSH_VERSION+set}\${BASH_VERSION+set}\" || (
     ECHO='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
@@ -189,8 +190,7 @@ test -x / || exit 1"
     ECHO=\$ECHO\$ECHO\$ECHO\$ECHO\$ECHO\$ECHO
     PATH=/empty FPATH=/empty; export PATH FPATH
     test \"X\`printf %s \$ECHO\`\" = \"X\$ECHO\" \\
-      || test \"X\`print -r -- \$ECHO\`\" = \"X\$ECHO\" ) || exit 1
-test \$(( 1 + 1 )) = 2 || exit 1"
+      || test \"X\`print -r -- \$ECHO\`\" = \"X\$ECHO\" ) || exit 1"
   if (eval "$as_required") 2>/dev/null
 then :
   as_have_required=yes
@@ -730,6 +730,7 @@ CCX
 CCXOPTFLAGS
 ALLOCA
 LIBOBJS
+LIBM
 WISH
 TCLSH
 CPP
@@ -752,18 +753,15 @@ LIPO
 NMEDIT
 DSYMUTIL
 MANIFEST_TOOL
-ac_ct_AR
 NM
 ac_ct_DUMPBIN
 DUMPBIN
 LD
-FGREP
-EGREP
-GREP
 SED
 LIBTOOL
 OBJDUMP
 DLLTOOL
+ac_ct_AR
 AR
 RANLIB
 LN_S
@@ -834,6 +832,9 @@ build_os
 build_vendor
 build_cpu
 build
+FGREP
+EGREP
+GREP
 target_alias
 host_alias
 build_alias
@@ -2979,6 +2980,7 @@ as_fn_append ac_header_c_list " strings.h strings_h HAVE_STRINGS_H"
 as_fn_append ac_header_c_list " sys/stat.h sys_stat_h HAVE_SYS_STAT_H"
 as_fn_append ac_header_c_list " sys/types.h sys_types_h HAVE_SYS_TYPES_H"
 as_fn_append ac_header_c_list " unistd.h unistd_h HAVE_UNISTD_H"
+as_fn_append ac_header_c_list " dlfcn.h dlfcn_h HAVE_DLFCN_H"
 as_fn_append ac_header_c_list " vfork.h vfork_h HAVE_VFORK_H"
 as_fn_append ac_func_c_list " fork HAVE_FORK"
 as_fn_append ac_func_c_list " vfork HAVE_VFORK"
@@ -2987,7 +2989,7 @@ as_fn_append ac_func_c_list " alarm HAVE_ALARM"
 as_fn_append ac_func_c_list " vprintf HAVE_VPRINTF"
 
 # Auxiliary files required by this configure script.
-ac_aux_files="ltmain.sh compile missing install-sh config.guess config.sub"
+ac_aux_files="ltmain.sh ar-lib compile missing install-sh config.guess config.sub"
 
 # Locations in which to look for auxiliary files.
 ac_aux_dir_candidates="${srcdir}/build-aux"
@@ -3158,20 +3160,243 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 TCOB_MAJOR_VERSION=0
 TCOB_MINOR_VERSION=0
 TCOB_PATCH_LEVEL=0
-TCOB_MAJOR_VERSION=`grep '^TCOB_MAJOR_VERSION' version.txt | cut -f2 -d'='`
-TCOB_MINOR_VERSION=`grep  '^TCOB_MINOR_VERSION' version.txt | cut -f2 -d'='`
-TCOB_PATCH_LEVEL=`grep  '^TCOB_PATCH_LEVEL' version.txt | cut -f2 -d'='`
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for grep that handles long lines and -e" >&5
+printf %s "checking for grep that handles long lines and -e... " >&6; }
+if test ${ac_cv_path_GREP+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -z "$GREP"; then
+  ac_path_GREP_found=false
+  # Loop through the user's path and test for each of PROGNAME-LIST
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_prog in grep ggrep
+   do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      ac_path_GREP="$as_dir$ac_prog$ac_exec_ext"
+      as_fn_executable_p "$ac_path_GREP" || continue
+# Check for GNU ac_path_GREP and select it if it is found.
+  # Check for GNU $ac_path_GREP
+case `"$ac_path_GREP" --version 2>&1` in
+*GNU*)
+  ac_cv_path_GREP="$ac_path_GREP" ac_path_GREP_found=:;;
+*)
+  ac_count=0
+  printf %s 0123456789 >"conftest.in"
+  while :
+  do
+    cat "conftest.in" "conftest.in" >"conftest.tmp"
+    mv "conftest.tmp" "conftest.in"
+    cp "conftest.in" "conftest.nl"
+    printf "%s\n" 'GREP' >> "conftest.nl"
+    "$ac_path_GREP" -e 'GREP$' -e '-(cannot match)-' < "conftest.nl" >"conftest.out" 2>/dev/null || break
+    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
+    as_fn_arith $ac_count + 1 && ac_count=$as_val
+    if test $ac_count -gt ${ac_path_GREP_max-0}; then
+      # Best one so far, save it but keep looking for a better one
+      ac_cv_path_GREP="$ac_path_GREP"
+      ac_path_GREP_max=$ac_count
+    fi
+    # 10*(2^10) chars as input seems more than enough
+    test $ac_count -gt 10 && break
+  done
+  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+esac
+
+      $ac_path_GREP_found && break 3
+    done
+  done
+  done
+IFS=$as_save_IFS
+  if test -z "$ac_cv_path_GREP"; then
+    as_fn_error $? "no acceptable grep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
+  fi
+else
+  ac_cv_path_GREP=$GREP
+fi
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_GREP" >&5
+printf "%s\n" "$ac_cv_path_GREP" >&6; }
+ GREP="$ac_cv_path_GREP"
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
+printf %s "checking for egrep... " >&6; }
+if test ${ac_cv_path_EGREP+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
+   then ac_cv_path_EGREP="$GREP -E"
+   else
+     if test -z "$EGREP"; then
+  ac_path_EGREP_found=false
+  # Loop through the user's path and test for each of PROGNAME-LIST
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_prog in egrep
+   do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      ac_path_EGREP="$as_dir$ac_prog$ac_exec_ext"
+      as_fn_executable_p "$ac_path_EGREP" || continue
+# Check for GNU ac_path_EGREP and select it if it is found.
+  # Check for GNU $ac_path_EGREP
+case `"$ac_path_EGREP" --version 2>&1` in
+*GNU*)
+  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
+*)
+  ac_count=0
+  printf %s 0123456789 >"conftest.in"
+  while :
+  do
+    cat "conftest.in" "conftest.in" >"conftest.tmp"
+    mv "conftest.tmp" "conftest.in"
+    cp "conftest.in" "conftest.nl"
+    printf "%s\n" 'EGREP' >> "conftest.nl"
+    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
+    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
+    as_fn_arith $ac_count + 1 && ac_count=$as_val
+    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
+      # Best one so far, save it but keep looking for a better one
+      ac_cv_path_EGREP="$ac_path_EGREP"
+      ac_path_EGREP_max=$ac_count
+    fi
+    # 10*(2^10) chars as input seems more than enough
+    test $ac_count -gt 10 && break
+  done
+  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+esac
+
+      $ac_path_EGREP_found && break 3
+    done
+  done
+  done
+IFS=$as_save_IFS
+  if test -z "$ac_cv_path_EGREP"; then
+    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
+  fi
+else
+  ac_cv_path_EGREP=$EGREP
+fi
+
+   fi
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
+printf "%s\n" "$ac_cv_path_EGREP" >&6; }
+ EGREP="$ac_cv_path_EGREP"
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for fgrep" >&5
+printf %s "checking for fgrep... " >&6; }
+if test ${ac_cv_path_FGREP+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if echo 'ab*c' | $GREP -F 'ab*c' >/dev/null 2>&1
+   then ac_cv_path_FGREP="$GREP -F"
+   else
+     if test -z "$FGREP"; then
+  ac_path_FGREP_found=false
+  # Loop through the user's path and test for each of PROGNAME-LIST
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_prog in fgrep
+   do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      ac_path_FGREP="$as_dir$ac_prog$ac_exec_ext"
+      as_fn_executable_p "$ac_path_FGREP" || continue
+# Check for GNU ac_path_FGREP and select it if it is found.
+  # Check for GNU $ac_path_FGREP
+case `"$ac_path_FGREP" --version 2>&1` in
+*GNU*)
+  ac_cv_path_FGREP="$ac_path_FGREP" ac_path_FGREP_found=:;;
+*)
+  ac_count=0
+  printf %s 0123456789 >"conftest.in"
+  while :
+  do
+    cat "conftest.in" "conftest.in" >"conftest.tmp"
+    mv "conftest.tmp" "conftest.in"
+    cp "conftest.in" "conftest.nl"
+    printf "%s\n" 'FGREP' >> "conftest.nl"
+    "$ac_path_FGREP" FGREP < "conftest.nl" >"conftest.out" 2>/dev/null || break
+    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
+    as_fn_arith $ac_count + 1 && ac_count=$as_val
+    if test $ac_count -gt ${ac_path_FGREP_max-0}; then
+      # Best one so far, save it but keep looking for a better one
+      ac_cv_path_FGREP="$ac_path_FGREP"
+      ac_path_FGREP_max=$ac_count
+    fi
+    # 10*(2^10) chars as input seems more than enough
+    test $ac_count -gt 10 && break
+  done
+  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+esac
+
+      $ac_path_FGREP_found && break 3
+    done
+  done
+  done
+IFS=$as_save_IFS
+  if test -z "$ac_cv_path_FGREP"; then
+    as_fn_error $? "no acceptable fgrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
+  fi
+else
+  ac_cv_path_FGREP=$FGREP
+fi
+
+   fi
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_FGREP" >&5
+printf "%s\n" "$ac_cv_path_FGREP" >&6; }
+ FGREP="$ac_cv_path_FGREP"
+
+
+
+
+
+if test "x${GREP}" = "x"; then
+  test -z "${GREP}" && as_fn_error $? "grep is required to configure" "$LINENO" 5
+fi
+
+TCOB_MAJOR_VERSION=`${GREP} '^TCOB_MAJOR_VERSION' version.txt | cut -f2 -d'='`
+TCOB_MINOR_VERSION=`${GREP} '^TCOB_MINOR_VERSION' version.txt | cut -f2 -d'='`
+TCOB_PATCH_LEVEL=`${GREP} '^TCOB_PATCH_LEVEL' version.txt | cut -f2 -d'='`
 #
-TCOB_VERSION=$TCOB_MAJOR_VERSION.$TCOB_MINOR_VERSION.$TCOB_PATCH_LEVEL
+TCOB_VERSION=${TCOB_MAJOR_VERSION}.${TCOB_MINOR_VERSION}.${TCOB_PATCH_LEVEL}
 TCOB_RELEASE_DATE=2003/09/11
 TCOB_RELEASE_DATE=`date +%Y/%m/%d`
-tcob_version=$TCOB_VERSION
+tcob_version=${TCOB_VERSION}
 #
-TCOBRUN_MAJOR_VERSION=`grep '^TCOBRUN_MAJOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
-TCOBRUN_MINOR_VERSION=`grep  '^TCOBRUN_MINOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
-TCOBRUN_PATCH_LEVEL=`grep  '^TCOBRUN_PATCH_LEVEL' cobrun/tcrunversion.txt | cut -f2 -d'='`
-TCOBRUN_VERSION=$TCOBRUN_MAJOR_VERSION.$TCOBRUN_MINOR_VERSION.$TCOBRUN_PATCH_LEVEL
-TCOBRUN_RELEASE_DATE=$TCOB_RELEASE_DATE
+TCOBRUN_MAJOR_VERSION=`${GREP} '^TCOBRUN_MAJOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
+TCOBRUN_MINOR_VERSION=`${GREP} '^TCOBRUN_MINOR_VERSION' cobrun/tcrunversion.txt | cut -f2 -d'='`
+TCOBRUN_PATCH_LEVEL=`${GREP} '^TCOBRUN_PATCH_LEVEL' cobrun/tcrunversion.txt | cut -f2 -d'='`
+TCOBRUN_VERSION=${TCOBRUN_MAJOR_VERSION}.${TCOBRUN_MINOR_VERSION}.${TCOBRUN_PATCH_LEVEL}
+TCOBRUN_RELEASE_DATE=${TCOB_RELEASE_DATE}
 #
 
 ac_config_headers="$ac_config_headers htconfig.h"
@@ -4023,52 +4248,7 @@ fi
 
 # Checks for required programs
 #
-for ac_prog in gawk mawk nawk awk
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_prog_AWK+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -n "$AWK"; then
-  ac_cv_prog_AWK="$AWK" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_AWK="$ac_prog"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
 
-fi
-fi
-AWK=$ac_cv_prog_AWK
-if test -n "$AWK"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $AWK" >&5
-printf "%s\n" "$AWK" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-
-
-  test -n "$AWK" && break
-done
 
 
 
@@ -6061,7 +6241,6 @@ printf "%s\n" "no" >&6; }
 fi
 
 
-
 asx_cmd="${AS}"
 ccx_cmd="${CC}"
 
@@ -6075,38 +6254,6 @@ printf "%s\n" "yes" >&6; }
 else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no, using $LN_S" >&5
 printf "%s\n" "no, using $LN_S" >&6; }
-fi
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether ${MAKE-make} sets \$(MAKE)" >&5
-printf %s "checking whether ${MAKE-make} sets \$(MAKE)... " >&6; }
-set x ${MAKE-make}
-ac_make=`printf "%s\n" "$2" | sed 's/+/p/g; s/[^a-zA-Z0-9_]/_/g'`
-if eval test \${ac_cv_prog_make_${ac_make}_set+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  cat >conftest.make <<\_ACEOF
-SHELL = /bin/sh
-all:
-	@echo '@@@%%%=$(MAKE)=@@@%%%'
-_ACEOF
-# GNU make sometimes prints "make[1]: Entering ...", which would confuse us.
-case `${MAKE-make} -f conftest.make 2>/dev/null` in
-  *@@@%%%=?*=@@@%%%*)
-    eval ac_cv_prog_make_${ac_make}_set=yes;;
-  *)
-    eval ac_cv_prog_make_${ac_make}_set=no;;
-esac
-rm -f conftest.make
-fi
-if eval test \$ac_cv_prog_make_${ac_make}_set = yes; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-  SET_MAKE=
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-  SET_MAKE="MAKE=${MAKE-make}"
 fi
 
 
@@ -6298,6 +6445,191 @@ printf "%s\n" "no" >&6; }
 fi
 
 
+
+
+  if test -n "$ac_tool_prefix"; then
+  for ac_prog in ar lib "link -lib"
+  do
+    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
+set dummy $ac_tool_prefix$ac_prog; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_AR+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$AR"; then
+  ac_cv_prog_AR="$AR" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_AR="$ac_tool_prefix$ac_prog"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+AR=$ac_cv_prog_AR
+if test -n "$AR"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $AR" >&5
+printf "%s\n" "$AR" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+    test -n "$AR" && break
+  done
+fi
+if test -z "$AR"; then
+  ac_ct_AR=$AR
+  for ac_prog in ar lib "link -lib"
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_ac_ct_AR+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$ac_ct_AR"; then
+  ac_cv_prog_ac_ct_AR="$ac_ct_AR" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_ac_ct_AR="$ac_prog"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+ac_ct_AR=$ac_cv_prog_ac_ct_AR
+if test -n "$ac_ct_AR"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_ct_AR" >&5
+printf "%s\n" "$ac_ct_AR" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+  test -n "$ac_ct_AR" && break
+done
+
+  if test "x$ac_ct_AR" = x; then
+    AR="false"
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+printf "%s\n" "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    AR=$ac_ct_AR
+  fi
+fi
+
+: ${AR=ar}
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking the archiver ($AR) interface" >&5
+printf %s "checking the archiver ($AR) interface... " >&6; }
+if test ${am_cv_ar_interface+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+   am_cv_ar_interface=ar
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+int some_variable = 0;
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  am_ar_try='$AR cru libconftest.a conftest.$ac_objext >&5'
+      { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$am_ar_try\""; } >&5
+  (eval $am_ar_try) 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+      if test "$ac_status" -eq 0; then
+        am_cv_ar_interface=ar
+      else
+        am_ar_try='$AR -NOLOGO -OUT:conftest.lib conftest.$ac_objext >&5'
+        { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$am_ar_try\""; } >&5
+  (eval $am_ar_try) 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+        if test "$ac_status" -eq 0; then
+          am_cv_ar_interface=lib
+        else
+          am_cv_ar_interface=unknown
+        fi
+      fi
+      rm -f conftest.lib libconftest.a
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+   ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_cv_ar_interface" >&5
+printf "%s\n" "$am_cv_ar_interface" >&6; }
+
+case $am_cv_ar_interface in
+ar)
+  ;;
+lib)
+  # Microsoft lib, so override with the ar-lib wrapper script.
+  # FIXME: It is wrong to rewrite AR.
+  # But if we don't then we get into trouble of one sort or another.
+  # A longer-term fix would be to have automake use am__AR in this case,
+  # and then we could set am__AR="$am_aux_dir/ar-lib \$(AR)" or something
+  # similar.
+  AR="$am_aux_dir/ar-lib $AR"
+  ;;
+unknown)
+  as_fn_error $? "could not determine $AR interface" "$LINENO" 5
+  ;;
+esac
+
 case `pwd` in
   *\ * | *\	*)
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
@@ -6479,221 +6811,6 @@ Xsed="$SED -e 1s/^X//"
 
 
 
-
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for grep that handles long lines and -e" >&5
-printf %s "checking for grep that handles long lines and -e... " >&6; }
-if test ${ac_cv_path_GREP+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -z "$GREP"; then
-  ac_path_GREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in grep ggrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_GREP="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_GREP" || continue
-# Check for GNU ac_path_GREP and select it if it is found.
-  # Check for GNU $ac_path_GREP
-case `"$ac_path_GREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_GREP="$ac_path_GREP" ac_path_GREP_found=:;;
-*)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'GREP' >> "conftest.nl"
-    "$ac_path_GREP" -e 'GREP$' -e '-(cannot match)-' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_GREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_GREP="$ac_path_GREP"
-      ac_path_GREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_GREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_GREP"; then
-    as_fn_error $? "no acceptable grep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_GREP=$GREP
-fi
-
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_GREP" >&5
-printf "%s\n" "$ac_cv_path_GREP" >&6; }
- GREP="$ac_cv_path_GREP"
-
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
-printf %s "checking for egrep... " >&6; }
-if test ${ac_cv_path_EGREP+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
-   then ac_cv_path_EGREP="$GREP -E"
-   else
-     if test -z "$EGREP"; then
-  ac_path_EGREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in egrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_EGREP="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_EGREP" || continue
-# Check for GNU ac_path_EGREP and select it if it is found.
-  # Check for GNU $ac_path_EGREP
-case `"$ac_path_EGREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
-*)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'EGREP' >> "conftest.nl"
-    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_EGREP="$ac_path_EGREP"
-      ac_path_EGREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_EGREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_EGREP"; then
-    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_EGREP=$EGREP
-fi
-
-   fi
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
-printf "%s\n" "$ac_cv_path_EGREP" >&6; }
- EGREP="$ac_cv_path_EGREP"
-
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for fgrep" >&5
-printf %s "checking for fgrep... " >&6; }
-if test ${ac_cv_path_FGREP+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if echo 'ab*c' | $GREP -F 'ab*c' >/dev/null 2>&1
-   then ac_cv_path_FGREP="$GREP -F"
-   else
-     if test -z "$FGREP"; then
-  ac_path_FGREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in fgrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_FGREP="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_FGREP" || continue
-# Check for GNU ac_path_FGREP and select it if it is found.
-  # Check for GNU $ac_path_FGREP
-case `"$ac_path_FGREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_FGREP="$ac_path_FGREP" ac_path_FGREP_found=:;;
-*)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'FGREP' >> "conftest.nl"
-    "$ac_path_FGREP" FGREP < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_FGREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_FGREP="$ac_path_FGREP"
-      ac_path_FGREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_FGREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_FGREP"; then
-    as_fn_error $? "no acceptable fgrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_FGREP=$FGREP
-fi
-
-   fi
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_FGREP" >&5
-printf "%s\n" "$ac_cv_path_FGREP" >&6; }
- FGREP="$ac_cv_path_FGREP"
 
 
 test -z "$GREP" && GREP=grep
@@ -7839,7 +7956,6 @@ fi
 printf "%s\n" "$lt_cv_sharedlib_from_linklib_cmd" >&6; }
 sharedlib_from_linklib_cmd=$lt_cv_sharedlib_from_linklib_cmd
 test -z "$sharedlib_from_linklib_cmd" && sharedlib_from_linklib_cmd=$ECHO
-
 
 
 
@@ -10257,10 +10373,9 @@ test -z "$OBJDUMP" && OBJDUMP=objdump
 
 
 
+enable_dlopen=yes
 
 
-
-        enable_dlopen=no
 
 
 
@@ -17896,7 +18011,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 libtool=${libtool-"${am_missing_run}"}
 
-
 ranlibx_cmd="${RANLIB}"
 arx_cmd="${AR}"
 
@@ -18239,7 +18353,8 @@ printf "%s\n" "no" >&6; }
 fi
 
 
-# Extract the first word of ""$lex_name"", so it can be a program name with args.
+if test "x${lex_name}" != "xflex"; then
+   # Extract the first word of ""$lex_name"", so it can be a program name with args.
 set dummy "$lex_name"; ac_word=$2
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 printf %s "checking for $ac_word... " >&6; }
@@ -18282,6 +18397,9 @@ printf "%s\n" "no" >&6; }
 fi
 
 
+else
+   test -z "${LEX}" && test -n "${FLEX}" && export LEX="${FLEX}"
+fi
 if test "${LEX}" = "no" ; then
    as_fn_error $? "required program not found... aborting" "$LINENO" 5
 fi
@@ -19343,82 +19461,141 @@ then :
 
 fi
 
-
-# Autoupdate added the next two lines to ensure that your configure
-# script's behavior did not change.  They are probably safe to remove.
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
-printf %s "checking for egrep... " >&6; }
-if test ${ac_cv_path_EGREP+y}
+LIBM=
+case $host in
+*-*-beos* | *-*-cegcc* | *-*-cygwin* | *-*-haiku* | *-*-pw32* | *-*-darwin*)
+  # These system don't have libm, or don't need it
+  ;;
+*-ncr-sysv4.3*)
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for _mwvalidcheckl in -lmw" >&5
+printf %s "checking for _mwvalidcheckl in -lmw... " >&6; }
+if test ${ac_cv_lib_mw__mwvalidcheckl+y}
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
-   then ac_cv_path_EGREP="$GREP -E"
-   else
-     if test -z "$EGREP"; then
-  ac_path_EGREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in egrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_EGREP="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_EGREP" || continue
-# Check for GNU ac_path_EGREP and select it if it is found.
-  # Check for GNU $ac_path_EGREP
-case `"$ac_path_EGREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmw  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char _mwvalidcheckl ();
+int
+main (void)
+{
+return _mwvalidcheckl ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_mw__mwvalidcheckl=yes
+else $as_nop
+  ac_cv_lib_mw__mwvalidcheckl=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mw__mwvalidcheckl" >&5
+printf "%s\n" "$ac_cv_lib_mw__mwvalidcheckl" >&6; }
+if test "x$ac_cv_lib_mw__mwvalidcheckl" = xyes
+then :
+  LIBM=-lmw
+fi
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for cos in -lm" >&5
+printf %s "checking for cos in -lm... " >&6; }
+if test ${ac_cv_lib_m_cos+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lm  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char cos ();
+int
+main (void)
+{
+return cos ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_m_cos=yes
+else $as_nop
+  ac_cv_lib_m_cos=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_cos" >&5
+printf "%s\n" "$ac_cv_lib_m_cos" >&6; }
+if test "x$ac_cv_lib_m_cos" = xyes
+then :
+  LIBM="$LIBM -lm"
+fi
+
+  ;;
 *)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'EGREP' >> "conftest.nl"
-    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_EGREP="$ac_path_EGREP"
-      ac_path_EGREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for cos in -lm" >&5
+printf %s "checking for cos in -lm... " >&6; }
+if test ${ac_cv_lib_m_cos+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lm  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char cos ();
+int
+main (void)
+{
+return cos ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_m_cos=yes
+else $as_nop
+  ac_cv_lib_m_cos=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_cos" >&5
+printf "%s\n" "$ac_cv_lib_m_cos" >&6; }
+if test "x$ac_cv_lib_m_cos" = xyes
+then :
+  LIBM=-lm
+fi
+
+  ;;
 esac
 
-      $ac_path_EGREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_EGREP"; then
-    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_EGREP=$EGREP
-fi
 
-   fi
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
-printf "%s\n" "$ac_cv_path_EGREP" >&6; }
- EGREP="$ac_cv_path_EGREP"
 
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
 
 ac_fn_c_check_type "$LINENO" "_Bool" "ac_cv_type__Bool" "$ac_includes_default"
 if test "x$ac_cv_type__Bool" = xyes
@@ -19573,12 +19750,6 @@ then :
   printf "%s\n" "#define HAVE_CTYPE_H 1" >>confdefs.h
 
 fi
-ac_fn_c_check_header_compile "$LINENO" "dlfcn.h" "ac_cv_header_dlfcn_h" "$ac_includes_default"
-if test "x$ac_cv_header_dlfcn_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_DLFCN_H 1" >>confdefs.h
-
-fi
 ac_fn_c_check_header_compile "$LINENO" "errno.h" "ac_cv_header_errno_h" "$ac_includes_default"
 if test "x$ac_cv_header_errno_h" = xyes
 then :
@@ -19621,28 +19792,10 @@ then :
   printf "%s\n" "#define HAVE_MALLOC_H 1" >>confdefs.h
 
 fi
-ac_fn_c_check_header_compile "$LINENO" "stdio.h" "ac_cv_header_stdio_h" "$ac_includes_default"
-if test "x$ac_cv_header_stdio_h" = xyes
+ac_fn_c_check_header_compile "$LINENO" "malloc/malloc.h" "ac_cv_header_malloc_malloc_h" "$ac_includes_default"
+if test "x$ac_cv_header_malloc_malloc_h" = xyes
 then :
-  printf "%s\n" "#define HAVE_STDIO_H 1" >>confdefs.h
-
-fi
-ac_fn_c_check_header_compile "$LINENO" "stdlib.h" "ac_cv_header_stdlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_stdlib_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_STDLIB_H 1" >>confdefs.h
-
-fi
-ac_fn_c_check_header_compile "$LINENO" "string.h" "ac_cv_header_string_h" "$ac_includes_default"
-if test "x$ac_cv_header_string_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_STRING_H 1" >>confdefs.h
-
-fi
-ac_fn_c_check_header_compile "$LINENO" "strings.h" "ac_cv_header_strings_h" "$ac_includes_default"
-if test "x$ac_cv_header_strings_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_STRINGS_H 1" >>confdefs.h
+  printf "%s\n" "#define HAVE_MALLOC_MALLOC_H 1" >>confdefs.h
 
 fi
 ac_fn_c_check_header_compile "$LINENO" "sys/param.h" "ac_cv_header_sys_param_h" "$ac_includes_default"
@@ -19651,34 +19804,10 @@ then :
   printf "%s\n" "#define HAVE_SYS_PARAM_H 1" >>confdefs.h
 
 fi
-ac_fn_c_check_header_compile "$LINENO" "sys/stat.h" "ac_cv_header_sys_stat_h" "$ac_includes_default"
-if test "x$ac_cv_header_sys_stat_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_SYS_STAT_H 1" >>confdefs.h
-
-fi
-ac_fn_c_check_header_compile "$LINENO" "sys/time.h" "ac_cv_header_sys_time_h" "$ac_includes_default"
-if test "x$ac_cv_header_sys_time_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_SYS_TIME_H 1" >>confdefs.h
-
-fi
-ac_fn_c_check_header_compile "$LINENO" "sys/types.h" "ac_cv_header_sys_types_h" "$ac_includes_default"
-if test "x$ac_cv_header_sys_types_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_SYS_TYPES_H 1" >>confdefs.h
-
-fi
 ac_fn_c_check_header_compile "$LINENO" "termios.h" "ac_cv_header_termios_h" "$ac_includes_default"
 if test "x$ac_cv_header_termios_h" = xyes
 then :
   printf "%s\n" "#define HAVE_TERMIOS_H 1" >>confdefs.h
-
-fi
-ac_fn_c_check_header_compile "$LINENO" "unistd.h" "ac_cv_header_unistd_h" "$ac_includes_default"
-if test "x$ac_cv_header_unistd_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_UNISTD_H 1" >>confdefs.h
 
 fi
 ac_fn_c_check_header_compile "$LINENO" "utime.h" "ac_cv_header_utime_h" "$ac_includes_default"
@@ -19691,6 +19820,34 @@ ac_fn_c_check_header_compile "$LINENO" "wchar.h" "ac_cv_header_wchar_h" "$ac_inc
 if test "x$ac_cv_header_wchar_h" = xyes
 then :
   printf "%s\n" "#define HAVE_WCHAR_H 1" >>confdefs.h
+
+fi
+
+if test "x${ac_cv_header_strings_h}" = "x"; then
+  test -z "${ac_cv_header_strings_h}" && ac_fn_c_check_header_compile "$LINENO" "strings.h" "ac_cv_header_strings_h" "$ac_includes_default"
+if test "x$ac_cv_header_strings_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_STRINGS_H 1" >>confdefs.h
+
+fi
+
+fi
+if test "x${ac_cv_header_sys_time_h}" = "x"; then
+  test -z "${ac_cv_header_sys_time_h}" && ac_fn_c_check_header_compile "$LINENO" "sys/time.h" "ac_cv_header_sys_time_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_time_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_SYS_TIME_H 1" >>confdefs.h
+
+fi
+
+fi
+if test "x${ac_cv_header_unistd_h}" = "x"; then
+  test -z "${ac_cv_header_unistd_h}" && ac_fn_c_check_header_compile "$LINENO" "unistd.h" "ac_cv_header_unistd_h" "$ac_includes_default"
+if test "x$ac_cv_header_unistd_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_UNISTD_H 1" >>confdefs.h
+
+fi
 
 fi
 
@@ -20882,12 +21039,6 @@ then :
   printf "%s\n" "#define HAVE_STRDUP 1" >>confdefs.h
 
 fi
-ac_fn_c_check_func "$LINENO" "strerror" "ac_cv_func_strerror"
-if test "x$ac_cv_func_strerror" = xyes
-then :
-  printf "%s\n" "#define HAVE_STRERROR 1" >>confdefs.h
-
-fi
 ac_fn_c_check_func "$LINENO" "strncasecmp" "ac_cv_func_strncasecmp"
 if test "x$ac_cv_func_strncasecmp" = xyes
 then :
@@ -20912,7 +21063,6 @@ then :
   printf "%s\n" "#define HAVE_STRTOL 1" >>confdefs.h
 
 fi
-
 
 # Evaluate debugging options.
 
@@ -21214,7 +21364,6 @@ tcob_ld_args_isam=""
 
 # check for dynamic loading functionality and library dl
 #
-#
 define_dl="no"
 define_libdl="no"
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for dlopen in -lc" >&5
@@ -21300,7 +21449,6 @@ fi
 
 fi
 if test "x${define_libdl}" = "xyes"; then
-#   define_dl="yes"
    tcob_ld_args_dl="-ldl"
 
 printf "%s\n" "#define HAVE_LIBDL 1" >>confdefs.h

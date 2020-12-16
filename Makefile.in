@@ -183,7 +183,7 @@ CTAGS = ctags
 CSCOPE = cscope
 AM_RECURSIVE_TARGETS = cscope
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/htconfig.h.in \
-	$(top_srcdir)/build-aux/compile \
+	$(top_srcdir)/build-aux/ar-lib $(top_srcdir)/build-aux/compile \
 	$(top_srcdir)/build-aux/config.guess \
 	$(top_srcdir)/build-aux/config.sub \
 	$(top_srcdir)/build-aux/install-sh \
@@ -208,8 +208,9 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/htconfig.h.in \
 	$(top_srcdir)/utils/Makefile.in \
 	$(top_srcdir)/utils/cobf2f/Makefile.in AUTHORS COPYING \
 	COPYING.LIB ChangeLog INSTALL NEWS README TODO \
-	build-aux/compile build-aux/config.guess build-aux/config.sub \
-	build-aux/install-sh build-aux/ltmain.sh build-aux/missing
+	build-aux/ar-lib build-aux/compile build-aux/config.guess \
+	build-aux/config.sub build-aux/install-sh build-aux/ltmain.sh \
+	build-aux/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -283,6 +284,7 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LIBM = @LIBM@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -439,7 +441,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 yacc_prefix_compiler = @yacc_prefix_compiler@
 yywrap = @yywrap@
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 --install
 lib_dir = ${exec_prefix}/lib
 tcob_docdir1 = ${prefix}/doc/@tcob_docdir@
 INSTTEXT1 = ${tcob_docdir}
@@ -940,6 +942,7 @@ uninstall-am: uninstall-INSTALLDATA uninstall-local
 
 @SET_MAKE@
 
+all: all-subdirs
 all-subdirs:
 	@for i in ${subdirs}; do \
 		echo Making all in $$i ; \
@@ -999,7 +1002,10 @@ cleanall allclean:
 		echo Cleaning all in $$i ; \
 		(cd $$i; ${MAKE} cleanall) ; \
 	done
-	@${RM} config.cache config.status config.log 
+	@${RM} config.cache config.status config.log
+
+# These are not actual targets, just workarounds for a bug:
+.PHONY: -c -m 644
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
