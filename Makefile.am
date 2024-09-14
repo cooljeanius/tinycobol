@@ -1,4 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4 --install
+DISTCLEANFILES = *~ autoscan.log
 
 SHELL=/bin/sh
 
@@ -43,7 +44,7 @@ subdirs1=compiler lib cobrun info utils @tcob_cobf2f_dir1@ test_suite test_suite
 all: all-subdirs
 all-subdirs:
 	@for i in ${subdirs}; do \
-		echo Making all in $$i ; \
+		echo "Making all in $$i"; \
 		(cd $$i; ${MAKE} all) ; \
 	done
 .PHONY: all-subdirs
@@ -55,7 +56,7 @@ install-data-local: all
 	${INSTALL_DIR} $(DESTDIR)$(pkgdatadir)
 	${INSTALL_DIR} $(DESTDIR)$(tcob_docdir)
 	@for i in ${subdirs}; do \
-		echo Installing in $$i ; \
+		echo "Installing in $$i"; \
 		(cd $$i; ${MAKE} install) ; \
 	done
 	${INSTALL_DATA} $(TEXTFILE01) $(DESTDIR)${tcob_docdir}/$(TEXTFILE01)
@@ -71,7 +72,7 @@ install-data-local: all
 
 uninstall-local:
 	@for i in ${subdirs}; do \
-		echo Un-Installing in $$i ; \
+		echo "Un-Installing in $$i"; \
 		(cd $$i; ${MAKE} uninstall) ; \
 	done
 	${RM} $(DESTDIR)$(pkgdatadir)
@@ -79,14 +80,17 @@ uninstall-local:
 
 clean-local:
 	@for i in ${subdirs}; do \
-		echo Cleaning in $$i ; \
-		(cd $$i; ${MAKE} clean) ; \
+		echo "Cleaning in $$i"; \
+		(cd $$i; ${MAKE} clean); \
 	done
+	@${RM} autom4te.cache || rmdir autom4te.cache || find . -name '*.cache' -delete
 
 distclean-local cleandist: 
 	@for i in ${subdirs}; do \
-		(cd $$i; ${MAKE} clean; ${RM} Makefile) ; \
+		echo "Despite this being the $@ target, we are just cleaning in $$i"; \
+		(cd $$i; ${MAKE} clean; ${RM} Makefile); \
 	done
+	@${RM} autom4te.cache || rmdir autom4te.cache || find . -name '*.cache' -delete
 	@${RM} config.cache config.status config.log htconfig.h Makefile \
 	compiler/htversion.h compiler/htcobolrc cobrun/tcrunversion.h \
 	utils/cobf2f/Makefile info/slackware/SlackBuild \
@@ -97,9 +101,10 @@ distclean-local cleandist:
 	
 cleanall allclean: 
 	@for i in ${subdirs1}; do \
-		echo Cleaning all in $$i ; \
+		echo "Cleaning all in $$i"; \
 		(cd $$i; ${MAKE} cleanall) ; \
 	done
+	@${RM} autom4te.cache || rmdir autom4te.cache || find . -name '*.cache' -delete
 	@${RM} config.cache config.status config.log
 
 # These are not actual targets, just workarounds for a bug:
