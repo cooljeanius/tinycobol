@@ -1,8 +1,11 @@
 *.DS_Store
 *.o
+*.la
+*.lo
 *.log
 *.Plo
 *.cache
+*.dirstamp
 *~
 confdefs.h
 conftest*
@@ -16,6 +19,7 @@ compiler/htcobolrc
 compiler/htversion.h
 info/slackware/SlackBuild
 lib/htcobolrt.rc
+libltdl/.libs/*
 libltdl/config.h
 libtool
 test.code/mconfig.inc

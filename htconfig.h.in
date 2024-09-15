@@ -75,6 +75,12 @@
 /* Define to 1 if you have the <db46/db_185.h> header file. */
 #undef HAVE_DB46_DB_185_H
 
+/* Define to 1 if you have the <db47/db_185.h> header file. */
+#undef HAVE_DB47_DB_185_H
+
+/* Define to 1 if you have the <db48/db_185.h> header file. */
+#undef HAVE_DB48_DB_185_H
+
 /* Define to 1 if you have the <db4.1/db_185.h> header file. */
 #undef HAVE_DB4_1_DB_185_H
 
@@ -544,6 +550,12 @@
 
 /* Define to 1 to use libdb-4.6 */
 #undef USE_DB_46
+
+/* Define to 1 to use libdb-4.7 */
+#undef USE_DB_47
+
+/* Define to 1 to use libdb-4.8 */
+#undef USE_DB_48
 
 /* Define to 1 to use libltdl */
 #undef USE_LTDL_LIB

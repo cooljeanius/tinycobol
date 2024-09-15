@@ -1637,7 +1637,9 @@ Optional Packages:
   --with-readline         use readline library
   --with-libdb=ARG        use DB library versions 1.85-4.6 (ARG=1,2,3,4)
   --with-cobf2f           build and install format conversion utility (cobf2f)
-  --with-dash-redefine=ARG Set the dash ('-') transformation characters (default=_2D)
+  --with-dash-redefine=ARG
+                          Set the dash ('-') transformation characters
+                          (default=_2D)
 
 Some influential environment variables:
   CC          C compiler command
@@ -23956,7 +23958,11 @@ fi
 
 #
 
-echo "DB library db_version state is ${db_version}"
+if test "x${db_version}" != "x"; then
+  test -n "${db_version}" && echo "DB library db_version state is '${db_version}'"
+else
+  test -z "${db_version}" && echo "DB library db_version state is unset."
+fi
 
 # Step 1000: check for library db headers db.h or db_185.h
 echo "debug: Beginning BDB library search sequence…"
@@ -23974,20 +23980,20 @@ then :
   withval=$with_with_libdb;
 fi
 
-echo "debug 1005: DB library header option with_libdb:$with_libdb:"
-if test "x$with_libdb" != "x"; then
-  if test "x$with_libdb" != "x1" &&
-     test "x$with_libdb" != "x2" &&
-     test "x$with_libdb" != "x3" &&
-     test "x$with_libdb" != "x4";
+echo "debug 1005: DB library header option with_libdb:${with_libdb}:"
+if test "x${with_libdb}" != "x"; then
+  if test "x${with_libdb}" != "x1" &&
+     test "x${with_libdb}" != "x2" &&
+     test "x${with_libdb}" != "x3" &&
+     test "x${with_libdb}" != "x4";
   then
-     as_fn_error $? "invalid library db option selected... aborting" "$LINENO" 5
+     as_fn_error $? "invalid library db option selected… aborting" "$LINENO" 5
   else
-     db_version="$with_libdb"
+     db_version="${with_libdb}"
   fi
 fi
-echo "debug 1010: DB library header option with_libdb:$with_libdb:"
-if test "x$with_libdb" = "x1" -o "$db_version" = "0"
+echo "debug 1010: DB library header option with_libdb:${with_libdb}:"
+if test "x${with_libdb}" = "x1" -o "${db_version}" = "0"
 then
           for ac_header in db_185.h
 do :
@@ -23995,15 +24001,14 @@ do :
 if test "x$ac_cv_header_db_185_h" = xyes
 then :
   printf "%s\n" "#define HAVE_DB_185_H 1" >>confdefs.h
-  db_header="101"
+ db_header="101"
 else case e in #(
-  e)  db_header="100"
-    ;;
+  e) db_header="100" ;;
 esac
 fi
 
 done
-   if test "$db_header" = "100"
+   if test "${db_header}" = "100"
    then
              for ac_header in db.h
 do :
@@ -24011,10 +24016,9 @@ do :
 if test "x$ac_cv_header_db_h" = xyes
 then :
   printf "%s\n" "#define HAVE_DB_H 1" >>confdefs.h
-  db_header="100"
+ db_header="100"
 else case e in #(
-  e)  db_header="101"
-       ;;
+  e) db_header="101" ;;
 esac
 fi
 
@@ -24030,19 +24034,18 @@ then :
   printf "%s\n" "#define HAVE_DB1_DB_H 1" >>confdefs.h
  db_header="101"
 else case e in #(
-  e) db_header="0"
-       ;;
+  e) db_header="0" ;;
 esac
 fi
 
 done
    fi
-   if test "x$with_libdb" = "x1" &&
-      test "$db_header" = "0"
+   if test "x${with_libdb}" = "x1" &&
+      test "${db_header}" = "0"
    then
-	echo "header for library db version 1.x not found..."
+	echo "header for library db version 1.x not found…"
    fi
-   if test "$db_header" = "100"
+   if test "${db_header}" = "100"
    then
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for dbopen in -ldb1" >&5
 printf %s "checking for dbopen in -ldb1... " >&6; }
@@ -24091,13 +24094,12 @@ if test "x$ac_cv_lib_db1_dbopen" = xyes
 then :
   db_version="1" db_lib_name="-ldb1"
 else case e in #(
-  e) echo "header for library db version 1.x not found..."
-       ;;
+  e) echo "header for library db version 1.x not found…" ;;
 esac
 fi
 
    fi
-   if test "$db_header" = "101"
+   if test "${db_header}" = "101"
    then
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for dbopen in -ldb1" >&5
 printf %s "checking for dbopen in -ldb1... " >&6; }
@@ -24152,20 +24154,20 @@ fi
 
    fi
 
-   if test "x$with_libdb" = "x1" &&
-      test "$db_version" = "0";
+   if test "x${with_libdb}" = "x1" &&
+      test "${db_version}" = "0";
    then
-	echo "header for library db version 1.x not found..."
+	echo "header for library db version 1.x not found…"
    fi
 fi
 
-echo "debug 1020: BDB library header option with_libdb:$with_libdb:"
-if test "$db_header" != "1";
+echo "debug 1020: BDB library header option with_libdb:${with_libdb}:"
+if test "${db_header}" != "1";
 then
-	echo "debug: db_header is $db_header"
+	echo "debug: db_header is ${db_header}"
 fi
 #
-if test "x$with_libdb" = "x2"; then
+if test "x${with_libdb}" = "x2"; then
           for ac_header in db2/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db2/db_185.h" "ac_cv_header_db2_db_185_h" "$ac_includes_default"
@@ -24174,16 +24176,21 @@ then :
   printf "%s\n" "#define HAVE_DB2_DB_185_H 1" >>confdefs.h
  db_header="2"
 else case e in #(
-  e) echo "header db2/db_185.h for library db version 2.x not found..."
-#           AC_MSG_ERROR(header db2/db_185.h for library db version 2.x not found... aborting)
+  e) echo "header db2/db_185.h for library db version 2.x not found…"
+            if test "x${ERROR_OUT_ON_MISSING_DB}" = "xYES"; then
+              as_fn_error $? "header db2/db_185.h for library db version 2.x not found… aborting" "$LINENO" 5
+            else
+              { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: header db2/db_185.h missing; consider making this a hard error by setting ERROR_OUT_ON_MISSING_DB=YES instead." >&5
+printf "%s\n" "$as_me: WARNING: header db2/db_185.h missing; consider making this a hard error by setting ERROR_OUT_ON_MISSING_DB=YES instead." >&2;}
+            fi
     ;;
 esac
 fi
 
-done
+done # end check for db2/db_185.h
 fi
 #
-if test "x$with_libdb" = "x3"; then
+if test "x${with_libdb}" = "x3"; then
           for ac_header in db3/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db3/db_185.h" "ac_cv_header_db3_db_185_h" "$ac_includes_default"
@@ -24197,7 +24204,7 @@ done
 fi
 #
 if test "x$with_libdb" = "x4"; then
-echo "Debug: Beginning DB library db4 header search sequence "
+echo "Debug: Beginning DB library db4 header search sequence…"
           for ac_header in db4/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4/db_185.h" "ac_cv_header_db4_db_185_h" "$ac_includes_default"
@@ -24210,10 +24217,10 @@ fi
 done
 fi
 #
-if test "x$with_libdb" = "x4.1"; then
-echo "Debug: Beginning DB library db4.1 header search sequence db_header=$db_header;"
-    if test $db_header = "0"; then
-        echo "Debug: Start DB library db4.1 header search sequence "
+if test "x${with_libdb}" = "x4.1"; then
+echo "Debug: Beginning DB library db4.1 header search sequence db_header=${db_header};"
+    if test ${db_header} = "0"; then
+        echo "Debug: Start DB library db4.1 header search sequence…"
                for ac_header in db4.1/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.1/db_185.h" "ac_cv_header_db4_1_db_185_h" "$ac_includes_default"
@@ -24227,9 +24234,9 @@ done
     fi
 fi
 #
-if test "x$with_libdb" = "x4.2"; then
-echo "Debug: Beginning DB library db4.2 header search sequence db_header=$db_header;"
-    if test $db_header = "0"; then
+if test "x${with_libdb}" = "x4.2"; then
+echo "Debug: Beginning DB library db4.2 header search sequence db_header=${db_header};"
+    if test ${db_header} = "0"; then
                for ac_header in db4.2/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.2/db_185.h" "ac_cv_header_db4_2_db_185_h" "$ac_includes_default"
@@ -24243,8 +24250,8 @@ done
     fi
 fi
 #
-echo "Debug: Beginning DB library db4.3 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.3"; then
+echo "Debug: Beginning DB library db4.3 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.3"; then
 if test "${db_header}" = "0"; then
           for ac_header in db4.3/db_185.h
 do :
@@ -24259,9 +24266,9 @@ done
 fi
 fi
 #
-echo "Debug: Beginning DB library db4.4 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.4"; then
-    if test $db_header = "0"; then
+echo "Debug: Beginning DB library db4.4 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.4"; then
+    if test ${db_header} = "0"; then
                for ac_header in db4.4/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.4/db_185.h" "ac_cv_header_db4_4_db_185_h" "$ac_includes_default"
@@ -24275,9 +24282,9 @@ done
     fi
 fi
 #
-echo "Debug: Beginning DB library db4.5 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.5"; then
-if test $db_header = "0"; then
+echo "Debug: Beginning DB library db4.5 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.5"; then
+if test ${db_header} = "0"; then
           for ac_header in db4.5/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.5/db_185.h" "ac_cv_header_db4_5_db_185_h" "$ac_includes_default"
@@ -24290,9 +24297,9 @@ fi
 done
 fi
 fi
-echo "Debug: Beginning DB library db4.6 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.6"; then
-    if test $db_header = "0"; then
+echo "Debug: Beginning DB library db4.6 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.6"; then
+    if test ${db_header} = "0"; then
                for ac_header in db46/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db46/db_185.h" "ac_cv_header_db46_db_185_h" "$ac_includes_default"
@@ -24304,57 +24311,87 @@ fi
 
 done
     fi
-    if test $db_header = "0"; then
-        as_fn_error $? "No header db_185.h for library db version 4.x not found... aborting" "$LINENO" 5
+fi
+echo "Debug: Beginning DB library db4.7 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.7"; then
+    if test ${db_header} = "0"; then
+               for ac_header in db47/db_185.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "db47/db_185.h" "ac_cv_header_db47_db_185_h" "$ac_includes_default"
+if test "x$ac_cv_header_db47_db_185_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_DB47_DB_185_H 1" >>confdefs.h
+ db_header="47"
+fi
+
+done
+    fi
+fi
+echo "Debug: Beginning DB library db4.8 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.8"; then
+    if test ${db_header} = "0"; then
+               for ac_header in db48/db_185.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "db48/db_185.h" "ac_cv_header_db48_db_185_h" "$ac_includes_default"
+if test "x$ac_cv_header_db48_db_185_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_DB48_DB_185_H 1" >>confdefs.h
+ db_header="48"
+fi
+
+done
+    fi
+    if test ${db_header} = "0"; then
+        as_fn_error $? "No header db_185.h for library db version 4.x not found… aborting" "$LINENO" 5
     fi
 fi
 
-echo "debug 10.0: DB library header option with_libdb:$with_libdb:"
-if test "x$with_libdb" = "x"; then
+echo "debug 10.0: DB library header option with_libdb:${with_libdb}:"
+if test "x${with_libdb}" = "x"; then
 # Step 1: check for library db header db_185.h for version 2.x, 3.x, 4.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db_185.h" "ac_cv_header_db_185_h" "$ac_includes_default"
 if test "x$ac_cv_header_db_185_h" = xyes
 then :
   printf "%s\n" "#define HAVE_DB_185_H 1" >>confdefs.h
-  db_header="23"
+ db_header="23"
 fi
 
 done
 fi
 
 # Step 10.234: if header db_185.h not found check for header db.h for version 1.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db.h" "ac_cv_header_db_h" "$ac_includes_default"
 if test "x$ac_cv_header_db_h" = xyes
 then :
   printf "%s\n" "#define HAVE_DB_H 1" >>confdefs.h
-  db_header="10"
+ db_header="10"
 fi
 
 done
 fi
 
 #  Step 10.1: if header db.h not found check for header db1/db.h for version 1.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db1/db.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db1/db.h" "ac_cv_header_db1_db_h" "$ac_includes_default"
 if test "x$ac_cv_header_db1_db_h" = xyes
 then :
   printf "%s\n" "#define HAVE_DB1_DB_H 1" >>confdefs.h
-  db_header="1"
+ db_header="1"
 fi
 
 done
 fi
 
 # Step 2: if header "db1/db.h" not found check for header db2/db_185.h for version 2.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db2/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db2/db_185.h" "ac_cv_header_db2_db_185_h" "$ac_includes_default"
@@ -24368,7 +24405,7 @@ done
 fi
 
 # Step 3.0: if header "db2/db_185.h" not found check for header db3/db_185.h for version 3.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db3/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db3/db_185.h" "ac_cv_header_db3_db_185_h" "$ac_includes_default"
@@ -24381,7 +24418,7 @@ fi
 done
 fi
 # Step 4.0: if header "db3/db_185.h" not found check for header db4/db_185.h for version 4
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db4/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4/db_185.h" "ac_cv_header_db4_db_185_h" "$ac_includes_default"
@@ -24395,7 +24432,7 @@ done
 fi
 
 # Step 4.1: if header "db4/db.h" not found check for header db4.1/db_185.h for version 4.1
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db4.1/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.1/db_185.h" "ac_cv_header_db4_1_db_185_h" "$ac_includes_default"
@@ -24409,7 +24446,7 @@ done
 fi
 
 # Step 4.2: if header "db4.1/db.h" not found check for header db4.2/db_185.h for version 4.2
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db4.2/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.2/db_185.h" "ac_cv_header_db4_2_db_185_h" "$ac_includes_default"
@@ -24423,7 +24460,7 @@ done
 fi
 
 # Step 4.3: if header "db4.2/db.h" not found check for header db4.3/db_185.h for version 4.3
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db4.3/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.3/db_185.h" "ac_cv_header_db4_3_db_185_h" "$ac_includes_default"
@@ -24437,7 +24474,7 @@ done
 fi
 
 # Step 4.4: if header "db4.3/db.h" not found check for header db4.4/db_185.h for version 4.4
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db4.4/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.4/db_185.h" "ac_cv_header_db4_4_db_185_h" "$ac_includes_default"
@@ -24451,7 +24488,7 @@ done
 fi
 
 # Step 4.5: if header "db4.4/db.h" not found check for header db4.5/db_185.h for version 4.5
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db4.5/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db4.5/db_185.h" "ac_cv_header_db4_5_db_185_h" "$ac_includes_default"
@@ -24465,7 +24502,7 @@ done
 fi
 
 # Step 4.6: if header "db4.5/db.h" not found check for header db46/db_185.h for version 4.6
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
           for ac_header in db46/db_185.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "db46/db_185.h" "ac_cv_header_db46_db_185_h" "$ac_includes_default"
@@ -24478,18 +24515,46 @@ fi
 done
 fi
 
+# Step 4.7: if header "db4.6/db.h" not found check for header db47/db_185.h for version 4.7
+if test "${db_header}" = "0"; then
+          for ac_header in db47/db_185.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "db47/db_185.h" "ac_cv_header_db47_db_185_h" "$ac_includes_default"
+if test "x$ac_cv_header_db47_db_185_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_DB47_DB_185_H 1" >>confdefs.h
+ db_header="47"
+fi
+
+done
+fi
+
+# Step 4.8: if header "db4.7/db.h" not found check for header db48/db_185.h for version 4.8
+if test "${db_header}" = "0"; then
+          for ac_header in db48/db_185.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "db48/db_185.h" "ac_cv_header_db48_db_185_h" "$ac_includes_default"
+if test "x$ac_cv_header_db48_db_185_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_DB48_DB_185_H 1" >>confdefs.h
+ db_header="48"
+fi
+
+done
+fi
+
 # Step 10: if no DB headers found abort
-if test "${db_header}" = "0" ; then
-   as_fn_error $? "library headers (db.h or db_185.h) not found... aborting" "$LINENO" 5
+if test "${db_header}" = "0"; then
+   as_fn_error $? "library headers (db.h or db_185.h) not found… aborting" "$LINENO" 5
 else
-  echo "DB library header found db_header state is ${db_header}"
+  echo "DB library header found db_header state is '${db_header}'"
 fi
 fi
 
 # Step 11: If header db.h found check library db is version 1.x (1.85 <= 1.x < 2.0)
-echo "Debug: Beginning DB library test link sequence "
-if test "${db_header}" = "10" ; then
-
+echo "Debug: Beginning DB library test link sequence with db_header='${db_header}'…"
+if test "${db_header}" = "10"; then
+printf "checking if db.h header belongs to version 1.x…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if db.h header belongs to version 1.x" >&5
 printf %s "checking if db.h header belongs to version 1.x... " >&6; }
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep -e" >&5
@@ -24634,13 +24699,12 @@ _ACEOF
 if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
   $EGREP_TRADITIONAL "dbopen" >/dev/null 2>&1
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; };
-                   as_fn_error $? "header db.h for library db version 1.x not found... aborting" "$LINENO" 5
-                  ;;
+                  as_fn_error $? "header db.h for library db version 1.x not found… aborting" "$LINENO" 5 ;;
 esac
 fi
 rm -rf conftest*
@@ -24694,13 +24758,12 @@ then :
   db_version="10"
 fi
 
-#               M_LIBS="$M_LIBS"; db_version="10",
 fi
 #
 
 # Step 12: If header db.h found check library db is version 1.x (1.85 <= 2.0)
 if test "${db_header}" = "1" ; then
-
+printf "checking if db1/db.h header belongs to version 1.x…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if db1/db.h header belongs to version 1.x" >&5
 printf %s "checking if db1/db.h header belongs to version 1.x... " >&6; }
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -24711,13 +24774,12 @@ _ACEOF
 if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
   $EGREP_TRADITIONAL "dbopen" >/dev/null 2>&1
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; };
-                   as_fn_error $? "header db.h for library db version 1.x not found... aborting" "$LINENO" 5
-   ;;
+                  as_fn_error $? "header db.h for library db version 1.x not found… aborting" "$LINENO" 5 ;;
 esac
 fi
 rm -rf conftest*
@@ -24772,12 +24834,11 @@ then :
 fi
 
 fi
-#               M_LIBS="$M_LIBS"; db_version="1",
 #
 
 # Step 18: If header db_185.h found check library db is version 2.x
-if test "${db_header}" = "2" ; then
-  printf "checking for -ldb2 (with 1.85 API compatibility)..."
+if test "${db_header}" = "2"; then
+  printf "checking for -ldb2 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb2 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb2 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb2"
@@ -24801,12 +24862,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="2"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="21"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="21" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -24814,8 +24874,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 19a: If header db_185.h found check library db is version 3.x
-if test "${db_header}" = "3" ; then
-printf "checking for -ldb-3 (with 1.85 API compatibility)..."
+if test "${db_header}" = "3"; then
+printf "checking for -ldb-3 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-3 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-3 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-3"
@@ -24839,19 +24899,18 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="3"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="32"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="32" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
 fi
-if test "${db_header}" = "32" ; then
-printf "checking for -ldb3 (with 1.85 API compatibility)..."
+if test "${db_header}" = "32"; then
+printf "checking for -ldb3 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb3 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb3 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb3"
@@ -24875,12 +24934,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="3"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="31"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="31" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -24888,7 +24946,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 19b: If header 'db4/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "4" ; then
+if test "${db_header}" = "4"; then
+printf "checking for -ldb-4 with 1.85 API compatibility…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4"
@@ -24912,12 +24971,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="4"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="41"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="41" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -24925,8 +24983,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 19b: If header 'db4.1/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "41" ; then
-printf "checking for -ldb-4.1 (with 1.85 API compatibility)..."
+if test "${db_header}" = "41"; then
+printf "checking for -ldb-4.1 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.1 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4.1 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4.1"
@@ -24950,12 +25008,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="41"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="42"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="42" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -24963,8 +25020,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 19b: If header 'db4.2/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "42" ; then
-printf "checking for -ldb-4.2 (with 1.85 API compatibility)..."
+if test "${db_header}" = "42"; then
+printf "checking for -ldb-4.2 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.2 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4.2 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4.2"
@@ -24988,12 +25045,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="42"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="43"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="43" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25001,8 +25057,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 19b: If header 'db4.3/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "43" ; then
-printf "checking for -ldb-4.3 (with 1.85 API compatibility)..."
+if test "${db_header}" = "43"; then
+printf "checking for -ldb-4.3 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.3 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4.3 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4.3"
@@ -25026,21 +25082,20 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="43"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="44"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="44" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
 fi
 
-# Step 19b: If header 'db4/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "44" ; then
-printf "checking for -ldb-4.4 (with 1.85 API compatibility)..."
+# Step 19b: If header 'db4.4/db_185.h' found check library db is version 4.x
+if test "${db_header}" = "44"; then
+printf "checking for -ldb-4.4 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.4 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4.4 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4.4"
@@ -25064,12 +25119,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="44"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="45"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="45" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25077,7 +25131,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 19b: If header 'db4.5/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "45" ; then
+if test "${db_header}" = "45"; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.5 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4.5 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4.5"
@@ -25101,12 +25155,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="45"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="46"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="46" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25114,8 +25167,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 19b: If header 'db46/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "46" ; then
-printf "checking for -ldb-4.6 (with 1.85 API compatibility)..."
+if test "${db_header}" = "46"; then
+printf "checking for -ldb-4.6 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.6 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4.6 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4.6"
@@ -25139,12 +25192,85 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="46"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="41"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="47" ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+fi
+
+# Step 19b: If header 'db47/db_185.h' found check library db is version 4.x
+if test "${db_header}" = "47"; then
+printf "checking for -ldb-4.7 (with 1.85 API compatibility)…"
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.7 with 1.85 API compatibility" >&5
+printf %s "checking for -ldb-4.7 with 1.85 API compatibility... " >&6; }
+  LIBS="-ldb-4.7"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#define DB_LIBRARY_COMPATIBILITY_API 1
+#include <db47/db_185.h>
+const char *c1;
+int i1;
+int i2;
+DBTYPE dbv1;
+const void *vv;
+
+int
+main (void)
+{
+dbopen(c1, i1, i2, dbv1, vv);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }; db_version="47"
+else case e in #(
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="48" ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+fi
+
+# Step 19b: If header 'db48/db_185.h' found check library db is version 4.x
+if test "${db_header}" = "48"; then
+printf "checking for -ldb-4.8 (with 1.85 API compatibility)…"
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4.8 with 1.85 API compatibility" >&5
+printf %s "checking for -ldb-4.8 with 1.85 API compatibility... " >&6; }
+  LIBS="-ldb-4.8"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#define DB_LIBRARY_COMPATIBILITY_API 1
+#include <db48/db_185.h>
+const char *c1;
+int i1;
+int i2;
+DBTYPE dbv1;
+const void *vv;
+
+int
+main (void)
+{
+dbopen(c1, i1, i2, dbv1, vv);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }; db_version="48"
+else case e in #(
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="41" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25152,8 +25278,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 10: If header db_185.h found check if library db is version 2.x
-if test "${db_header}" = "23" ; then
-printf "checking for -ldb (versions 2.x 3.x 4.x with 1.85 API compatibility)..."
+if test "${db_header}" = "23"; then
+printf "checking for -ldb (versions 2.x 3.x 4.x with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb versions 2.x 3.x 4.x with 1.85 API compatibility" >&5
 printf %s "checking for -ldb versions 2.x 3.x 4.x with 1.85 API compatibility... " >&6; }
   LIBS="-ldb"
@@ -25177,12 +25303,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="23"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="41"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="41" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25190,7 +25315,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 10a: If header db_185.h found check if library db is version 4.x
-if test "${db_header}" = "41" ; then
+if test "${db_header}" = "41"; then
+printf "checking for -ldb-4 with 1.85 API compatibility…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb-4 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb-4 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb-4"
@@ -25214,12 +25340,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="41"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="32"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="32" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25227,8 +25352,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 10b: If header db_185.h found check if library db is version 3.x
-if test "${db_header}" = "32" ; then
-printf "checking for -ldb3 (with 1.85 API compatibility)..."
+if test "${db_header}" = "32"; then
+printf "checking for -ldb3 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb3 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb3 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb3"
@@ -25252,12 +25377,11 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="32"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; };  db_header="123"
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; db_header="123" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25265,8 +25389,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 10c: If header db_185.h found check if library db is version 2.x or 3.x called db1
-if test "${db_header}" = "123" ; then
-printf "checking for -ldb2 (with 1.85 API compatibility)..."
+if test "${db_header}" = "123"; then
+printf "checking for -ldb2 (with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb2 with 1.85 API compatibility" >&5
 printf %s "checking for -ldb2 with 1.85 API compatibility... " >&6; }
   LIBS="-ldb2"
@@ -25290,12 +25414,12 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="123"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }; as_fn_error $? "library test link failed for db3 or db2 and/or compatibility API to version 1.85 not found... aborting" "$LINENO" 5
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; };
+                as_fn_error $? "library test link failed for db3 or db2 and/or compatibility API to version 1.85 not found… aborting" "$LINENO" 5 ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25303,7 +25427,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 11: If header db_185.h found check if library db is version 3.x
-if test "${db_header}" = "31" ; then
+if test "${db_header}" = "31"; then
+printf "checking for -ldb version 3.x with 1.85 API compatibility…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb version 3.x with 1.85 API compatibility" >&5
 printf %s "checking for -ldb version 3.x with 1.85 API compatibility... " >&6; }
   LIBS="-ldb"
@@ -25327,12 +25452,12 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="31"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }; as_fn_error $? "library test link failed for db and/or compatibility API to version 1.85 not found... aborting" "$LINENO" 5
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; };
+                as_fn_error $? "library test link failed for db and/or compatibility API to version 1.85 not found… aborting" "$LINENO" 5 ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25340,8 +25465,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 12: If header db_185.h found check if library db is version 3.x
-if test "${db_header}" = "21" ; then
-printf "checking for -ldb (version 2.x with 1.85 API compatibility)..."
+if test "${db_header}" = "21"; then
+printf "checking for -ldb (version 2.x with 1.85 API compatibility)…"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for -ldb version 2.x with 1.85 API compatibility" >&5
 printf %s "checking for -ldb version 2.x with 1.85 API compatibility... " >&6; }
   LIBS="-ldb"
@@ -25365,12 +25490,12 @@ dbopen(c1, i1, i2, dbv1, vv);
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }; db_version="21"
 else case e in #(
-  e)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }; as_fn_error $? "library test link failed for db and/or compatibility API to version 1.85 not found... aborting" "$LINENO" 5
-             ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; };
+                as_fn_error $? "library test link failed for db and/or compatibility API to version 1.85 not found… aborting" "$LINENO" 5 ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -25378,123 +25503,137 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 fi
 
 # Step 13: Define which header to use
-echo "DB library db_version state is ${db_version}"
-if test "${db_version}" = "1" ; then
+echo "DB library db_version state is now '${db_version}'…"
+if test "${db_version}" = "1"; then
 
 printf "%s\n" "#define USE_DB_1 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb1"
 fi
 
-if test "${db_version}" = "2" ; then
+if test "${db_version}" = "2"; then
 
 printf "%s\n" "#define USE_DB_2 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb2"
 fi
 
-if test "${db_version}" = "23" ; then
+if test "${db_version}" = "23"; then
 
 printf "%s\n" "#define USE_DB_23 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "3x" ; then
+if test "${db_version}" = "3x"; then
 
 printf "%s\n" "#define USE_DB_3 1" >>confdefs.h
 
   tcob_ld_args_db="$db_lib_name"
 fi
 
-if test "${db_version}" = "3" ; then
+if test "${db_version}" = "3"; then
   printf "%s\n" "#define USE_DB_3 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb3"
 fi
 
-if test "${db_version}" = "4" ; then
+if test "${db_version}" = "4"; then
 
 printf "%s\n" "#define USE_DB_4 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb-4"
 fi
 
-if test "${db_version}" = "32" ; then
+if test "${db_version}" = "32"; then
 
 printf "%s\n" "#define USE_DB_23 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb3"
 fi
 
-if test "${db_version}" = "10" ; then
+if test "${db_version}" = "10"; then
 
 printf "%s\n" "#define USE_DB 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "123" ; then
+if test "${db_version}" = "123"; then
 
 printf "%s\n" "#define USE_DB_234 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "21" ; then
+if test "${db_version}" = "21"; then
 
 printf "%s\n" "#define USE_DB_2 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "31" ; then
+if test "${db_version}" = "31"; then
 
 printf "%s\n" "#define USE_DB_3 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "41" ; then
+if test "${db_version}" = "41"; then
 
 printf "%s\n" "#define USE_DB_41 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb-4.1"
 fi
 
-if test "${db_version}" = "42" ; then
+if test "${db_version}" = "42"; then
 
 printf "%s\n" "#define USE_DB_42 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb-4.2"
 fi
 
-if test "${db_version}" = "43" ; then
+if test "${db_version}" = "43"; then
 
 printf "%s\n" "#define USE_DB_43 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb-4.3"
 fi
 
-if test "${db_version}" = "44" ; then
+if test "${db_version}" = "44"; then
 
 printf "%s\n" "#define USE_DB_44 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb-4.4"
 fi
 
-if test "${db_version}" = "45" ; then
+if test "${db_version}" = "45"; then
 
 printf "%s\n" "#define USE_DB_45 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb-4.5"
 fi
 
-if test "${db_version}" = "46" ; then
+if test "${db_version}" = "46"; then
 
 printf "%s\n" "#define USE_DB_46 1" >>confdefs.h
 
   tcob_ld_args_db="-ldb-4.6"
+fi
+
+if test "${db_version}" = "47"; then
+
+printf "%s\n" "#define USE_DB_47 1" >>confdefs.h
+
+  tcob_ld_args_db="-ldb-4.7"
+fi
+
+if test "${db_version}" = "48"; then
+
+printf "%s\n" "#define USE_DB_48 1" >>confdefs.h
+
+  tcob_ld_args_db="-ldb-4.8"
 fi
 
 #
@@ -25523,7 +25662,7 @@ then :
   withval=$with_cobf2f;
 fi
 
-if test "${with_cobf2f}" = "yes" ; then
+if test "x${with_cobf2f}" = "xyes"; then
    tcob_cobf2f_dir='cobf2f'
    tcob_cobf2f_dir1='utils/cobf2f'
    tcob_cobf2f_man='manfile3'
@@ -25544,15 +25683,15 @@ then :
   withval=$with_with_dash_redefine;
 fi
 
-if test "x$with_dash_redefine" = "x"; then
+if test "x${with_dash_redefine}" = "x"; then
    tcob_str_dash_redefine="_2D"
 else
-   tcob_str_dash_redefine=$with_dash_redefine
+   tcob_str_dash_redefine=${with_dash_redefine}
 fi
 
 # Restore library and include paths
-LIBS="$LIBS_BK"
-INCLUDES="$INCLUDES_BK"
+LIBS="${LIBS_BK}"
+INCLUDES="${INCLUDES_BK}"
 
 # Set the default directories
 # pre-processor (htcobolpp) and options file directory

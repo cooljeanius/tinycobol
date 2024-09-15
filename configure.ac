@@ -631,7 +631,11 @@ AC_CHECK_LIB([vbisam],[isopen],
    ],[echo "VB-ISAM library vbisam not found…"])
 #
 
-echo "DB library db_version state is ${db_version}"
+if test "x${db_version}" != "x"; then
+  test -n "${db_version}" && echo "DB library db_version state is '${db_version}'"
+else
+  test -z "${db_version}" && echo "DB library db_version state is unset."
+fi
 
 # Step 1000: check for library db headers db.h or db_185.h
 echo "debug: Beginning BDB library search sequence…"
@@ -642,124 +646,116 @@ db_version_minor=""
 db_lib_name=""
 #
 # Force the use of library DB library version 1, 2, 3, 4
-AC_ARG_WITH(with-libdb,
-	[  --with-libdb=[ARG]        use DB library versions 1.85-4.6 (ARG=1,2,3,4) ],
-        ,
-        ,
-)
-echo "debug 1005: DB library header option with_libdb:$with_libdb:"
-if test "x$with_libdb" != "x"; then
-  if test "x$with_libdb" != "x1" && 
-     test "x$with_libdb" != "x2" && 
-     test "x$with_libdb" != "x3" && 
-     test "x$with_libdb" != "x4"; 
+AC_ARG_WITH([with-libdb],
+        [AS_HELP_STRING([--with-libdb=[ARG]],
+                        [use DB library versions 1.85-4.6 (ARG=1,2,3,4)])],
+        [],[],[])
+echo "debug 1005: DB library header option with_libdb:${with_libdb}:"
+if test "x${with_libdb}" != "x"; then
+  if test "x${with_libdb}" != "x1" && 
+     test "x${with_libdb}" != "x2" && 
+     test "x${with_libdb}" != "x3" && 
+     test "x${with_libdb}" != "x4"; 
   then
-     AC_MSG_ERROR(invalid library db option selected... aborting)
+     AC_MSG_ERROR([invalid library db option selected… aborting])
   else
-     db_version="$with_libdb" 
+     db_version="${with_libdb}" 
   fi
 fi
-echo "debug 1010: DB library header option with_libdb:$with_libdb:"
-if test "x$with_libdb" = "x1" -o "$db_version" = "0"
+echo "debug 1010: DB library header option with_libdb:${with_libdb}:"
+if test "x${with_libdb}" = "x1" -o "${db_version}" = "0"
 then
    AC_CHECK_HEADERS([db_185.h],
-	[ db_header="101"  ], 
-	[ db_header="100"  ] 
-   )
-   if test "$db_header" = "100"
+	[db_header="101"],
+	[db_header="100"])
+   if test "${db_header}" = "100"
    then
       AC_CHECK_HEADERS([db.h],
-	[ db_header="100"  ], 
-	[ db_header="101"  ] 
-      )
+	[db_header="100"],
+	[db_header="101"])
    fi
    if test "$db_header" = "101"
    then
       AC_CHECK_HEADERS([db1/db.h], 
-           [db_header="101" ],
-           [db_header="0" ]
-      ) 
+           [db_header="101"],
+           [db_header="0"]) 
    fi
-   if test "x$with_libdb" = "x1" && 
-      test "$db_header" = "0" 
+   if test "x${with_libdb}" = "x1" && 
+      test "${db_header}" = "0" 
    then
-	echo "header for library db version 1.x not found..."
+	echo "header for library db version 1.x not found…"
    fi
-   if test "$db_header" = "100"
+   if test "${db_header}" = "100"
    then
-      AC_CHECK_LIB([db1], 
-         [dbopen],
+      AC_CHECK_LIB([db1],[dbopen],
          [db_version="1" db_lib_name="-ldb1"],
-	echo "header for library db version 1.x not found..."
-      )
+         [echo "header for library db version 1.x not found…"])
    fi
-   if test "$db_header" = "101"
+   if test "${db_header}" = "101"
    then
-      AC_CHECK_LIB([db1], 
-         [dbopen],
+      AC_CHECK_LIB([db1],[dbopen],
          [db_version="1" db_lib_name="-ldb1"],
-         [db_version="0"],
-      )
+         [db_version="0"],[])
    fi
 
-   if test "x$with_libdb" = "x1" && 
-      test "$db_version" = "0"; 
+   if test "x${with_libdb}" = "x1" && 
+      test "${db_version}" = "0"; 
    then
-	echo "header for library db version 1.x not found..."
+	echo "header for library db version 1.x not found…"
    fi
 fi
 
-echo "debug 1020: BDB library header option with_libdb:$with_libdb:"
-if test "$db_header" != "1"; 
+echo "debug 1020: BDB library header option with_libdb:${with_libdb}:"
+if test "${db_header}" != "1"; 
 then
-	echo "debug: db_header is $db_header"
+	echo "debug: db_header is ${db_header}"
 fi
 #
-if test "x$with_libdb" = "x2"; then
-   AC_CHECK_HEADERS([db2/db_185.h], 
-           [db_header="2" ],
-            echo "header db2/db_185.h for library db version 2.x not found..."
-#           AC_MSG_ERROR(header db2/db_185.h for library db version 2.x not found... aborting)
-   ) 
+if test "x${with_libdb}" = "x2"; then
+   AC_CHECK_HEADERS([db2/db_185.h],
+           [db_header="2"],
+           [echo "header db2/db_185.h for library db version 2.x not found…"
+            if test "x${ERROR_OUT_ON_MISSING_DB}" = "xYES"; then
+              AC_MSG_ERROR([header db2/db_185.h for library db version 2.x not found… aborting])
+            else
+              AC_MSG_WARN([header db2/db_185.h missing; consider making this a hard error by setting ERROR_OUT_ON_MISSING_DB=YES instead.])
+            fi
+   ]) # end check for db2/db_185.h
 fi
 #
-if test "x$with_libdb" = "x3"; then
-   AC_CHECK_HEADERS([db3/db_185.h], 
-           [db_header="3" ],
-   ) 
+if test "x${with_libdb}" = "x3"; then
+   AC_CHECK_HEADERS([db3/db_185.h],
+           [db_header="3"],[]) 
 fi
 #
 if test "x$with_libdb" = "x4"; then
-echo "Debug: Beginning DB library db4 header search sequence "
-   AC_CHECK_HEADERS([db4/db_185.h], 
-           [db_header="4"], 
-           [], [],
-   )
+echo "Debug: Beginning DB library db4 header search sequence…"
+   AC_CHECK_HEADERS([db4/db_185.h],
+           [db_header="4"],
+           [],[],[])
 fi
 #
-if test "x$with_libdb" = "x4.1"; then
-echo "Debug: Beginning DB library db4.1 header search sequence db_header=$db_header;"
-    if test $db_header = "0"; then
-        echo "Debug: Start DB library db4.1 header search sequence "
+if test "x${with_libdb}" = "x4.1"; then
+echo "Debug: Beginning DB library db4.1 header search sequence db_header=${db_header};"
+    if test ${db_header} = "0"; then
+        echo "Debug: Start DB library db4.1 header search sequence…"
         AC_CHECK_HEADERS([db4.1/db_185.h], 
-           [db_header="41" ],
-           [], [],
-    ) 
+           [db_header="41"],
+           [],[],[]) 
     fi
 fi
 #
-if test "x$with_libdb" = "x4.2"; then
-echo "Debug: Beginning DB library db4.2 header search sequence db_header=$db_header;"
-    if test $db_header = "0"; then
+if test "x${with_libdb}" = "x4.2"; then
+echo "Debug: Beginning DB library db4.2 header search sequence db_header=${db_header};"
+    if test ${db_header} = "0"; then
         AC_CHECK_HEADERS([db4.2/db_185.h], 
-           [db_header="42" ],
-           [], [],
-    ) 
+           [db_header="42"],
+           [],[],[]) 
     fi
 fi
 #
-echo "Debug: Beginning DB library db4.3 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.3"; then
+echo "Debug: Beginning DB library db4.3 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.3"; then
 if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4.3/db_185.h], 
            [db_header="43"],
@@ -767,170 +763,177 @@ if test "${db_header}" = "0"; then
 fi
 fi
 #
-echo "Debug: Beginning DB library db4.4 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.4"; then
-    if test $db_header = "0"; then
+echo "Debug: Beginning DB library db4.4 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.4"; then
+    if test ${db_header} = "0"; then
         AC_CHECK_HEADERS([db4.4/db_185.h], 
-           [db_header="44" ],
-           [], [],
-    ) 
+           [db_header="44"],
+           [],[],[]) 
     fi
 fi
 #
-echo "Debug: Beginning DB library db4.5 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.5"; then
-if test $db_header = "0"; then
+echo "Debug: Beginning DB library db4.5 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.5"; then
+if test ${db_header} = "0"; then
    AC_CHECK_HEADERS([db4.5/db_185.h], 
-           [db_header="45" ],
-           [], [],
-   ) 
+           [db_header="45"],
+           [],[],[]) 
 fi
 fi
-echo "Debug: Beginning DB library db4.6 header search sequence db_header=$db_header;"
-if test "x$with_libdb" = "x4.6"; then
-    if test $db_header = "0"; then
+echo "Debug: Beginning DB library db4.6 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.6"; then
+    if test ${db_header} = "0"; then
         AC_CHECK_HEADERS([db46/db_185.h], 
-           [db_header="46" ],
-           [], [],
-    ) 
+           [db_header="46"],
+           [],[],[]) 
     fi
-    if test $db_header = "0"; then
-        AC_MSG_ERROR(No header db_185.h for library db version 4.x not found... aborting)
+fi
+echo "Debug: Beginning DB library db4.7 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.7"; then
+    if test ${db_header} = "0"; then
+        AC_CHECK_HEADERS([db47/db_185.h], 
+           [db_header="47"],
+           [],[],[]) 
+    fi
+fi
+echo "Debug: Beginning DB library db4.8 header search sequence db_header=${db_header};"
+if test "x${with_libdb}" = "x4.8"; then
+    if test ${db_header} = "0"; then
+        AC_CHECK_HEADERS([db48/db_185.h], 
+           [db_header="48"],
+           [],[],[]) 
+    fi
+    if test ${db_header} = "0"; then
+        AC_MSG_ERROR([No header db_185.h for library db version 4.x not found… aborting])
     fi
 fi
 
-echo "debug 10.0: DB library header option with_libdb:$with_libdb:"
-if test "x$with_libdb" = "x"; then
+echo "debug 10.0: DB library header option with_libdb:${with_libdb}:"
+if test "x${with_libdb}" = "x"; then
 # Step 1: check for library db header db_185.h for version 2.x, 3.x, 4.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db_185.h],
-	[ db_header="23"  ], 
-	[])
+	[db_header="23"],[])
 fi
 
 # Step 10.234: if header db_185.h not found check for header db.h for version 1.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db.h], 
-        [ db_header="10" ],
-        []) 
+        [db_header="10"],[]) 
 fi
 
 #  Step 10.1: if header db.h not found check for header db1/db.h for version 1.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db1/db.h], 
-        [ db_header="1" ],
-        []) 
+        [db_header="1"],[]) 
 fi
 
 # Step 2: if header "db1/db.h" not found check for header db2/db_185.h for version 2.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db2/db_185.h], 
-                    [db_header="2" ],
-                    []) 
+                    [db_header="2"],[]) 
 fi
 
 # Step 3.0: if header "db2/db_185.h" not found check for header db3/db_185.h for version 3.x
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db3/db_185.h], 
-                    [db_header="3"],
-                    []) 
+                    [db_header="3"],[]) 
 fi
 # Step 4.0: if header "db3/db_185.h" not found check for header db4/db_185.h for version 4
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4/db_185.h], 
-        [db_header="4" ],
-        []) 
+        [db_header="4"],[]) 
 fi
 
 # Step 4.1: if header "db4/db.h" not found check for header db4.1/db_185.h for version 4.1
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4.1/db_185.h], 
-        [db_header="41" ],
-        []) 
+        [db_header="41"],[]) 
 fi
 
 # Step 4.2: if header "db4.1/db.h" not found check for header db4.2/db_185.h for version 4.2
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4.2/db_185.h], 
-                    [db_header="42"],
-                    []) 
+                    [db_header="42"],[]) 
 fi
 
 # Step 4.3: if header "db4.2/db.h" not found check for header db4.3/db_185.h for version 4.3
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4.3/db_185.h], 
-                    [db_header="43"],
-                    []) 
+                    [db_header="43"],[]) 
 fi
 
 # Step 4.4: if header "db4.3/db.h" not found check for header db4.4/db_185.h for version 4.4
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4.4/db_185.h], 
-                    [db_header="44"],
-                    []) 
+                    [db_header="44"],[]) 
 fi
 
 # Step 4.5: if header "db4.4/db.h" not found check for header db4.5/db_185.h for version 4.5
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4.5/db_185.h], 
-                    [db_header="45"],
-                    []) 
+                    [db_header="45"],[]) 
 fi
 
 # Step 4.6: if header "db4.5/db.h" not found check for header db46/db_185.h for version 4.6
-if test "${db_header}" = "0" ; then
+if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db46/db_185.h], 
-                    [db_header="46"],
-                    []) 
+                    [db_header="46"],[]) 
+fi
+
+# Step 4.7: if header "db4.6/db.h" not found check for header db47/db_185.h for version 4.7
+if test "${db_header}" = "0"; then
+   AC_CHECK_HEADERS([db47/db_185.h], 
+                    [db_header="47"],[]) 
+fi
+
+# Step 4.8: if header "db4.7/db.h" not found check for header db48/db_185.h for version 4.8
+if test "${db_header}" = "0"; then
+   AC_CHECK_HEADERS([db48/db_185.h], 
+                    [db_header="48"],[]) 
 fi
 
 # Step 10: if no DB headers found abort
-if test "${db_header}" = "0" ; then
-   AC_MSG_ERROR(library headers (db.h or db_185.h) not found... aborting)
+if test "${db_header}" = "0"; then
+   AC_MSG_ERROR([library headers (db.h or db_185.h) not found… aborting])
 else
-  echo "DB library header found db_header state is ${db_header}"
+  echo "DB library header found db_header state is '${db_header}'"
 fi
 fi
 
 # Step 11: If header db.h found check library db is version 1.x (1.85 <= 1.x < 2.0)
-echo "Debug: Beginning DB library test link sequence "
-if test "${db_header}" = "10" ; then
-
-  AC_MSG_CHECKING(if db.h header belongs to version 1.x)
-  AC_EGREP_HEADER([dbopen], [db.h],
-                 [ AC_MSG_RESULT(yes) ],
-                 [ AC_MSG_RESULT(no); 
-                   AC_MSG_ERROR(header db.h for library db version 1.x not found... aborting) ]
-                 ) 
+echo "Debug: Beginning DB library test link sequence with db_header='${db_header}'…"
+if test "${db_header}" = "10"; then
+printf "checking if db.h header belongs to version 1.x…"
+  AC_MSG_CHECKING([if db.h header belongs to version 1.x])
+  AC_EGREP_HEADER([dbopen],[db.h],
+                 [AC_MSG_RESULT([yes])],
+                 [AC_MSG_RESULT([no]); 
+                  AC_MSG_ERROR([header db.h for library db version 1.x not found… aborting])]) 
                  
-  AC_CHECK_LIB(db, dbopen,  
-               db_version="10",
-  )
-#               M_LIBS="$M_LIBS"; db_version="10",
+  AC_CHECK_LIB([db],[dbopen],  
+               [db_version="10"],[])
 fi
 # 
 
 # Step 12: If header db.h found check library db is version 1.x (1.85 <= 2.0)
 if test "${db_header}" = "1" ; then
-
-  AC_MSG_CHECKING(if db1/db.h header belongs to version 1.x)
-  AC_EGREP_HEADER([dbopen], [db1/db.h],
-                 [ AC_MSG_RESULT(yes) ],
-                 [ AC_MSG_RESULT(no); 
-                   AC_MSG_ERROR(header db.h for library db version 1.x not found... aborting) ]
-  ) 
+printf "checking if db1/db.h header belongs to version 1.x…"
+  AC_MSG_CHECKING([if db1/db.h header belongs to version 1.x])
+  AC_EGREP_HEADER([dbopen],[db1/db.h],
+                 [AC_MSG_RESULT([yes])],
+                 [AC_MSG_RESULT([no]); 
+                  AC_MSG_ERROR([header db.h for library db version 1.x not found… aborting])]) 
                  
-  AC_CHECK_LIB(db1, dbopen,  
-               db_version="1", 
-  )
+  AC_CHECK_LIB([db1],[dbopen],  
+               [db_version="1"],[])
 fi
-#               M_LIBS="$M_LIBS"; db_version="1", 
 # 
 
 # Step 18: If header db_185.h found check library db is version 2.x
-if test "${db_header}" = "2" ; then
-  printf "checking for -ldb2 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb2 with 1.85 API compatibility)
+if test "${db_header}" = "2"; then
+  printf "checking for -ldb2 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb2 with 1.85 API compatibility])
   LIBS="-ldb2"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db2/db_185.h>
@@ -939,14 +942,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="2" ],[ AC_MSG_RESULT(no);  db_header="21"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="2"],
+               [AC_MSG_RESULT([no]); db_header="21"]) 
 fi
 
 # Step 19a: If header db_185.h found check library db is version 3.x
-if test "${db_header}" = "3" ; then
-printf "checking for -ldb-3 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb-3 with 1.85 API compatibility)
+if test "${db_header}" = "3"; then
+printf "checking for -ldb-3 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-3 with 1.85 API compatibility])
   LIBS="-ldb-3"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db3/db_185.h>
@@ -955,11 +959,12 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="3" ],[ AC_MSG_RESULT(no);  db_header="32"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="3"],
+               [AC_MSG_RESULT([no]); db_header="32"]) 
 fi
-if test "${db_header}" = "32" ; then
-printf "checking for -ldb3 (with 1.85 API compatibility)..."
+if test "${db_header}" = "32"; then
+printf "checking for -ldb3 (with 1.85 API compatibility)…"
   AC_MSG_CHECKING(for -ldb3 with 1.85 API compatibility)
   LIBS="-ldb3"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
@@ -969,13 +974,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="3" ],[ AC_MSG_RESULT(no);  db_header="31"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="3"],
+               [AC_MSG_RESULT([no]); db_header="31"]) 
 fi
 
 # Step 19b: If header 'db4/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "4" ; then
-  AC_MSG_CHECKING(for -ldb-4 with 1.85 API compatibility)
+if test "${db_header}" = "4"; then
+printf "checking for -ldb-4 with 1.85 API compatibility…"
+  AC_MSG_CHECKING([for -ldb-4 with 1.85 API compatibility])
   LIBS="-ldb-4"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4/db_185.h>
@@ -984,14 +991,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="4" ],[ AC_MSG_RESULT(no);  db_header="41"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="4"],
+               [AC_MSG_RESULT([no]); db_header="41"]) 
 fi
 
 # Step 19b: If header 'db4.1/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "41" ; then
-printf "checking for -ldb-4.1 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb-4.1 with 1.85 API compatibility)
+if test "${db_header}" = "41"; then
+printf "checking for -ldb-4.1 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-4.1 with 1.85 API compatibility])
   LIBS="-ldb-4.1"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.1/db_185.h>
@@ -1000,14 +1008,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="41" ],[ AC_MSG_RESULT(no);  db_header="42"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="41"],
+               [AC_MSG_RESULT([no]); db_header="42"]) 
 fi
 
 # Step 19b: If header 'db4.2/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "42" ; then
-printf "checking for -ldb-4.2 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb-4.2 with 1.85 API compatibility)
+if test "${db_header}" = "42"; then
+printf "checking for -ldb-4.2 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-4.2 with 1.85 API compatibility])
   LIBS="-ldb-4.2"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.2/db_185.h>
@@ -1016,14 +1025,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="42" ],[ AC_MSG_RESULT(no);  db_header="43"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="42"],
+               [AC_MSG_RESULT([no]); db_header="43"]) 
 fi
 
 # Step 19b: If header 'db4.3/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "43" ; then
-printf "checking for -ldb-4.3 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb-4.3 with 1.85 API compatibility)
+if test "${db_header}" = "43"; then
+printf "checking for -ldb-4.3 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-4.3 with 1.85 API compatibility])
   LIBS="-ldb-4.3"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.3/db_185.h>
@@ -1032,14 +1042,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="43" ],[ AC_MSG_RESULT(no);  db_header="44"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="43"],
+               [AC_MSG_RESULT([no]); db_header="44"]) 
 fi
 
-# Step 19b: If header 'db4/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "44" ; then
-printf "checking for -ldb-4.4 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb-4.4 with 1.85 API compatibility)
+# Step 19b: If header 'db4.4/db_185.h' found check library db is version 4.x
+if test "${db_header}" = "44"; then
+printf "checking for -ldb-4.4 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-4.4 with 1.85 API compatibility])
   LIBS="-ldb-4.4"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.4/db_185.h>
@@ -1048,13 +1059,14 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="44" ],[ AC_MSG_RESULT(no);  db_header="45"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="44"],
+               [AC_MSG_RESULT([no]); db_header="45"]) 
 fi
 
 # Step 19b: If header 'db4.5/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "45" ; then
-  AC_MSG_CHECKING(for -ldb-4.5 with 1.85 API compatibility)
+if test "${db_header}" = "45"; then
+  AC_MSG_CHECKING([for -ldb-4.5 with 1.85 API compatibility])
   LIBS="-ldb-4.5"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db4.5/db_185.h>
@@ -1063,14 +1075,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="45" ],[ AC_MSG_RESULT(no);  db_header="46"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="45"],
+               [AC_MSG_RESULT([no]); db_header="46"]) 
 fi
 
 # Step 19b: If header 'db46/db_185.h' found check library db is version 4.x
-if test "${db_header}" = "46" ; then
-printf "checking for -ldb-4.6 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb-4.6 with 1.85 API compatibility)
+if test "${db_header}" = "46"; then
+printf "checking for -ldb-4.6 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-4.6 with 1.85 API compatibility])
   LIBS="-ldb-4.6"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db46/db_185.h>
@@ -1079,14 +1092,49 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="46" ],[ AC_MSG_RESULT(no);  db_header="41"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="46"],
+               [AC_MSG_RESULT([no]); db_header="47"]) 
+fi
+
+# Step 19b: If header 'db47/db_185.h' found check library db is version 4.x
+if test "${db_header}" = "47"; then
+printf "checking for -ldb-4.7 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-4.7 with 1.85 API compatibility])
+  LIBS="-ldb-4.7"
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
+#include <db47/db_185.h>
+const char *c1;
+int i1;
+int i2;
+DBTYPE dbv1;
+const void *vv;
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="47"],
+               [AC_MSG_RESULT([no]); db_header="48"]) 
+fi
+
+# Step 19b: If header 'db48/db_185.h' found check library db is version 4.x
+if test "${db_header}" = "48"; then
+printf "checking for -ldb-4.8 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb-4.8 with 1.85 API compatibility])
+  LIBS="-ldb-4.8"
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
+#include <db48/db_185.h>
+const char *c1;
+int i1;
+int i2;
+DBTYPE dbv1;
+const void *vv;
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="48"],
+               [AC_MSG_RESULT([no]); db_header="41"]) 
 fi
 
 # Step 10: If header db_185.h found check if library db is version 2.x
-if test "${db_header}" = "23" ; then
-printf "checking for -ldb (versions 2.x 3.x 4.x with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb versions 2.x 3.x 4.x with 1.85 API compatibility)
+if test "${db_header}" = "23"; then
+printf "checking for -ldb (versions 2.x 3.x 4.x with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb versions 2.x 3.x 4.x with 1.85 API compatibility])
   LIBS="-ldb"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
@@ -1095,13 +1143,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="23" ],[ AC_MSG_RESULT(no);  db_header="41"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="23"],
+               [AC_MSG_RESULT([no]); db_header="41"]) 
 fi
 
 # Step 10a: If header db_185.h found check if library db is version 4.x
-if test "${db_header}" = "41" ; then
-  AC_MSG_CHECKING(for -ldb-4 with 1.85 API compatibility)
+if test "${db_header}" = "41"; then
+printf "checking for -ldb-4 with 1.85 API compatibility…"
+  AC_MSG_CHECKING([for -ldb-4 with 1.85 API compatibility])
   LIBS="-ldb-4"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
@@ -1110,14 +1160,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="41" ],[ AC_MSG_RESULT(no);  db_header="32"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="41"],
+               [AC_MSG_RESULT([no]); db_header="32"]) 
 fi
 
 # Step 10b: If header db_185.h found check if library db is version 3.x
-if test "${db_header}" = "32" ; then
-printf "checking for -ldb3 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb3 with 1.85 API compatibility)
+if test "${db_header}" = "32"; then
+printf "checking for -ldb3 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb3 with 1.85 API compatibility])
   LIBS="-ldb3"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
@@ -1126,14 +1177,15 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="32" ],[ AC_MSG_RESULT(no);  db_header="123"  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="32"],
+               [AC_MSG_RESULT([no]); db_header="123"]) 
 fi
 
 # Step 10c: If header db_185.h found check if library db is version 2.x or 3.x called db1
-if test "${db_header}" = "123" ; then
-printf "checking for -ldb2 (with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb2 with 1.85 API compatibility)
+if test "${db_header}" = "123"; then
+printf "checking for -ldb2 (with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb2 with 1.85 API compatibility])
   LIBS="-ldb2"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db_185.h>
@@ -1142,13 +1194,16 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="123" ],[ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db3 or db2 and/or compatibility API to version 1.85 not found... aborting)  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="123"],
+               [AC_MSG_RESULT([no]);
+                AC_MSG_ERROR([library test link failed for db3 or db2 and/or compatibility API to version 1.85 not found… aborting])]) 
 fi
 
 # Step 11: If header db_185.h found check if library db is version 3.x
-if test "${db_header}" = "31" ; then
-  AC_MSG_CHECKING(for -ldb version 3.x with 1.85 API compatibility)
+if test "${db_header}" = "31"; then
+printf "checking for -ldb version 3.x with 1.85 API compatibility…"
+  AC_MSG_CHECKING([for -ldb version 3.x with 1.85 API compatibility])
   LIBS="-ldb"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db3/db_185.h>
@@ -1157,14 +1212,16 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="31" ],[ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db and/or compatibility API to version 1.85 not found... aborting)  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="31"],
+               [AC_MSG_RESULT([no]);
+                AC_MSG_ERROR([library test link failed for db and/or compatibility API to version 1.85 not found… aborting])]) 
 fi
 
 # Step 12: If header db_185.h found check if library db is version 3.x
-if test "${db_header}" = "21" ; then
-printf "checking for -ldb (version 2.x with 1.85 API compatibility)..."
-  AC_MSG_CHECKING(for -ldb version 2.x with 1.85 API compatibility)
+if test "${db_header}" = "21"; then
+printf "checking for -ldb (version 2.x with 1.85 API compatibility)…"
+  AC_MSG_CHECKING([for -ldb version 2.x with 1.85 API compatibility])
   LIBS="-ldb"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define DB_LIBRARY_COMPATIBILITY_API 1
 #include <db2/db_185.h>
@@ -1173,95 +1230,107 @@ int i1;
 int i2;
 DBTYPE dbv1;
 const void *vv;
-]], [[dbopen(c1, i1, i2, dbv1, vv); ]])],[ AC_MSG_RESULT(yes); db_version="21" ],[ AC_MSG_RESULT(no); AC_MSG_ERROR(library test link failed for db and/or compatibility API to version 1.85 not found... aborting)  
-            ]) 
+]],[[dbopen(c1, i1, i2, dbv1, vv);]])],
+               [AC_MSG_RESULT([yes]); db_version="21"],
+               [AC_MSG_RESULT([no]);
+                AC_MSG_ERROR([library test link failed for db and/or compatibility API to version 1.85 not found… aborting])]) 
 fi
 
 # Step 13: Define which header to use 
-echo "DB library db_version state is ${db_version}"
-if test "${db_version}" = "1" ; then
+echo "DB library db_version state is now '${db_version}'…"
+if test "${db_version}" = "1"; then
   AC_DEFINE([USE_DB_1],[1],[Define to 1 to use libdb1]) 
   tcob_ld_args_db="-ldb1"
 fi
 
-if test "${db_version}" = "2" ; then
+if test "${db_version}" = "2"; then
   AC_DEFINE([USE_DB_2],[1],[Define to 1 to use libdb2]) 
   tcob_ld_args_db="-ldb2"
 fi
 
-if test "${db_version}" = "23" ; then
+if test "${db_version}" = "23"; then
   AC_DEFINE([USE_DB_23],[1],[Define to 1 to use libdb (2.3?)]) 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "3x" ; then
+if test "${db_version}" = "3x"; then
   AC_DEFINE([USE_DB_3],[1],[Define to 1 to use libdb3]) 
   tcob_ld_args_db="$db_lib_name"
 fi
 
-if test "${db_version}" = "3" ; then
+if test "${db_version}" = "3"; then
   AC_DEFINE(USE_DB_3) 
   tcob_ld_args_db="-ldb3"
 fi
 
-if test "${db_version}" = "4" ; then
+if test "${db_version}" = "4"; then
   AC_DEFINE([USE_DB_4],[1],[Define to 1 to use libdb4]) 
   tcob_ld_args_db="-ldb-4"
 fi
 
-if test "${db_version}" = "32" ; then
+if test "${db_version}" = "32"; then
   AC_DEFINE([USE_DB_23],[1],[Define to 1 to use libdb (3?)]) 
   tcob_ld_args_db="-ldb3"
 fi
 
-if test "${db_version}" = "10" ; then
+if test "${db_version}" = "10"; then
   AC_DEFINE([USE_DB],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "123" ; then
+if test "${db_version}" = "123"; then
   AC_DEFINE([USE_DB_234],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "21" ; then
+if test "${db_version}" = "21"; then
   AC_DEFINE([USE_DB_2],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "31" ; then
+if test "${db_version}" = "31"; then
   AC_DEFINE([USE_DB_3],[1],[Define to 1 to use libdb]) 
   tcob_ld_args_db="-ldb"
 fi
 
-if test "${db_version}" = "41" ; then
+if test "${db_version}" = "41"; then
   AC_DEFINE([USE_DB_41],[1],[Define to 1 to use libdb-4.1]) 
   tcob_ld_args_db="-ldb-4.1"
 fi
 
-if test "${db_version}" = "42" ; then
+if test "${db_version}" = "42"; then
   AC_DEFINE([USE_DB_42],[1],[Define to 1 to use libdb-4.2]) 
   tcob_ld_args_db="-ldb-4.2"
 fi
 
-if test "${db_version}" = "43" ; then
+if test "${db_version}" = "43"; then
   AC_DEFINE([USE_DB_43],[1],[Define to 1 to use libdb-4.3]) 
   tcob_ld_args_db="-ldb-4.3"
 fi
 
-if test "${db_version}" = "44" ; then
+if test "${db_version}" = "44"; then
   AC_DEFINE([USE_DB_44],[1],[Define to 1 to use libdb-4.4]) 
   tcob_ld_args_db="-ldb-4.4"
 fi
 
-if test "${db_version}" = "45" ; then
+if test "${db_version}" = "45"; then
   AC_DEFINE([USE_DB_45],[1],[Define to 1 to use libdb-4.5]) 
   tcob_ld_args_db="-ldb-4.5"
 fi
 
-if test "${db_version}" = "46" ; then
+if test "${db_version}" = "46"; then
   AC_DEFINE([USE_DB_46],[1],[Define to 1 to use libdb-4.6]) 
   tcob_ld_args_db="-ldb-4.6"
+fi
+
+if test "${db_version}" = "47"; then
+  AC_DEFINE([USE_DB_47],[1],[Define to 1 to use libdb-4.7]) 
+  tcob_ld_args_db="-ldb-4.7"
+fi
+
+if test "${db_version}" = "48"; then
+  AC_DEFINE([USE_DB_48],[1],[Define to 1 to use libdb-4.8]) 
+  tcob_ld_args_db="-ldb-4.8"
 fi
 
 #
@@ -1283,10 +1352,11 @@ tcob_cobf2f_text=''
 tcob_cobf2f_intman=''
 tcob_cobf2f_inthtml=''
 tcob_cobf2f_inttext=''
-AC_ARG_WITH(cobf2f,
-	[  --with-cobf2f           build and install format conversion utility (cobf2f) ],
-        [],[],[])
-if test "${with_cobf2f}" = "yes" ; then
+AC_ARG_WITH([cobf2f],
+    [AS_HELP_STRING([--with-cobf2f],
+                    [build and install format conversion utility (cobf2f)])],
+    [],[],[])
+if test "x${with_cobf2f}" = "xyes"; then
    tcob_cobf2f_dir='cobf2f'
    tcob_cobf2f_dir1='utils/cobf2f'
    tcob_cobf2f_man='manfile3'
@@ -1300,18 +1370,19 @@ fi
 # Set the DASH ('-') transformation characters
 # Default is "_2D"
 tcob_str_dash_redefine=''
-AC_ARG_WITH(with-dash-redefine,
-	[  --with-dash-redefine=[ARG] Set the dash ('-') transformation characters (default=_2D) ],
-        [],[],[])
-if test "x$with_dash_redefine" = "x"; then
+AC_ARG_WITH([with-dash-redefine],
+    [AS_HELP_STRING([--with-dash-redefine=[ARG]],
+                    [Set the dash ('-') transformation characters (default=_2D)])],
+    [],[],[])
+if test "x${with_dash_redefine}" = "x"; then
    tcob_str_dash_redefine="_2D"
 else
-   tcob_str_dash_redefine=$with_dash_redefine
+   tcob_str_dash_redefine=${with_dash_redefine}
 fi
 
 # Restore library and include paths
-LIBS="$LIBS_BK"
-INCLUDES="$INCLUDES_BK"
+LIBS="${LIBS_BK}"
+INCLUDES="${INCLUDES_BK}"
 
 # Set the default directories
 # pre-processor (htcobolpp) and options file directory
