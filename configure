@@ -4334,16 +4334,16 @@ fi
 COB='htcobol'
 os_platform=''
 
-LIBS_BK="$LIBS -L../../lib"
-INCLUDES_BK="$INCLUDES -I../lib -I../"
+LIBS_BK="${LIBS} -L../../lib"
+INCLUDES_BK="${INCLUDES} -I../lib -I../"
 exeext=''
 shared_lib_extension='.so'
 need_underscode='no'
 tcob_ld_args_m='m'
 curses_header='ncurses.h'
 curses_library='ncurses'
-LIBS="$LIBS_BK"
-INCLUDES="$INCLUDES_BK"
+LIBS="${LIBS_BK}"
+INCLUDES="${INCLUDES_BK}"
 drive_prefix=''
 
 # Check for executable suffix
@@ -4353,7 +4353,7 @@ drive_prefix=''
 # Set executable extention (exeext), if any
 # Set shared library extension
 #
-case "$host_os" in
+case "${host_os}" in
   *cygwin)
         tcob_ld_args_m="cygwin"
         exeext='.exe'
@@ -4383,18 +4383,18 @@ case "$host_os" in
 esac
 #
 
-LIBS_M="$LIBS"
-INCLUDES_M="$INCLUDES"
+LIBS_M="${LIBS}"
+INCLUDES_M="${INCLUDES}"
 
 echo  "OS host host_os=${host_os};"
 
 # Display build version
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking build version" >&5
 printf %s "checking build version... " >&6; }
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $TCOB_VERSION" >&5
-printf "%s\n" "$TCOB_VERSION" >&6; }
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: build version is $TCOB_VERSION" >&5
-printf "%s\n" "$as_me: build version is $TCOB_VERSION" >&6;}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ${TCOB_VERSION}" >&5
+printf "%s\n" "${TCOB_VERSION}" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: build version is ${TCOB_VERSION}" >&5
+printf "%s\n" "$as_me: build version is ${TCOB_VERSION}" >&6;}
 
 # Set the compiler language option
 # Option removed due to lack of translations
@@ -4407,7 +4407,7 @@ then :
   withval=$with_with_lang;
 fi
 
-echo "debug 0a: with_lang=$with_lang, tcob_lang=$tcob_lang"
+echo "debug 0a: with_lang=${with_lang}, tcob_lang=${tcob_lang}"
 case "x$with_lang" in
      x) tcob_lang='en';;
      xen) tcob_lang='en';;
@@ -4415,10 +4415,10 @@ case "x$with_lang" in
      xit) tcob_lang='it';;
      xpt_BR) tcob_lang='pt_BR';;
      xes) tcob_lang='es';;
-     *)  echo "Language option '$with_lang' not available, defaulting to language=en (English)"
+     *)  echo "Language option '${with_lang}' not available, defaulting to language=en (English)"
          tcob_lang='en';;
 esac
-echo "debug 0b: with_lang=$with_lang, tcob_lang=$tcob_lang"
+echo "debug 0b: with_lang=$with_lang, tcob_lang=${tcob_lang}"
 
 # Set the compiler
 c_compiler="gcc"
@@ -4430,10 +4430,10 @@ then :
 fi
 
 echo "debug 1: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}:"
-if test "x$with_C_compiler" = "x"; then
+if test "x${with_C_compiler}" = "x"; then
       c_compiler="gcc"
 else
-      c_compiler=$with_C_compiler
+      c_compiler=${with_C_compiler}
 fi
 echo "debug 2: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}:"
 
@@ -4442,12 +4442,12 @@ echo "debug 2: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}
 #
 # move this earlier in the script... anyone know why this is handled
 # in such a bizarre way?
-test "x$prefix" = xNONE && prefix=$ac_default_prefix
-test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
-if test "x$prefix" = xNONE && prefix=$ac_default_prefix ; then
+test "x${prefix}" = "xNONE" && prefix=${ac_default_prefix}
+test "x${exec_prefix}" = "xNONE" && exec_prefix='${prefix}'
+if test "x${prefix}" = "xNONE" && prefix=${ac_default_prefix}; then
    prefix_local="/usr"
 else
-   prefix_local=$ac_default_prefix
+   prefix_local=${ac_default_prefix}
 fi
 
 # Checks for required programs
@@ -5735,8 +5735,8 @@ else
 fi
 
 
-# Extract the first word of ""$c_compiler"", so it can be a program name with args.
-set dummy "$c_compiler"; ac_word=$2
+# Extract the first word of ""${c_compiler}"", so it can be a program name with args.
+set dummy "${c_compiler}"; ac_word=$2
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 printf %s "checking for $ac_word... " >&6; }
 if test ${ac_cv_prog_CC+y}
@@ -5779,11 +5779,11 @@ printf "%s\n" "no" >&6; }
 fi
 
 
-echo "debug 3a: compiler c_compiler:${c_compiler}: ccx:$ccx: CC:$CC:"
-if test "${CC}" = "no" ; then
+echo "debug 3a: compiler c_compiler:${c_compiler}: ccx:${ccx}: CC:${CC}:"
+if test "x${CC}" = "xno"; then
    as_fn_error $? "C compiler not found... aborting" "$LINENO" 5
 fi
-echo "debug 3b: compiler c_compiler:${c_compiler}: ccx:$ccx: CC:$CC:"
+echo "debug 3b: compiler c_compiler:${c_compiler}: ccx:${ccx}: CC:${CC}:"
 
 
 
@@ -19089,8 +19089,8 @@ then :
   withval=$with_with_lex;
 fi
 
-if test "x$with_lex" != "x"; then
-      lex_name=$with_lex
+if test "x${with_lex}" != "x"; then
+      lex_name=${with_lex}
 fi
 # Extract the first word of "flex", so it can be a program name with args.
 set dummy flex; ac_word=$2
@@ -19137,8 +19137,8 @@ fi
 
 
 if test "x${lex_name}" != "xflex"; then
-   # Extract the first word of ""$lex_name"", so it can be a program name with args.
-set dummy "$lex_name"; ac_word=$2
+   # Extract the first word of ""${lex_name}"", so it can be a program name with args.
+set dummy "${lex_name}"; ac_word=$2
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 printf %s "checking for $ac_word... " >&6; }
 if test ${ac_cv_prog_LEX+y}
@@ -19159,7 +19159,7 @@ do
   esac
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_LEX=""$lex_name""
+    ac_cv_prog_LEX=""${lex_name}""
     printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -19184,7 +19184,7 @@ fi
 else
    test -z "${LEX}" && test -n "${FLEX}" && export LEX="${FLEX}"
 fi
-if test "${LEX}" = "no" ; then
+if test "z${LEX}" = "zno" ; then
    as_fn_error $? "required program not found... aborting" "$LINENO" 5
 fi
 
@@ -19198,10 +19198,10 @@ then :
   withval=$with_with_yacc;
 fi
 
-if test "x$with_yacc" = "x"; then
+if test "x${with_yacc}" = "x"; then
       yacc_name="bison"
 else
-      yacc_name=$with_yacc
+      yacc_name=${with_yacc}
 fi
 #
 for ac_prog in 'bison -y' byacc
@@ -19253,8 +19253,8 @@ fi
 done
 test -n "$YACC" || YACC="yacc"
 
-# Extract the first word of ""$yacc_name"", so it can be a program name with args.
-set dummy "$yacc_name"; ac_word=$2
+# Extract the first word of ""${yacc_name}"", so it can be a program name with args.
+set dummy "${yacc_name}"; ac_word=$2
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 printf %s "checking for $ac_word... " >&6; }
 if test ${ac_cv_prog_YACC+y}
@@ -19275,7 +19275,7 @@ do
   esac
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_YACC=""$yacc_name""
+    ac_cv_prog_YACC=""${yacc_name}""
     printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -19298,10 +19298,10 @@ fi
 
 
 #
-if test "${YACC}" = "no" ; then
-   as_fn_error $? "Compiler compiler (i.e. Berkeley's YACC version 1.9.3 or Bison) not found... aborting" "$LINENO" 5
+if test "x${YACC}" = "xno"; then
+   as_fn_error $? "Compiler compiler (i.e. byacc version 1.9.3 or Bison) not found... aborting" "$LINENO" 5
 else
-   if test "${YACC}" = "yacc193" ; then
+   if test "x${YACC}" = "xyacc193"; then
       yacc_prefix_compiler="y"
    fi
 fi
@@ -19399,7 +19399,7 @@ printf "%s\n" "no" >&6; }
 fi
 
 
-if test "${expand_cmd_path}" = "no" ; then
+if test "x${expand_cmd_path}" = "xno"; then
    echo "warning: cobf2f utility may not work properly without tab expand utility"
 fi
 
@@ -22049,17 +22049,16 @@ printf %s "checking whether to build shared libraries... " >&6; }
 # Check whether --enable-shared was given.
 if test ${enable_shared+y}
 then :
-  enableval=$enable_shared; enable_shared=$enableval
+  enableval=$enable_shared; enable_shared=${enableval}
 else case e in #(
-  e) enable_shared='yes'
- ;;
+  e) enable_shared='yes' ;;
 esac
 fi
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $enable_shared" >&5
-printf "%s\n" "$enable_shared" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ${enable_shared}" >&5
+printf "%s\n" "${enable_shared}" >&6; }
 #
-case "$enable_shared" in
+case "${enable_shared}" in
   yes)
      tcob_shared_libs_opt="shared-libs"
      tcob_shared_libs_install_opt="install-shared-libs"
@@ -22084,16 +22083,16 @@ printf %s "checking whether to build static libraries... " >&6; }
 # Check whether --enable-static was given.
 if test ${enable_static+y}
 then :
-  enableval=$enable_static; enable_static=$enableval
+  enableval=$enable_static; enable_static=${enableval}
 else case e in #(
   e) enable_static='yes' ;;
 esac
 fi
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $enable_static" >&5
-printf "%s\n" "$enable_static" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ${enable_static}" >&5
+printf "%s\n" "${enable_static}" >&6; }
 #
-case "$enable_static" in
+case "${enable_static}" in
   yes)
      tcob_static_libs_opt="static-libs"
      tcob_static_libs_install_opt="install-static-libs"
@@ -22127,7 +22126,7 @@ fi
 #
 # Check for conflicting build libraries options
 #
-#test "x$prefix" = xNONE && prefix=$ac_default_prefix
+#test "x$prefix" = xNONE && prefix=${ac_default_prefix}
 if test "$enable_static" = "no" && test "$enable_shared" = "no"; then
    as_fn_error $? "Conflicting options for shared and static libraries build... aborting" "$LINENO" 5
 fi
@@ -22262,7 +22261,7 @@ then :
   define_dl="yes"
 fi
 
-if test "${define_dl}" = "no" ; then
+if test "x${define_dl}" = "xno"; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for dlopen in -ldl" >&5
 printf %s "checking for dlopen in -ldl... " >&6; }
 if test ${ac_cv_lib_dl_dlopen+y}
@@ -22318,14 +22317,14 @@ if test "x${define_libdl}" = "xyes"; then
 printf "%s\n" "#define HAVE_LIBDL 1" >>confdefs.h
 
 fi
-if test x"$os_platform" = "x" && test "${define_dl}" = "no"; then
+if test "x${os_platform}" = "x" && test "x${define_dl}" = "xno"; then
    as_fn_error $? "dynamic loader not found... aborting" "$LINENO" 5
 fi
 
 # Check for ltdl library availability
 #
 # (just borrow libtool's check here)
-# TODO
+# TODO: copy and paste
 
 
 # check for curses header and library
@@ -24232,7 +24231,7 @@ cobcpy_default=""
 
 # set default directories
 #
-if test "${tcob_test_mode_opt}" = "true" ; then
+if test "${tcob_test_mode_opt}" = "true"; then
   tcob_ld_paths_default="-L${PWD}/lib -L${prefix}/lib"
 else
   tcob_ld_paths_default="-L${prefix}/lib"
@@ -24244,7 +24243,7 @@ fi
 tcob_default="${prefix}/share/htcobol"
 optfile_dir="${prefix}/share/htcobol"
 copybook_path="${prefix}/share/htcobol/copybooks"
-tcob_docdir="htcobol-$TCOB_MAJOR_VERSION.$TCOB_MINOR_VERSION"
+tcob_docdir="htcobol-${TCOB_MAJOR_VERSION}.${TCOB_MINOR_VERSION}"
 
 # set variables for config file
 #
@@ -24265,7 +24264,7 @@ tcob_ld_args_defaults="${tcob_ld_args_defaults} ${tcob_ld_args_m} ${tcob_ld_args
 #
 tcob_ld_args_defaults="${tcob_ld_args_defaults}"
 #
-CCX=$CC
+CCX=${CC}
 #
 
 printf "%s\n" "#define HAVE_LIBM 1" >>confdefs.h
@@ -24295,7 +24294,6 @@ echo "debug 10b: with_lang=$with_lang, tcob_lang=$tcob_lang"
 printf "%s\n" "#define TCOB_STR_DASH_REDEFINE \"${tcob_str_dash_redefine}\"" >>confdefs.h
 
 
-
 printf "%s\n" "#define TCOB_CCX_CMD \"${CC}\"" >>confdefs.h
 
 
@@ -24303,7 +24301,6 @@ printf "%s\n" "#define TCOB_ASX_CMD \"${AS}\"" >>confdefs.h
 
 
 printf "%s\n" "#define TCOB_COB_CMD \"${COB}\"" >>confdefs.h
-
 
 
 printf "%s\n" "#define TCOB_DEFAULTS_PATH \"${tcob_default_config}\"" >>confdefs.h
@@ -24315,9 +24312,7 @@ printf "%s\n" "#define OPTFILE_DEFAULT \"${optfile_default}\"" >>confdefs.h
 printf "%s\n" "#define RTOPTFILE_DEFAULT \"${rtoptfile_default}\"" >>confdefs.h
 
 
-
 printf "%s\n" "#define TCOB_LD_PATHS_DEFAULT \"${tcob_ld_paths_default}\"" >>confdefs.h
-
 
 
 printf "%s\n" "#define TCOB_LD_ARGS_MATH \"${tcob_ld_args_m}\"" >>confdefs.h
@@ -24341,9 +24336,7 @@ printf "%s\n" "#define TCOB_LD_ARGS_READLINE \"${tcob_ld_args_readline}\"" >>con
 printf "%s\n" "#define TCOB_LD_ARGS_DL \"${tcob_ld_args_dl}\"" >>confdefs.h
 
 
-
 printf "%s\n" "#define TCOB_SHLIB_EXT \"${shared_lib_extension}\"" >>confdefs.h
-
 
 # This typo is consistent everywhere it's used, so leave it as is:
 if test "x${need_underscode}" = "xyes"; then
@@ -24363,7 +24356,6 @@ fi
 
 
 printf "%s\n" "#define TCOB_LD_ARGS_DEFAULT \"${tcob_ld_args_default}\"" >>confdefs.h
-
 
 # Final output.
 ac_config_files="$ac_config_files Makefile Makefile_orig compiler/Makefile compiler/htversion.h compiler/htcobolrc lib/Makefile cobrun/Makefile cobrun/tcrunversion.h utils/Makefile utils/cobf2f/Makefile test.code/Makefile test.code/mconfig.inc test.code/copybooks/Makefile info/Makefile info/slackware/SlackBuild test_suite/Makefile test_suite/coboltest.inc test_suite/nist/makeConfig.inc test_suite/nist/Makefile lib/htcobolrt.rc"

@@ -54,16 +54,16 @@ AM_INIT_AUTOMAKE
 COB='htcobol'
 os_platform=''
 
-LIBS_BK="$LIBS -L../../lib"
-INCLUDES_BK="$INCLUDES -I../lib -I../"
+LIBS_BK="${LIBS} -L../../lib"
+INCLUDES_BK="${INCLUDES} -I../lib -I../"
 exeext=''
 shared_lib_extension='.so'
 need_underscode='no'
 tcob_ld_args_m='m'
 curses_header='ncurses.h'
 curses_library='ncurses'
-LIBS="$LIBS_BK"
-INCLUDES="$INCLUDES_BK"
+LIBS="${LIBS_BK}"
+INCLUDES="${INCLUDES_BK}"
 drive_prefix=''
 
 # Check for executable suffix
@@ -73,7 +73,7 @@ drive_prefix=''
 # Set executable extention (exeext), if any 
 # Set shared library extension
 #
-case "$host_os" in
+case "${host_os}" in
   *cygwin) 
         tcob_ld_args_m="cygwin" 
         exeext='.exe'
@@ -103,15 +103,15 @@ case "$host_os" in
 esac
 #
 
-LIBS_M="$LIBS"
-INCLUDES_M="$INCLUDES"
+LIBS_M="${LIBS}"
+INCLUDES_M="${INCLUDES}"
 
 echo  "OS host host_os=${host_os};"
 
 # Display build version
-AC_MSG_CHECKING(build version)
-AC_MSG_RESULT($TCOB_VERSION)
-AC_MSG_NOTICE(build version is $TCOB_VERSION)
+AC_MSG_CHECKING([build version])
+AC_MSG_RESULT([${TCOB_VERSION}])
+AC_MSG_NOTICE([build version is ${TCOB_VERSION}])
 
 # Set the compiler language option
 # Option removed due to lack of translations
@@ -121,7 +121,7 @@ AC_ARG_WITH([with-lang],
       [AS_HELP_STRING([--with-lang=[ARG]],
                       [set language [(en/pt_BR default=en)]])],
       [],[],[])
-echo "debug 0a: with_lang=$with_lang, tcob_lang=$tcob_lang" 
+echo "debug 0a: with_lang=${with_lang}, tcob_lang=${tcob_lang}" 
 case "x$with_lang" in
      x) tcob_lang='en';;
      xen) tcob_lang='en';;
@@ -129,10 +129,10 @@ case "x$with_lang" in
      xit) tcob_lang='it';;
      xpt_BR) tcob_lang='pt_BR';;
      xes) tcob_lang='es';;
-     *)  echo "Language option '$with_lang' not available, defaulting to language=en (English)" 
+     *)  echo "Language option '${with_lang}' not available, defaulting to language=en (English)" 
          tcob_lang='en';;
 esac
-echo "debug 0b: with_lang=$with_lang, tcob_lang=$tcob_lang" 
+echo "debug 0b: with_lang=$with_lang, tcob_lang=${tcob_lang}" 
 
 # Set the compiler 
 c_compiler="gcc"
@@ -141,10 +141,10 @@ AC_ARG_WITH([with-C-compiler],
                       [use C compiler [(default=gcc)]])],
       [],[],[])
 echo "debug 1: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}:" 
-if test "x$with_C_compiler" = "x"; then
+if test "x${with_C_compiler}" = "x"; then
       c_compiler="gcc"
 else
-      c_compiler=$with_C_compiler
+      c_compiler=${with_C_compiler}
 fi
 echo "debug 2: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}:" 
 
@@ -153,13 +153,13 @@ echo "debug 2: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}
 #
 # move this earlier in the script... anyone know why this is handled
 # in such a bizarre way?
-test "x$prefix" = xNONE && prefix=$ac_default_prefix
-dnl Let make expand exec_prefix.
-test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
-if test "x$prefix" = xNONE && prefix=$ac_default_prefix ; then
+test "x${prefix}" = "xNONE" && prefix=${ac_default_prefix}
+dnl# Let make expand exec_prefix.
+test "x${exec_prefix}" = "xNONE" && exec_prefix='${prefix}'
+if test "x${prefix}" = "xNONE" && prefix=${ac_default_prefix}; then
    prefix_local="/usr"
 else
-   prefix_local=$ac_default_prefix
+   prefix_local=${ac_default_prefix}
 fi
 
 # Checks for required programs
@@ -169,12 +169,12 @@ AC_DEFUN([AC_REQUIRE_AWK],[
 ])dnl
 AC_REQUIRE_AWK
 AC_PROG_CC
-AC_CHECK_PROG(CC, "$c_compiler", "$c_compiler", no)
-echo "debug 3a: compiler c_compiler:${c_compiler}: ccx:$ccx: CC:$CC:" 
-if test "${CC}" = "no" ; then
-   AC_MSG_ERROR(C compiler not found... aborting)
+AC_CHECK_PROG([CC],["${c_compiler}"],["$c_compiler"],[no])
+echo "debug 3a: compiler c_compiler:${c_compiler}: ccx:${ccx}: CC:${CC}:" 
+if test "x${CC}" = "xno"; then
+   AC_MSG_ERROR([C compiler not found... aborting])
 fi
-echo "debug 3b: compiler c_compiler:${c_compiler}: ccx:$ccx: CC:$CC:" 
+echo "debug 3b: compiler c_compiler:${c_compiler}: ccx:${ccx}: CC:${CC}:" 
 AC_PROG_CXX
 # 
 AM_PROG_AS
@@ -217,17 +217,17 @@ lex_name="flex"
 AC_ARG_WITH([with-lex],
       [AS_HELP_STRING([--with-lex=[ARG]],[use LEX [(default=flex)]])],
       [],[],[])
-if test "x$with_lex" != "x"; then
-      lex_name=$with_lex
+if test "x${with_lex}" != "x"; then
+      lex_name=${with_lex}
 fi
-AC_CHECK_PROG(FLEX, flex, flex, no)
+AC_CHECK_PROG([FLEX],[flex],[flex],[no])
 if test "x${lex_name}" != "xflex"; then
-   AC_CHECK_PROG(LEX, "$lex_name", "$lex_name", no)
+   AC_CHECK_PROG([LEX],["${lex_name}"],["${lex_name}"],[no])
 else
    test -z "${LEX}" && test -n "${FLEX}" && export LEX="${FLEX}"
 fi
-if test "${LEX}" = "no" ; then
-   AC_MSG_ERROR(required program not found... aborting)
+if test "z${LEX}" = "zno" ; then
+   AC_MSG_ERROR([required program not found... aborting])
 fi
 
 # 
@@ -236,28 +236,28 @@ yacc_prefix_compiler="htcobol"
 AC_ARG_WITH([with-yacc],
       [AS_HELP_STRING([--with-yacc=[ARG]],[use YACC [(default=bison)]])],
       [],[],[])
-if test "x$with_yacc" = "x"; then
+if test "x${with_yacc}" = "x"; then
       yacc_name="bison"
 else
-      yacc_name=$with_yacc
+      yacc_name=${with_yacc}
 fi
 #
 AC_PROG_YACC
-AC_CHECK_PROG(YACC, "$yacc_name", "$yacc_name", no)
+AC_CHECK_PROG([YACC],["${yacc_name}"],["${yacc_name}"],[no])
 #
-if test "${YACC}" = "no" ; then
-   AC_MSG_ERROR(Compiler compiler (i.e. Berkeley's YACC version 1.9.3 or Bison) not found... aborting)
+if test "x${YACC}" = "xno"; then
+   AC_MSG_ERROR([Compiler compiler (i.e. byacc version 1.9.3 or Bison) not found... aborting])
 else
-   if test "${YACC}" = "yacc193" ; then
+   if test "x${YACC}" = "xyacc193"; then
       yacc_prefix_compiler="y"
    fi
 fi
 #
 
 # no longer used to expand tabs 
-AC_CHECK_PROG(EXPAND, expand, expand, no)
-AC_PATH_PROG(expand_cmd_path, expand, no) 
-if test "${expand_cmd_path}" = "no" ; then
+AC_CHECK_PROG([EXPAND],[expand],[expand],[no])
+AC_PATH_PROG([expand_cmd_path],[expand],[no]) 
+if test "x${expand_cmd_path}" = "xno"; then
    echo "warning: cobf2f utility may not work properly without tab expand utility"
 fi
 
@@ -314,7 +314,7 @@ use_ltdl_lib="0"
 ltdl_default="0"
 ## Check for libltdl header files.
 ltdl_header="0"
-AC_CHECK_HEADERS(ltdl.h, ltdl_header="1")
+AC_CHECK_HEADERS([ltdl.h],[ltdl_header="1"])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -438,15 +438,15 @@ tcob_cobrun_name2_opt=''
 #
 tcob_shared_libs_opt='' 
 tcob_shared_libs_install_opt=''
-AC_MSG_CHECKING(whether to build shared libraries)
-AC_ARG_ENABLE(shared,
-	[  --enable-shared=ARG     build shared libraries (default=yes) ],
-        [enable_shared=$enableval],
-        [enable_shared='yes']
-)
-AC_MSG_RESULT($enable_shared)
+AC_MSG_CHECKING([whether to build shared libraries])
+AC_ARG_ENABLE([shared],
+        [AS_HELP_STRING([--enable-shared=ARG],
+                        [build shared libraries (default=yes)])],
+        [enable_shared=${enableval}],
+        [enable_shared='yes'])
+AC_MSG_RESULT([${enable_shared}])
 #
-case "$enable_shared" in
+case "${enable_shared}" in
   yes)
      tcob_shared_libs_opt="shared-libs" 
      tcob_shared_libs_install_opt="install-shared-libs" 
@@ -458,7 +458,7 @@ case "$enable_shared" in
      tcob_shared_libs_uninstall_opt='' 
      ;;
     *)
-     AC_MSG_ERROR(Invalid build shared libraries option... aborting)
+     AC_MSG_ERROR([Invalid build shared libraries option... aborting])
      ;;
 esac
 #
@@ -466,15 +466,14 @@ esac
 #
 # Build Run-Time as a static library, change make file in 'lib' directory
 #
-AC_MSG_CHECKING(whether to build static libraries)
-AC_ARG_ENABLE(static,
+AC_MSG_CHECKING([whether to build static libraries])
+AC_ARG_ENABLE([static],
 	[  --enable-static=ARG     build static libraries (default=yes) ],
-        [enable_static=$enableval],
-        [enable_static='yes'],
-)
-AC_MSG_RESULT($enable_static)
+        [enable_static=${enableval}],
+        [enable_static='yes'],[])
+AC_MSG_RESULT([${enable_static}])
 #
-case "$enable_static" in
+case "${enable_static}" in
   yes)
      tcob_static_libs_opt="static-libs" 
      tcob_static_libs_install_opt="install-static-libs" 
@@ -486,7 +485,7 @@ case "$enable_static" in
      tcob_static_libs_uninstall_opt='' 
      ;;
     *)
-     AC_MSG_ERROR(Invalid build static libraries option... aborting)
+     AC_MSG_ERROR([Invalid build static libraries option... aborting])
      ;;
 esac
 #
@@ -508,7 +507,7 @@ fi
 #
 # Check for conflicting build libraries options
 #
-#test "x$prefix" = xNONE && prefix=$ac_default_prefix
+#test "x$prefix" = xNONE && prefix=${ac_default_prefix}
 if test "$enable_static" = "no" && test "$enable_shared" = "no"; then
    AC_MSG_ERROR(Conflicting options for shared and static libraries build... aborting)
 fi
@@ -547,7 +546,7 @@ define_dl="no"
 define_libdl="no"
 AC_CHECK_LIB([c],[dlopen], 
              [define_dl="yes"],[])
-if test "${define_dl}" = "no" ; then
+if test "x${define_dl}" = "xno"; then
   AC_CHECK_LIB([dl],[dlopen], 
                [define_libdl="yes" define_dl="yes"],
   [])
@@ -556,14 +555,14 @@ if test "x${define_libdl}" = "xyes"; then
    tcob_ld_args_dl="-ldl"
    AC_DEFINE([HAVE_LIBDL],[1],[Define to 1 if we have libdl])
 fi
-if test x"$os_platform" = "x" && test "${define_dl}" = "no"; then
-   AC_MSG_ERROR(dynamic loader not found... aborting)
+if test "x${os_platform}" = "x" && test "x${define_dl}" = "xno"; then
+   AC_MSG_ERROR([dynamic loader not found... aborting])
 fi
 
 # Check for ltdl library availability
 #
 # (just borrow libtool's check here)
-# TODO
+# TODO: copy and paste
 
 
 # check for curses header and library 
@@ -1297,9 +1296,7 @@ tcob_cobf2f_inthtml=''
 tcob_cobf2f_inttext=''
 AC_ARG_WITH(cobf2f,
 	[  --with-cobf2f           build and install format conversion utility (cobf2f) ],
-        ,
-        ,
-)
+        [],[],[])
 if test "${with_cobf2f}" = "yes" ; then
    tcob_cobf2f_dir='cobf2f'
    tcob_cobf2f_dir1='utils/cobf2f'
@@ -1316,9 +1313,7 @@ fi
 tcob_str_dash_redefine=''
 AC_ARG_WITH(with-dash-redefine,
 	[  --with-dash-redefine=[ARG] Set the dash ('-') transformation characters (default=_2D) ],
-        ,
-        ,
-)
+        [],[],[])
 if test "x$with_dash_redefine" = "x"; then
    tcob_str_dash_redefine="_2D"
 else
@@ -1339,7 +1334,7 @@ cobcpy_default=""
 
 # set default directories
 #
-if test "${tcob_test_mode_opt}" = "true" ; then
+if test "${tcob_test_mode_opt}" = "true"; then
   tcob_ld_paths_default="-L${PWD}/lib -L${prefix}/lib"
 else
   tcob_ld_paths_default="-L${prefix}/lib"
@@ -1351,7 +1346,7 @@ fi
 tcob_default="${prefix}/share/htcobol"
 optfile_dir="${prefix}/share/htcobol"
 copybook_path="${prefix}/share/htcobol/copybooks"
-tcob_docdir="htcobol-$TCOB_MAJOR_VERSION.$TCOB_MINOR_VERSION"
+tcob_docdir="htcobol-${TCOB_MAJOR_VERSION}.${TCOB_MINOR_VERSION}"
 
 # set variables for config file
 #
@@ -1372,7 +1367,7 @@ tcob_ld_args_defaults="${tcob_ld_args_defaults} ${tcob_ld_args_m} ${tcob_ld_args
 #
 tcob_ld_args_defaults="${tcob_ld_args_defaults}"
 #
-CCX=$CC
+CCX=${CC}
 #
 AC_DEFINE([HAVE_LIBM],[1],[Compatability define; always defined to 1]) 
 AC_SUBST([LEX])dnl
@@ -1462,17 +1457,17 @@ AC_SUBST([tcob_lang])dnl
 AC_DEFINE([TCOB_LANGUAGE_en],[1],[Define to 1 for English])
 echo "debug 10b: with_lang=$with_lang, tcob_lang=$tcob_lang" 
 
-AC_DEFINE_UNQUOTED([TCOB_STR_DASH_REDEFINE],["${tcob_str_dash_redefine}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_STR_DASH_REDEFINE],["${tcob_str_dash_redefine}"],[OK])dnl
 
 AC_DEFINE_UNQUOTED([TCOB_CCX_CMD],["${CC}"],[CC])
 AC_DEFINE_UNQUOTED([TCOB_ASX_CMD],["${AS}"],[AS])
-AC_DEFINE_UNQUOTED([TCOB_COB_CMD],["${COB}"],[COB])
+AC_DEFINE_UNQUOTED([TCOB_COB_CMD],["${COB}"],[COB])dnl
 
 AC_DEFINE_UNQUOTED([TCOB_DEFAULTS_PATH],["${tcob_default_config}"],[OK])
 AC_DEFINE_UNQUOTED([OPTFILE_DEFAULT],["${optfile_default}"],[OK])
-AC_DEFINE_UNQUOTED([RTOPTFILE_DEFAULT],["${rtoptfile_default}"],[OK])
+AC_DEFINE_UNQUOTED([RTOPTFILE_DEFAULT],["${rtoptfile_default}"],[OK])dnl
 
-AC_DEFINE_UNQUOTED([TCOB_LD_PATHS_DEFAULT],["${tcob_ld_paths_default}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_PATHS_DEFAULT],["${tcob_ld_paths_default}"],[OK])dnl
 
 AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_MATH],["${tcob_ld_args_m}"],[OK])
 AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_HTCOBOL],["${tcob_ld_args_htcobol}"],[OK])
@@ -1480,9 +1475,9 @@ AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DB],["${tcob_ld_args_db}"],[OK])
 AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_ISAM],["${tcob_ld_args_isam}"],[OK])
 AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_CURSES],["${tcob_ld_args_curses}"],[OK])
 AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_READLINE],["${tcob_ld_args_readline}"],[OK])
-AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DL],["${tcob_ld_args_dl}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DL],["${tcob_ld_args_dl}"],[OK])dnl
 
-AC_DEFINE_UNQUOTED([TCOB_SHLIB_EXT],["${shared_lib_extension}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_SHLIB_EXT],["${shared_lib_extension}"],[OK])dnl
 
 # This typo is consistent everywhere it's used, so leave it as is:
 if test "x${need_underscode}" = "xyes"; then
@@ -1494,7 +1489,7 @@ if test "${use_ltdl_lib}" = "1"; then
     AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_LTDL],["${tcob_ld_args_ltdl}"],[OK])
 fi
 
-AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DEFAULT],["${tcob_ld_args_default}"],[OK])
+AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DEFAULT],["${tcob_ld_args_default}"],[OK])dnl
 
 # Final output.
 AC_CONFIG_FILES([Makefile Makefile_orig compiler/Makefile compiler/htversion.h \

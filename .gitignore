@@ -8,6 +8,7 @@ conftest*
 *.status
 htconfig.h
 Makefile
+Makefile*orig
 stamp-h*
 cobrun/tcrunversion.h
 compiler/htcobolrc

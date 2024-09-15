@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4 --install
-DISTCLEANFILES = *~ autoscan.log
+DISTCLEANFILES = *~ autoscan.log build-aux/*~
 
 SHELL=/bin/sh
 
