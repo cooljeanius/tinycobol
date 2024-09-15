@@ -106,7 +106,7 @@ esac
 LIBS_M="${LIBS}"
 INCLUDES_M="${INCLUDES}"
 
-echo  "OS host host_os=${host_os};"
+echo "OS host host_os=${host_os};"
 
 # Display build version
 AC_MSG_CHECKING([build version])
@@ -151,7 +151,7 @@ echo "debug 2: compiler c_compiler:${c_compiler}: with_compiler:${with_compiler}
 # the prefix
 # ==========
 #
-# move this earlier in the script... anyone know why this is handled
+# move this earlier in the script… does anyone know why this is handled
 # in such a bizarre way?
 test "x${prefix}" = "xNONE" && prefix=${ac_default_prefix}
 dnl# Let make expand exec_prefix.
@@ -172,7 +172,7 @@ AC_PROG_CC
 AC_CHECK_PROG([CC],["${c_compiler}"],["$c_compiler"],[no])
 echo "debug 3a: compiler c_compiler:${c_compiler}: ccx:${ccx}: CC:${CC}:" 
 if test "x${CC}" = "xno"; then
-   AC_MSG_ERROR([C compiler not found... aborting])
+   AC_MSG_ERROR([C compiler not found… aborting])
 fi
 echo "debug 3b: compiler c_compiler:${c_compiler}: ccx:${ccx}: CC:${CC}:" 
 AC_PROG_CXX
@@ -193,7 +193,7 @@ AM_PROG_AR
 if test "x${AR}" = "x"; then
   test -z "${AR}" || unset AR
   AC_CHECK_TOOLS([AR],[ar gar])dnl
-  ## might want to switch around these checks...
+  ## might want to switch around these checks:
   if test "x${ac_cv_prog_AR}" = "x"; then
     test -z "${ac_cv_prog_AR}" || unset ac_cv_prog_AR
     m4_ifdef([AC_PROG_AR],[
@@ -227,7 +227,7 @@ else
    test -z "${LEX}" && test -n "${FLEX}" && export LEX="${FLEX}"
 fi
 if test "z${LEX}" = "zno" ; then
-   AC_MSG_ERROR([required program not found... aborting])
+   AC_MSG_ERROR([required program not found… aborting])
 fi
 
 # 
@@ -246,7 +246,7 @@ AC_PROG_YACC
 AC_CHECK_PROG([YACC],["${yacc_name}"],["${yacc_name}"],[no])
 #
 if test "x${YACC}" = "xno"; then
-   AC_MSG_ERROR([Compiler compiler (i.e. byacc version 1.9.3 or Bison) not found... aborting])
+   AC_MSG_ERROR([Compiler compiler (i.e. byacc version 1.9.3 or Bison) not found… aborting])
 else
    if test "x${YACC}" = "xyacc193"; then
       yacc_prefix_compiler="y"
@@ -404,7 +404,9 @@ AC_ARG_ENABLE([debug-pp],
 ])dnl
 
 # Set MF compatibility features 
-#mf_compatibility="0"
+if test "x${ZERO_OUT_MF_COMPAT}" = "xYES"; then
+  mf_compatibility="0"
+fi
 AC_ARG_ENABLE([mfcomp],
 	[AS_HELP_STRING([--enable-mfcomp],
                         [enable MF compatibility features])],
@@ -415,7 +417,7 @@ AC_ARG_ENABLE([mfcomp],
 #
 tcob_test_mode_opt="false"
 AC_ARG_ENABLE([test-mode],
-	[AS_HELP_STRING([--enable-test-mode],
+        [AS_HELP_STRING([--enable-test-mode],
                         [enable Test Mode features])],
         [tcob_test_mode_opt="true"])dnl
 
@@ -458,7 +460,7 @@ case "${enable_shared}" in
      tcob_shared_libs_uninstall_opt='' 
      ;;
     *)
-     AC_MSG_ERROR([Invalid build shared libraries option... aborting])
+     AC_MSG_ERROR([Invalid build shared libraries option… aborting])
      ;;
 esac
 #
@@ -468,7 +470,8 @@ esac
 #
 AC_MSG_CHECKING([whether to build static libraries])
 AC_ARG_ENABLE([static],
-	[  --enable-static=ARG     build static libraries (default=yes) ],
+        [AS_HELP_STRING([--enable-static=ARG],
+                        [build static libraries (default=yes)])],
         [enable_static=${enableval}],
         [enable_static='yes'],[])
 AC_MSG_RESULT([${enable_static}])
@@ -485,7 +488,7 @@ case "${enable_static}" in
      tcob_static_libs_uninstall_opt='' 
      ;;
     *)
-     AC_MSG_ERROR([Invalid build static libraries option... aborting])
+     AC_MSG_ERROR([Invalid build static libraries option… aborting])
      ;;
 esac
 #
@@ -493,12 +496,12 @@ esac
 #
 # Determine which version of cobrun to build (static/shared)
 #
-if test "$enable_static" = "yes"; then
+if test "x${enable_static}" = "xyes"; then
    tcob_cobrun_build_opt="build-static"
    tcob_cobrun_name1_opt='htcobrun'
    tcob_cobrun_name2_opt='htcobrun2'
 fi
-if test "$enable_static" = "no" && test "$enable_shared" = "yes"; then
+if test "x${enable_static}" = "xno" && test "x$enable_shared" = "xyes"; then
    tcob_cobrun_build_opt="build-shared"
    tcob_cobrun_name1_opt='htcobrun1'
    tcob_cobrun_name2_opt='htcobrun'
@@ -507,26 +510,30 @@ fi
 #
 # Check for conflicting build libraries options
 #
-#test "x$prefix" = xNONE && prefix=${ac_default_prefix}
-if test "$enable_static" = "no" && test "$enable_shared" = "no"; then
-   AC_MSG_ERROR(Conflicting options for shared and static libraries build... aborting)
+if test -n "${prefix}" && test -n "${ac_default_prefix}"; then
+   test "x${prefix}" = "xNONE" && prefix=${ac_default_prefix}
 fi
-tcob_libs_opt="$tcob_static_libs_opt $tcob_shared_libs_opt" 
-tcob_libs_install_opt="$tcob_static_libs_install_opt $tcob_shared_libs_install_opt" 
-tcob_libs_uninstall_opt="$tcob_static_libs_uninstall_opt $tcob_shared_libs_uninstall_opt" 
+if test "x${enable_static}" = "xno" && test "x${enable_shared}" = "xno"; then
+   AC_MSG_ERROR([Conflicting options for shared and static libraries build… aborting])
+fi
+tcob_libs_opt="${tcob_static_libs_opt} ${tcob_shared_libs_opt}" 
+tcob_libs_install_opt="${tcob_static_libs_install_opt} ${tcob_shared_libs_install_opt}" 
+tcob_libs_uninstall_opt="${tcob_static_libs_uninstall_opt} ${tcob_shared_libs_uninstall_opt}" 
 
 # check for math library 
 have_lib_m="no"
 
-#AC_CHECK_LIB("$tcob_ld_args_m", asin, 
-AC_CHECK_LIB($tcob_ld_args_m, asin, 
-             have_lib_m="yes",
-             AC_MSG_ERROR(Math library "$tcob_ld_args_m" is required to create COBOL executable)
-             )
+# may want to quote the first arg with quotation marks too; idk:
+AC_CHECK_LIB([${tcob_ld_args_m}],[asin], 
+             [have_lib_m="yes"],
+             [AC_MSG_ERROR([Math library "${tcob_ld_args_m}" is required to create COBOL executable])
+             ])
 #
-if test "${have_lib_m}" = "yes" ; then
-   tcob_ld_args_m="-l$tcob_ld_args_m"
-#   M_LIBS="$tcob_ld_args_m $M_LIBS"  
+if test "x${have_lib_m}" = "xyes"; then
+   tcob_ld_args_m="-l${tcob_ld_args_m}"
+   if test -n "${M_LIBS}" && test "x${M_LIBS}" != "x${tcob_ld_args_m}"; then
+      M_LIBS="${tcob_ld_args_m} ${M_LIBS}"
+   fi
 fi
 
 #
@@ -556,27 +563,24 @@ if test "x${define_libdl}" = "xyes"; then
    AC_DEFINE([HAVE_LIBDL],[1],[Define to 1 if we have libdl])
 fi
 if test "x${os_platform}" = "x" && test "x${define_dl}" = "xno"; then
-   AC_MSG_ERROR([dynamic loader not found... aborting])
+   AC_MSG_ERROR([dynamic loader not found… aborting])
 fi
 
 # Check for ltdl library availability
 #
-# (just borrow libtool's check here)
-# TODO: copy and paste
 
+LT_CONFIG_LTDL_DIR([libltdl])
+LTDL_INIT
 
 # check for curses header and library 
 # 
 
 define_with_curses="no"
-AC_CHECK_HEADERS(${curses_header},
-                 [],     
-                 [ AC_MSG_ERROR(header "${curses_header}" not found... aborting) ]
-                 ) 
-AC_CHECK_LIB(${curses_library}, addch,  
-             define_with_curses="yes",
-             AC_MSG_ERROR(curses library is required by run-time... aborting)
-            )
+AC_CHECK_HEADERS([${curses_header}],[],     
+                 [AC_MSG_ERROR([header "${curses_header}" not found… aborting])]) 
+AC_CHECK_LIB([${curses_library}],[addch],  
+             [define_with_curses="yes"],
+             [AC_MSG_ERROR([curses library is required by run-time… aborting])])
 
 if test "x${define_with_curses}" = "xyes"; then
    AC_DEFINE([HAVE_LIBCURSES],[1],[Define to 1 if we have libcurses]) 
@@ -585,14 +589,15 @@ fi
 
 # Check for color_set function availability
 curses_with_color_set="no"
-if test "${define_with_curses}" = "yes" ; then
-  AC_MSG_CHECKING(for color_set in -l${curses_library})
+if test "x${define_with_curses}" = "xyes"; then
+  AC_MSG_CHECKING([for color_set in -l${curses_library}])
   LIBS="-l${curses_library}"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <${curses_header}>
 short si1;
 void  *vp;
-]], [[color_set(si1, vp); ]])],[ AC_MSG_RESULT(yes); curses_with_color_set="yes" ],[ AC_MSG_RESULT(no)  
-            ]) 
+]], [[color_set(si1, vp); ]])],
+               [AC_MSG_RESULT([yes]); curses_with_color_set="yes"],
+               [AC_MSG_RESULT([no])]) 
 fi
 #
 if test "x${curses_with_color_set}" = "xyes"; then
@@ -600,23 +605,16 @@ if test "x${curses_with_color_set}" = "xyes"; then
 fi
 
 AC_ARG_WITH([readline],
-	[AS_HELP_STRING([--with-readline],[use readline library])],
+        [AS_HELP_STRING([--with-readline],
+                        [use readline library])],
         [],[],[])dnl
 
 if test "x${with_readline}" = "xyes"; then
-   AC_CHECK_HEADERS([readline/readline.h], 
-     [],
-     [
-      AC_MSG_ERROR(header readline.h for readline library not found... aborting)
-     ]
-     )
-   AC_CHECK_LIB(readline, rl_tilde_expand, 
-     [],
-     [
-      AC_MSG_ERROR(readline library not found... aborting)
-     ]
-   )
-   define_with_readline="$with_readline" 
+   AC_CHECK_HEADERS([readline/readline.h],[],
+     [AC_MSG_ERROR([header readline.h for readline library not found… aborting])])
+   AC_CHECK_LIB([readline],[rl_tilde_expand],[],
+     [AC_MSG_ERROR([readline library not found… aborting])])
+   define_with_readline="${with_readline}" 
    tcob_ld_args_readline="-lreadline"
    AC_DEFINE([WITH_LIBREADLINE],[1],[Define to 1 with libreadline]) 
    AC_DEFINE([HAVE_LIBREADLINE],[1],[Define to 1 if we have libreadline]) 
@@ -625,27 +623,18 @@ fi
 
 #  ISAM I/O (VB-ISAM) check
 # 
-AC_CHECK_HEADERS([vbisam.h], 
-   [],
-   [
-     echo "header vbisam.h for VB-ISAM library vbisam not found..."
-   ]
-) 
-AC_CHECK_LIB(vbisam, isopen,  
-   [ 
-    tcob_ld_args_isam="-lvbisam"
+AC_CHECK_HEADERS([vbisam.h],[],
+   [echo "header vbisam.h for VB-ISAM library vbisam not found…"]) 
+AC_CHECK_LIB([vbisam],[isopen],
+   [tcob_ld_args_isam="-lvbisam"
     AC_DEFINE([HAVE_LIBVBISAM],[1],[Define to 1 if we have libvbisam])  
-   ],
-   [
-     echo "VB-ISAM library vbisam not found..."
-   ]
-)
+   ],[echo "VB-ISAM library vbisam not found…"])
 #
 
-echo  "DB library db_version state is ${db_version}"
+echo "DB library db_version state is ${db_version}"
 
 # Step 1000: check for library db headers db.h or db_185.h
-echo  "debug: Beginning BDB library search sequence "
+echo "debug: Beginning BDB library search sequence…"
 db_header="0"
 db_version="0"
 db_libdb="0"
@@ -658,7 +647,7 @@ AC_ARG_WITH(with-libdb,
         ,
         ,
 )
-echo  "debug 1005: DB library header option with_libdb:$with_libdb:"
+echo "debug 1005: DB library header option with_libdb:$with_libdb:"
 if test "x$with_libdb" != "x"; then
   if test "x$with_libdb" != "x1" && 
      test "x$with_libdb" != "x2" && 
@@ -670,7 +659,7 @@ if test "x$with_libdb" != "x"; then
      db_version="$with_libdb" 
   fi
 fi
-echo  "debug 1010: DB library header option with_libdb:$with_libdb:"
+echo "debug 1010: DB library header option with_libdb:$with_libdb:"
 if test "x$with_libdb" = "x1" -o "$db_version" = "0"
 then
    AC_CHECK_HEADERS([db_185.h],
@@ -720,7 +709,7 @@ then
    fi
 fi
 
-echo  "debug 1020: BDB library header option with_libdb:$with_libdb:"
+echo "debug 1020: BDB library header option with_libdb:$with_libdb:"
 if test "$db_header" != "1"; 
 then
 	echo "debug: db_header is $db_header"
@@ -741,7 +730,7 @@ if test "x$with_libdb" = "x3"; then
 fi
 #
 if test "x$with_libdb" = "x4"; then
-echo  "Debug: Beginning DB library db4 header search sequence "
+echo "Debug: Beginning DB library db4 header search sequence "
    AC_CHECK_HEADERS([db4/db_185.h], 
            [db_header="4"], 
            [], [],
@@ -749,9 +738,9 @@ echo  "Debug: Beginning DB library db4 header search sequence "
 fi
 #
 if test "x$with_libdb" = "x4.1"; then
-echo  "Debug: Beginning DB library db4.1 header search sequence db_header=$db_header;"
+echo "Debug: Beginning DB library db4.1 header search sequence db_header=$db_header;"
     if test $db_header = "0"; then
-        echo  "Debug: Start DB library db4.1 header search sequence "
+        echo "Debug: Start DB library db4.1 header search sequence "
         AC_CHECK_HEADERS([db4.1/db_185.h], 
            [db_header="41" ],
            [], [],
@@ -760,7 +749,7 @@ echo  "Debug: Beginning DB library db4.1 header search sequence db_header=$db_he
 fi
 #
 if test "x$with_libdb" = "x4.2"; then
-echo  "Debug: Beginning DB library db4.2 header search sequence db_header=$db_header;"
+echo "Debug: Beginning DB library db4.2 header search sequence db_header=$db_header;"
     if test $db_header = "0"; then
         AC_CHECK_HEADERS([db4.2/db_185.h], 
            [db_header="42" ],
@@ -769,7 +758,7 @@ echo  "Debug: Beginning DB library db4.2 header search sequence db_header=$db_he
     fi
 fi
 #
-echo  "Debug: Beginning DB library db4.3 header search sequence db_header=$db_header;"
+echo "Debug: Beginning DB library db4.3 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.3"; then
 if test "${db_header}" = "0"; then
    AC_CHECK_HEADERS([db4.3/db_185.h], 
@@ -778,7 +767,7 @@ if test "${db_header}" = "0"; then
 fi
 fi
 #
-echo  "Debug: Beginning DB library db4.4 header search sequence db_header=$db_header;"
+echo "Debug: Beginning DB library db4.4 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.4"; then
     if test $db_header = "0"; then
         AC_CHECK_HEADERS([db4.4/db_185.h], 
@@ -788,7 +777,7 @@ if test "x$with_libdb" = "x4.4"; then
     fi
 fi
 #
-echo  "Debug: Beginning DB library db4.5 header search sequence db_header=$db_header;"
+echo "Debug: Beginning DB library db4.5 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.5"; then
 if test $db_header = "0"; then
    AC_CHECK_HEADERS([db4.5/db_185.h], 
@@ -797,7 +786,7 @@ if test $db_header = "0"; then
    ) 
 fi
 fi
-echo  "Debug: Beginning DB library db4.6 header search sequence db_header=$db_header;"
+echo "Debug: Beginning DB library db4.6 header search sequence db_header=$db_header;"
 if test "x$with_libdb" = "x4.6"; then
     if test $db_header = "0"; then
         AC_CHECK_HEADERS([db46/db_185.h], 
@@ -810,7 +799,7 @@ if test "x$with_libdb" = "x4.6"; then
     fi
 fi
 
-echo  "debug 10.0: DB library header option with_libdb:$with_libdb:"
+echo "debug 10.0: DB library header option with_libdb:$with_libdb:"
 if test "x$with_libdb" = "x"; then
 # Step 1: check for library db header db_185.h for version 2.x, 3.x, 4.x
 if test "${db_header}" = "0" ; then
@@ -899,12 +888,12 @@ fi
 if test "${db_header}" = "0" ; then
    AC_MSG_ERROR(library headers (db.h or db_185.h) not found... aborting)
 else
-  echo  "DB library header found db_header state is ${db_header}"
+  echo "DB library header found db_header state is ${db_header}"
 fi
 fi
 
 # Step 11: If header db.h found check library db is version 1.x (1.85 <= 1.x < 2.0)
-echo  "Debug: Beginning DB library test link sequence "
+echo "Debug: Beginning DB library test link sequence "
 if test "${db_header}" = "10" ; then
 
   AC_MSG_CHECKING(if db.h header belongs to version 1.x)
@@ -1189,7 +1178,7 @@ const void *vv;
 fi
 
 # Step 13: Define which header to use 
-echo  "DB library db_version state is ${db_version}"
+echo "DB library db_version state is ${db_version}"
 if test "${db_version}" = "1" ; then
   AC_DEFINE([USE_DB_1],[1],[Define to 1 to use libdb1]) 
   tcob_ld_args_db="-ldb1"
@@ -1492,14 +1481,13 @@ fi
 AC_DEFINE_UNQUOTED([TCOB_LD_ARGS_DEFAULT],["${tcob_ld_args_default}"],[OK])dnl
 
 # Final output.
+AC_MSG_NOTICE([proceeding with final output now])
 AC_CONFIG_FILES([Makefile Makefile_orig compiler/Makefile compiler/htversion.h \
-	compiler/htcobolrc lib/Makefile \
-	cobrun/Makefile cobrun/tcrunversion.h \
-	utils/Makefile utils/cobf2f/Makefile \
-	test.code/Makefile test.code/mconfig.inc test.code/copybooks/Makefile \
-	info/Makefile info/slackware/SlackBuild \
-        test_suite/Makefile test_suite/coboltest.inc \
-        test_suite/nist/makeConfig.inc test_suite/nist/Makefile \
-        lib/htcobolrt.rc ])
+    compiler/htcobolrc lib/Makefile cobrun/Makefile cobrun/tcrunversion.h \
+    utils/Makefile utils/cobf2f/Makefile test.code/Makefile test.code/mconfig.inc \
+    test.code/copybooks/Makefile info/Makefile info/slackware/SlackBuild \
+    test_suite/Makefile test_suite/coboltest.inc test_suite/nist/makeConfig.inc \
+    test_suite/nist/Makefile lib/htcobolrt.rc ])
 AC_OUTPUT
 
+echo "Output is done, so we are done configuring in `pwd`."

@@ -38,14 +38,15 @@ TEXTFILE08=HISTORY
 TEXTFILE09=Readme.mingw32.txt
 TEXTFILE10=Readme.cygwin.txt
 
-subdirs=compiler lib cobrun info utils 
-subdirs1=compiler lib cobrun info utils @tcob_cobf2f_dir1@ test_suite test_suite/nist test.code
+subdirs=compiler lib libltdl cobrun info utils 
+subdirs1=compiler lib libltdl cobrun info utils @tcob_cobf2f_dir1@ \
+  test_suite test_suite/nist test.code
 
 all: all-subdirs
 all-subdirs:
 	@for i in ${subdirs}; do \
 		echo "Making all in $$i"; \
-		(cd $$i; ${MAKE} all) ; \
+		(cd $$i; ${MAKE} all); \
 	done
 .PHONY: all-subdirs
 
@@ -57,7 +58,7 @@ install-data-local: all
 	${INSTALL_DIR} $(DESTDIR)$(tcob_docdir)
 	@for i in ${subdirs}; do \
 		echo "Installing in $$i"; \
-		(cd $$i; ${MAKE} install) ; \
+		(cd $$i; ${MAKE} install); \
 	done
 	${INSTALL_DATA} $(TEXTFILE01) $(DESTDIR)${tcob_docdir}/$(TEXTFILE01)
 	${INSTALL_DATA} $(TEXTFILE02) $(DESTDIR)${tcob_docdir}/$(TEXTFILE02)
@@ -73,7 +74,7 @@ install-data-local: all
 uninstall-local:
 	@for i in ${subdirs}; do \
 		echo "Un-Installing in $$i"; \
-		(cd $$i; ${MAKE} uninstall) ; \
+		(cd $$i; ${MAKE} uninstall); \
 	done
 	${RM} $(DESTDIR)$(pkgdatadir)
 	${RM} $(DESTDIR)$(tcob_docdir)
@@ -96,13 +97,13 @@ distclean-local cleandist:
 	utils/cobf2f/Makefile info/slackware/SlackBuild \
 	test.code/Makefile test.code/mconfig.inc \
 	test_suite/Makefile test_suite/coboltest.inc \
-        test_suite/nist/Makefile test_suite/nist/makeConfig.inc \
-	lib/htcobolrt.rc
+	test_suite/nist/Makefile test_suite/nist/makeConfig.inc \
+	lib/htcobolrt.rc libltdl/config.h
 	
 cleanall allclean: 
 	@for i in ${subdirs1}; do \
 		echo "Cleaning all in $$i"; \
-		(cd $$i; ${MAKE} cleanall) ; \
+		(cd $$i; ${MAKE} cleanall); \
 	done
 	@${RM} autom4te.cache || rmdir autom4te.cache || find . -name '*.cache' -delete
 	@${RM} config.cache config.status config.log

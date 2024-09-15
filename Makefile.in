@@ -94,7 +94,8 @@ subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_prog_tcl.m4 \
 	$(top_srcdir)/m4/gt_type_wchar_t.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltargz.m4 \
+	$(top_srcdir)/m4/ltdl.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -208,8 +209,8 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile_orig.in \
 	$(top_srcdir)/utils/cobf2f/Makefile.in AUTHORS COPYING \
 	COPYING.LIB ChangeLog INSTALL NEWS README TODO \
 	build-aux/ar-lib build-aux/compile build-aux/config.guess \
-	build-aux/config.sub build-aux/install-sh build-aux/ltmain.sh \
-	build-aux/missing
+	build-aux/config.sub build-aux/depcomp build-aux/install-sh \
+	build-aux/ltmain.sh build-aux/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -278,6 +279,7 @@ FGREP = @FGREP@
 FILECMD = @FILECMD@
 FLEX = @FLEX@
 GREP = @GREP@
+INCLTDL = @INCLTDL@
 INCLUDES = @INCLUDES@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -289,13 +291,25 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LIBADD_DL = @LIBADD_DL@
+LIBADD_DLD_LINK = @LIBADD_DLD_LINK@
+LIBADD_DLOPEN = @LIBADD_DLOPEN@
+LIBADD_SHL_LOAD = @LIBADD_SHL_LOAD@
+LIBLTDL = @LIBLTDL@
 LIBM = @LIBM@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
+LTDLDEPS = @LTDLDEPS@
+LTDLINCL = @LTDLINCL@
+LTDLOPEN = @LTDLOPEN@
 LTLIBOBJS = @LTLIBOBJS@
+LT_ARGZ_H = @LT_ARGZ_H@
+LT_CONFIG_H = @LT_CONFIG_H@
+LT_DLLOADERS = @LT_DLLOADERS@
+LT_DLPREOPEN = @LT_DLPREOPEN@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -384,6 +398,8 @@ libexecdir = @libexecdir@
 libtool = @libtool@
 localedir = @localedir@
 localstatedir = @localstatedir@
+ltdl_LIBOBJS = @ltdl_LIBOBJS@
+ltdl_LTLIBOBJS = @ltdl_LTLIBOBJS@
 mandir = $(prefix)/man/man1
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -398,6 +414,8 @@ runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
+subdirs = compiler lib libltdl cobrun info utils 
+sys_symbol_underscore = @sys_symbol_underscore@
 sysconfdir = @sysconfdir@
 target = @target@
 target_alias = @target_alias@
@@ -467,8 +485,9 @@ TEXTFILE07 = STATUS
 TEXTFILE08 = HISTORY
 TEXTFILE09 = Readme.mingw32.txt
 TEXTFILE10 = Readme.cygwin.txt
-subdirs = compiler lib cobrun info utils 
-subdirs1 = compiler lib cobrun info utils @tcob_cobf2f_dir1@ test_suite test_suite/nist test.code
+subdirs1 = compiler lib libltdl cobrun info utils @tcob_cobf2f_dir1@ \
+  test_suite test_suite/nist test.code
+
 all: htconfig.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -956,7 +975,7 @@ all: all-subdirs
 all-subdirs:
 	@for i in ${subdirs}; do \
 		echo "Making all in $$i"; \
-		(cd $$i; ${MAKE} all) ; \
+		(cd $$i; ${MAKE} all); \
 	done
 .PHONY: all-subdirs
 
@@ -968,7 +987,7 @@ install-data-local: all
 	${INSTALL_DIR} $(DESTDIR)$(tcob_docdir)
 	@for i in ${subdirs}; do \
 		echo "Installing in $$i"; \
-		(cd $$i; ${MAKE} install) ; \
+		(cd $$i; ${MAKE} install); \
 	done
 	${INSTALL_DATA} $(TEXTFILE01) $(DESTDIR)${tcob_docdir}/$(TEXTFILE01)
 	${INSTALL_DATA} $(TEXTFILE02) $(DESTDIR)${tcob_docdir}/$(TEXTFILE02)
@@ -984,7 +1003,7 @@ install-data-local: all
 uninstall-local:
 	@for i in ${subdirs}; do \
 		echo "Un-Installing in $$i"; \
-		(cd $$i; ${MAKE} uninstall) ; \
+		(cd $$i; ${MAKE} uninstall); \
 	done
 	${RM} $(DESTDIR)$(pkgdatadir)
 	${RM} $(DESTDIR)$(tcob_docdir)
@@ -1007,13 +1026,13 @@ distclean-local cleandist:
 	utils/cobf2f/Makefile info/slackware/SlackBuild \
 	test.code/Makefile test.code/mconfig.inc \
 	test_suite/Makefile test_suite/coboltest.inc \
-        test_suite/nist/Makefile test_suite/nist/makeConfig.inc \
-	lib/htcobolrt.rc
+	test_suite/nist/Makefile test_suite/nist/makeConfig.inc \
+	lib/htcobolrt.rc libltdl/config.h
 
 cleanall allclean: 
 	@for i in ${subdirs1}; do \
 		echo "Cleaning all in $$i"; \
-		(cd $$i; ${MAKE} cleanall) ; \
+		(cd $$i; ${MAKE} cleanall); \
 	done
 	@${RM} autom4te.cache || rmdir autom4te.cache || find . -name '*.cache' -delete
 	@${RM} config.cache config.status config.log
